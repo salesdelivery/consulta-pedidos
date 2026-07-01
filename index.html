@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consulta de Pedido | Philips</title>
+<style>
+  :root{
+    --philips-blue:#0B5ED7;--philips-blue-dark:#003876;
+    --ink:#0A1F33;--paper:#F7F9FC;--line:#DCE3EC;
+    --ok:#0F8A5F;--warn:#C77700;--late:#C0392B;--muted:#5A6B7D;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Segoe UI',Roboto,Arial,sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;}
+  header{background:linear-gradient(135deg,var(--philips-blue-dark),var(--philips-blue));color:#fff;padding:28px 20px 56px;position:relative;overflow:hidden;}
+  header::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,0.08);}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.3rem;}
+  .brand .dot{width:10px;height:10px;border-radius:50%;background:#fff;}
+  header h1{margin:18px 0 4px;font-size:1.6rem;font-weight:600;}
+  header p{margin:0;opacity:0.85;font-size:0.95rem;}
+  .data-badge{display:inline-block;background:rgba(255,255,255,0.18);border-radius:999px;padding:4px 12px;font-size:0.78rem;margin-top:10px;}
+  main{max-width:760px;margin:-34px auto 60px;padding:0 20px;position:relative;z-index:2;}
+  .card{background:#fff;border-radius:14px;box-shadow:0 10px 30px rgba(10,31,51,0.08);border:1px solid var(--line);}
+  .search-card{padding:22px;}
+  .search-row{display:flex;gap:10px;flex-wrap:wrap;}
+  .search-row input[type=text]{flex:1;min-width:220px;padding:14px 16px;border:1.5px solid var(--line);border-radius:10px;font-size:1rem;outline:none;transition:border-color .15s;}
+  .search-row input[type=text]:focus{border-color:var(--philips-blue);}
+  .search-row input[type=text]:disabled{background:#F5F7FA;color:#A8B4C2;}
+  button.primary{background:var(--philips-blue);color:#fff;border:none;padding:14px 22px;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;transition:background .15s;}
+  button.primary:hover{background:var(--philips-blue-dark);}
+  button.primary:disabled{background:#9BB6D6;cursor:not-allowed;}
+  .load-status{margin-top:14px;font-size:0.85rem;color:var(--muted);display:flex;align-items:center;gap:8px;}
+  .load-status.ok{color:var(--ok);}
+  .load-status.err{color:var(--late);}
+  .spinner{width:16px;height:16px;border:2px solid #DCE3EC;border-top-color:var(--philips-blue);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;flex-shrink:0;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  #results{margin-top:18px;}
+  .empty-state{padding:60px 24px;text-align:center;color:var(--muted);}
+  .empty-state svg{opacity:0.5;margin-bottom:10px;}
+  .order-card{padding:26px 24px 22px;margin-bottom:18px;}
+  .order-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:18px;}
+  .order-head .po-label{font-size:0.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;font-weight:600;}
+  .order-head .po-value{font-size:1.15rem;font-weight:700;color:var(--philips-blue-dark);}
+  .status-pill{display:inline-block;padding:6px 14px;border-radius:999px;font-size:0.82rem;font-weight:700;white-space:nowrap;}
+  .status-ok{background:#E5F6EE;color:var(--ok);}
+  .status-warn{background:#FFF3E0;color:var(--warn);}
+  .status-late{background:#FCEAE8;color:var(--late);}
+  .status-default{background:#EAF1FB;color:var(--philips-blue-dark);}
+  .field-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 24px;}
+  @media(max-width:560px){.field-grid{grid-template-columns:1fr;}}
+  .field{display:flex;flex-direction:column;gap:4px;}
+  .field .k{font-size:0.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;font-weight:600;}
+  .field .v{font-size:1rem;font-weight:500;color:var(--ink);}
+  .field .v.empty{color:#A8B4C2;font-weight:400;font-style:italic;}
+  .material-block{grid-column:1 / -1;background:var(--paper);border-radius:10px;padding:14px 16px;border:1px solid var(--line);}
+  .timeline{margin-top:20px;display:flex;justify-content:space-between;position:relative;padding-top:6px;}
+  .timeline::before{content:"";position:absolute;top:16px;left:5%;right:5%;height:2px;background:var(--line);z-index:0;}
+  .tl-step{flex:1;text-align:center;position:relative;z-index:1;}
+  .tl-dot{width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid var(--line);margin:0 auto 8px;}
+  .tl-dot.filled{border-color:var(--philips-blue);background:var(--philips-blue);}
+  .tl-step .tl-label{font-size:0.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;}
+  .tl-step .tl-date{font-size:0.78rem;color:var(--ink);margin-top:2px;}
+  .multi-note{font-size:0.85rem;color:var(--muted);margin:0 0 14px;padding:10px 14px;background:#F2F6FC;border-radius:8px;border-left:3px solid var(--philips-blue);}
+  footer{text-align:center;color:var(--muted);font-size:0.78rem;padding:10px 20px 30px;}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><span class="dot"></span> PHILIPS</div>
+  <h1>Consulta de Pedido</h1>
+  <p>Acompanhe o status do seu pedido informando o número da PO</p>
+  <div class="data-badge" id="dataBadge">Carregando base de dados...</div>
+</header>
+<main>
+  <div class="card search-card">
+    <div class="search-row">
+      <input type="text" id="poInput" placeholder="Digite o número da Customer PO..." autocomplete="off" disabled>
+      <button class="primary" id="searchBtn" disabled>Consultar</button>
+    </div>
+    <div class="load-status" id="loadStatus">
+      <span class="spinner"></span> Conectando à base de dados...
+    </div>
+  </div>
+  <div id="results"></div>
+</main>
+<footer>Philips Medical Systems &middot; Sales &amp; Service Delivery</footer>
+
+<script>
+// =============================================================
+// CONFIGURAÇÃO — cole aqui o link do carteira.json
+// =============================================================
+var JSON_URL = "https://share.philips.com/sites/SSD-FastFlow/Shared%20Documents/consulta-publica/carteira.json"; // ← Cole aqui o link direto do carteira.json
+// =============================================================
+
+var COLS = {
+  po: "Customer PO No.",
+  creation: "Creation Date",
+  customer: "Sold to Customer Name",
+  material: "Material Description",
+  rdd: "RDD",
+  prazo: "Prazo Contratual",
+  am: "Account Manager Name",
+  status: "Status",
+  cdd: "CDD",
+  deliveryDate: "Data de Entrega",
+  installDate: "Data de Instalação",
+  qty: "QTY",
+  material_code: "Material"
+};
+
+var DATA = [];
+var poInput = document.getElementById("poInput");
+var searchBtn = document.getElementById("searchBtn");
+var results = document.getElementById("results");
+var loadStatus = document.getElementById("loadStatus");
+var dataBadge = document.getElementById("dataBadge");
+
+// Converte número serial do Excel para objeto Date
+function excelSerialToDate(val) {
+  if (val === null || val === undefined || val === "" || val === "NaT") return null;
+  // Se for número serial do Excel (entre 40000 e 60000 = datas de 2009 a 2064)
+  if (typeof val === "number" && val > 40000 && val < 60000) {
+    var d = new Date(Date.UTC(1899, 11, 30));
+    d.setUTCDate(d.getUTCDate() + Math.floor(val));
+    return d;
+  }
+  // Se já for string de data ISO (YYYY-MM-DD ou com T)
+  if (typeof val === "string" && val.length >= 8) {
+    var parsed = new Date(val);
+    if (!isNaN(parsed.getTime())) return parsed;
+  }
+  return null;
+}
+
+function formatDate(val) {
+  var d = excelSerialToDate(val);
+  if (!d) return null;
+  var dd = String(d.getUTCDate()).padStart(2, "0");
+  var mm = String(d.getUTCMonth() + 1).padStart(2, "0");
+  var yy = d.getUTCFullYear();
+  return dd + "/" + mm + "/" + yy;
+}
+
+function toDateObj(val) {
+  return excelSerialToDate(val);
+}
+
+function fieldHtml(label, value) {
+  var cls = value ? "" : "empty";
+  var display = value ? value : "—";
+  return '<div class="field"><span class="k">' + label + '</span><span class="v ' + cls + '">' + display + '</span></div>';
+}
+
+function statusPill(item) {
+  var entrega = toDateObj(item[COLS.deliveryDate]);
+  var prazo = toDateObj(item[COLS.prazo]);
+  var rdd = toDateObj(item[COLS.rdd]);
+  var now = new Date();
+  var ref = prazo || rdd;
+
+  if (entrega) return '<span class="status-pill status-ok">✓ Entregue</span>';
+  if (ref && ref < now) return '<span class="status-pill status-late">⚠ Atrasado</span>';
+  if (ref) {
+    var diff = (ref - now) / (1000 * 60 * 60 * 24);
+    if (diff <= 30) return '<span class="status-pill status-warn">Em andamento</span>';
+  }
+  return '<span class="status-pill status-default">Em andamento</span>';
+}
+
+function buildTimeline(item) {
+  var steps = [
+    { label: "Criação",    date: item[COLS.creation] },
+    { label: "RDD",        date: item[COLS.rdd] },
+    { label: "CDD",        date: item[COLS.cdd] },
+    { label: "Entrega",    date: item[COLS.deliveryDate] },
+    { label: "Instalação", date: item[COLS.installDate] }
+  ];
+  var html = '<div class="timeline">';
+  for (var i = 0; i < steps.length; i++) {
+    var s = steps[i];
+    var hasDate = toDateObj(s.date) !== null;
+    html += '<div class="tl-step">';
+    html += '<div class="tl-dot' + (hasDate ? ' filled' : '') + '"></div>';
+    html += '<div class="tl-label">' + s.label + '</div>';
+    html += '<div class="tl-date">' + (formatDate(s.date) || "—") + '</div>';
+    html += '</div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function renderOrderCard(item, idx, total) {
+  var html = '<div class="card order-card">';
+  if (total > 1) {
+    html += '<div class="multi-note">Item ' + (idx + 1) + ' de ' + total + ' associados a esta PO</div>';
+  }
+  html += '<div class="order-head">';
+  html += '<div><div class="po-label">Customer PO No.</div>';
+  html += '<div class="po-value">' + (item[COLS.po] || "") + '</div></div>';
+  html += statusPill(item);
+  html += '</div>';
+  html += '<div class="field-grid">';
+  html += fieldHtml("Cliente", item[COLS.customer]);
+  html += fieldHtml("Account Manager", item[COLS.am]);
+  html += fieldHtml("Data de Criação", formatDate(item[COLS.creation]));
+  html += fieldHtml("RDD (Data Requerida)", formatDate(item[COLS.rdd]));
+  html += fieldHtml("Prazo Contratual", formatDate(item[COLS.prazo]));
+  html += fieldHtml("Quantidade", item[COLS.qty]);
+  html += '<div class="material-block field"><span class="k">Material</span><span class="v">' + (item[COLS.material] || "—") + '</span></div>';
+  html += '</div>';
+  html += buildTimeline(item);
+  html += '</div>';
+  return html;
+}
+
+function doSearch() {
+  var query = poInput.value.trim().toLowerCase();
+  if (!query) return;
+  var matches = [];
+  for (var i = 0; i < DATA.length; i++) {
+    var po = String(DATA[i][COLS.po] || "").toLowerCase();
+    if (po.indexOf(query) !== -1) matches.push(DATA[i]);
+  }
+  if (matches.length === 0) {
+    results.innerHTML = '<div class="card"><div class="empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><div><strong>Nenhum pedido encontrado</strong></div><div>Verifique o número da PO e tente novamente.</div></div></div>';
+    return;
+  }
+  var html = "";
+  for (var j = 0; j < matches.length; j++) {
+    html += renderOrderCard(matches[j], j, matches.length);
+  }
+  results.innerHTML = html;
+}
+
+poInput.addEventListener("keydown", function(e) { if (e.key === "Enter") doSearch(); });
+poInput.addEventListener("input", function() {
+  searchBtn.disabled = !(DATA.length && poInput.value.trim());
+});
+searchBtn.addEventListener("click", doSearch);
+
+function loadData() {
+  if (!JSON_URL) {
+    loadStatus.className = "load-status err";
+    loadStatus.innerHTML = "⚠️ Link do JSON não configurado. Edite o arquivo HTML e insira o JSON_URL.";
+    dataBadge.textContent = "Base não configurada";
+    return;
+  }
+  fetch(JSON_URL, { cache: "no-cache" })
+    .then(function(res) {
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return res.json();
+    })
+    .then(function(json) {
+      DATA = (json.dados || []).filter(function(r) { return r[COLS.po]; });
+      var gerado = json.gerado_em ? new Date(json.gerado_em) : null;
+      var dataStr = gerado ? formatDate(gerado.toISOString()) : "—";
+      loadStatus.className = "load-status ok";
+      loadStatus.innerHTML = "✓ " + DATA.length + " pedidos carregados · Atualizado em " + dataStr;
+      dataBadge.textContent = "Base atualizada em " + dataStr;
+      poInput.disabled = false;
+      searchBtn.disabled = false;
+      poInput.focus();
+      results.innerHTML = '<div class="card"><div class="empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><div><strong>Base carregada com sucesso</strong></div><div>Digite o número da PO acima para consultar.</div></div></div>';
+    })
+    .catch(function(err) {
+      loadStatus.className = "load-status err";
+      loadStatus.innerHTML = "❌ Não foi possível carregar a base. Verifique o link ou as permissões do SharePoint.";
+      dataBadge.textContent = "Erro ao carregar base";
+      console.error(err);
+    });
+}
+
+results.innerHTML = '<div class="card"><div class="empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><div><strong>Carregando base de dados...</strong></div></div></div>';
+
+loadData();
+</script>
+</body>
+</html>
