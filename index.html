@@ -5,273 +5,501 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Consulta de Pedido | Philips</title>
 <style>
-  :root{
-    --philips-blue:#0B5ED7;--philips-blue-dark:#003876;
-    --ink:#0A1F33;--paper:#F7F9FC;--line:#DCE3EC;
-    --ok:#0F8A5F;--warn:#C77700;--late:#C0392B;--muted:#5A6B7D;
-  }
-  *{box-sizing:border-box;}
-  body{margin:0;font-family:'Segoe UI',Roboto,Arial,sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;}
-  header{background:linear-gradient(135deg,var(--philips-blue-dark),var(--philips-blue));color:#fff;padding:28px 20px 56px;position:relative;overflow:hidden;}
-  header::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,0.08);}
-  .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.3rem;}
-  .brand .dot{width:10px;height:10px;border-radius:50%;background:#fff;}
-  header h1{margin:18px 0 4px;font-size:1.6rem;font-weight:600;}
-  header p{margin:0;opacity:0.85;font-size:0.95rem;}
-  .data-badge{display:inline-block;background:rgba(255,255,255,0.18);border-radius:999px;padding:4px 12px;font-size:0.78rem;margin-top:10px;}
-  main{max-width:760px;margin:-34px auto 60px;padding:0 20px;position:relative;z-index:2;}
-  .card{background:#fff;border-radius:14px;box-shadow:0 10px 30px rgba(10,31,51,0.08);border:1px solid var(--line);}
-  .search-card{padding:22px;}
-  .search-row{display:flex;gap:10px;flex-wrap:wrap;}
-  .search-row input[type=text]{flex:1;min-width:220px;padding:14px 16px;border:1.5px solid var(--line);border-radius:10px;font-size:1rem;outline:none;transition:border-color .15s;}
-  .search-row input[type=text]:focus{border-color:var(--philips-blue);}
-  .search-row input[type=text]:disabled{background:#F5F7FA;color:#A8B4C2;}
-  button.primary{background:var(--philips-blue);color:#fff;border:none;padding:14px 22px;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;transition:background .15s;}
-  button.primary:hover{background:var(--philips-blue-dark);}
-  button.primary:disabled{background:#9BB6D6;cursor:not-allowed;}
-  .load-status{margin-top:14px;font-size:0.85rem;color:var(--muted);display:flex;align-items:center;gap:8px;}
-  .load-status.ok{color:var(--ok);}
-  .load-status.err{color:var(--late);}
-  .spinner{width:16px;height:16px;border:2px solid #DCE3EC;border-top-color:var(--philips-blue);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;flex-shrink:0;}
-  @keyframes spin{to{transform:rotate(360deg);}}
-  #results{margin-top:18px;}
-  .empty-state{padding:60px 24px;text-align:center;color:var(--muted);}
-  .empty-state svg{opacity:0.5;margin-bottom:10px;}
-  .order-card{padding:26px 24px 22px;margin-bottom:18px;}
-  .order-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:18px;}
-  .order-head .po-label{font-size:0.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;font-weight:600;}
-  .order-head .po-value{font-size:1.15rem;font-weight:700;color:var(--philips-blue-dark);}
-  .status-pill{display:inline-block;padding:6px 14px;border-radius:999px;font-size:0.82rem;font-weight:700;white-space:nowrap;}
-  .status-ok{background:#E5F6EE;color:var(--ok);}
-  .status-warn{background:#FFF3E0;color:var(--warn);}
-  .status-late{background:#FCEAE8;color:var(--late);}
-  .status-default{background:#EAF1FB;color:var(--philips-blue-dark);}
-  .field-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 24px;}
-  @media(max-width:560px){.field-grid{grid-template-columns:1fr;}}
-  .field{display:flex;flex-direction:column;gap:4px;}
-  .field .k{font-size:0.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;font-weight:600;}
-  .field .v{font-size:1rem;font-weight:500;color:var(--ink);}
-  .field .v.empty{color:#A8B4C2;font-weight:400;font-style:italic;}
-  .material-block{grid-column:1 / -1;background:var(--paper);border-radius:10px;padding:14px 16px;border:1px solid var(--line);}
-  .timeline{margin-top:20px;display:flex;justify-content:space-between;position:relative;padding-top:6px;}
-  .timeline::before{content:"";position:absolute;top:16px;left:5%;right:5%;height:2px;background:var(--line);z-index:0;}
-  .tl-step{flex:1;text-align:center;position:relative;z-index:1;}
-  .tl-dot{width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid var(--line);margin:0 auto 8px;}
-  .tl-dot.filled{border-color:var(--philips-blue);background:var(--philips-blue);}
-  .tl-step .tl-label{font-size:0.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;}
-  .tl-step .tl-date{font-size:0.78rem;color:var(--ink);margin-top:2px;}
-  .multi-note{font-size:0.85rem;color:var(--muted);margin:0 0 14px;padding:10px 14px;background:#F2F6FC;border-radius:8px;border-left:3px solid var(--philips-blue);}
-  footer{text-align:center;color:var(--muted);font-size:0.78rem;padding:10px 20px 30px;}
+:root{
+  --blue:#0B5ED7;--blue-dark:#003876;
+  --ink:#0A1F33;--paper:#F7F9FC;--line:#DCE3EC;
+  --ok:#0F8A5F;--warn:#C77700;--late:#C0392B;--muted:#5A6B7D;
+  --prod:#6A3BAD;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Segoe UI',Roboto,Arial,sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;}
+
+/* HEADER */
+header{background:linear-gradient(135deg,var(--blue-dark),var(--blue));color:#fff;padding:22px 20px 50px;position:relative;overflow:hidden;}
+header::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,0.08);}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.2rem;}
+.brand .dot{width:10px;height:10px;border-radius:50%;background:#fff;}
+header h1{margin:14px 0 4px;font-size:1.5rem;font-weight:600;}
+header p{margin:0;opacity:0.85;font-size:0.9rem;}
+.data-badge{display:inline-block;background:rgba(255,255,255,0.18);border-radius:999px;padding:4px 12px;font-size:0.78rem;margin-top:8px;}
+
+/* NAV */
+nav{background:var(--blue-dark);display:flex;gap:0;position:relative;z-index:10;}
+.nav-btn{background:none;border:none;color:rgba(255,255,255,0.75);padding:12px 22px;font-size:0.9rem;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;transition:all .15s;}
+.nav-btn:hover{color:#fff;background:rgba(255,255,255,0.08);}
+.nav-btn.active{color:#fff;border-bottom-color:#fff;}
+
+main{max-width:900px;margin:-30px auto 60px;padding:0 20px;position:relative;z-index:2;}
+
+/* CARDS */
+.card{background:#fff;border-radius:14px;box-shadow:0 10px 30px rgba(10,31,51,0.08);border:1px solid var(--line);}
+.search-card{padding:20px;}
+.search-row{display:flex;gap:10px;flex-wrap:wrap;}
+.search-row input[type=text]{flex:1;min-width:200px;padding:13px 16px;border:1.5px solid var(--line);border-radius:10px;font-size:1rem;outline:none;transition:border-color .15s;}
+.search-row input[type=text]:focus{border-color:var(--blue);}
+.search-row input[type=text]:disabled{background:#F5F7FA;color:#A8B4C2;}
+button.primary{background:var(--blue);color:#fff;border:none;padding:13px 20px;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;transition:background .15s;white-space:nowrap;}
+button.primary:hover{background:var(--blue-dark);}
+button.primary:disabled{background:#9BB6D6;cursor:not-allowed;}
+
+.load-status{margin-top:12px;font-size:0.85rem;color:var(--muted);display:flex;align-items:center;gap:8px;}
+.load-status.ok{color:var(--ok);}
+.load-status.err{color:var(--late);}
+.spinner{width:16px;height:16px;border:2px solid #DCE3EC;border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;flex-shrink:0;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+#results{margin-top:16px;}
+
+/* EMPTY STATE */
+.empty-state{padding:50px 24px;text-align:center;color:var(--muted);}
+.empty-state svg{opacity:0.4;margin-bottom:10px;}
+
+/* ORDER CARD */
+.order-card{padding:24px;margin-bottom:16px;}
+.order-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:16px;}
+.order-head .po-label{font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;font-weight:600;}
+.order-head .po-value{font-size:1.1rem;font-weight:700;color:var(--blue-dark);}
+.status-pill{display:inline-block;padding:5px 13px;border-radius:999px;font-size:0.8rem;font-weight:700;white-space:nowrap;}
+.status-ok{background:#E5F6EE;color:var(--ok);}
+.status-warn{background:#FFF3E0;color:var(--warn);}
+.status-late{background:#FCEAE8;color:var(--late);}
+.status-prod{background:#F0EAF9;color:var(--prod);}
+.status-default{background:#EAF1FB;color:var(--blue-dark);}
+
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 20px;}
+@media(max-width:560px){.field-grid{grid-template-columns:1fr;}}
+.field{display:flex;flex-direction:column;gap:3px;}
+.field .k{font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;font-weight:600;}
+.field .v{font-size:0.95rem;font-weight:500;color:var(--ink);}
+.field .v.empty{color:#A8B4C2;font-weight:400;font-style:italic;}
+
+/* MATERIALS TABLE */
+.materials-block{grid-column:1 / -1;margin-top:4px;}
+.materials-block .k{font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;font-weight:600;margin-bottom:8px;}
+.mat-table{width:100%;border-collapse:collapse;font-size:0.85rem;}
+.mat-table th{background:var(--paper);color:var(--muted);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.3px;font-weight:700;padding:7px 10px;text-align:left;border-bottom:2px solid var(--line);}
+.mat-table td{padding:7px 10px;border-bottom:1px solid var(--line);color:var(--ink);}
+.mat-table tr:last-child td{border-bottom:none;}
+.mat-table tr:hover td{background:#F8FAFD;}
+
+/* TIMELINE */
+.timeline{margin-top:18px;display:flex;justify-content:space-between;position:relative;padding-top:6px;}
+.timeline::before{content:"";position:absolute;top:16px;left:5%;right:5%;height:2px;background:var(--line);z-index:0;}
+.tl-step{flex:1;text-align:center;position:relative;z-index:1;}
+.tl-dot{width:18px;height:18px;border-radius:50%;background:#fff;border:3px solid var(--line);margin:0 auto 6px;}
+.tl-dot.filled{border-color:var(--blue);background:var(--blue);}
+.tl-dot.filled-ok{border-color:var(--ok);background:var(--ok);}
+.tl-step .tl-label{font-size:0.65rem;color:var(--muted);font-weight:600;text-transform:uppercase;}
+.tl-step .tl-date{font-size:0.75rem;color:var(--ink);margin-top:2px;}
+
+/* REPRESENTANTE TAB */
+.rep-card{padding:20px;}
+.rep-select-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+.rep-select-row select{flex:1;min-width:200px;padding:13px 16px;border:1.5px solid var(--line);border-radius:10px;font-size:0.95rem;outline:none;cursor:pointer;background:#fff;}
+.rep-select-row select:focus{border-color:var(--blue);}
+.rep-select-row select:disabled{background:#F5F7FA;color:#A8B4C2;}
+
+.rep-table-wrap{margin-top:16px;overflow-x:auto;}
+.rep-table{width:100%;border-collapse:collapse;font-size:0.82rem;}
+.rep-table th{background:var(--blue-dark);color:#fff;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.3px;font-weight:700;padding:10px 10px;text-align:left;white-space:nowrap;}
+.rep-table td{padding:8px 10px;border-bottom:1px solid var(--line);color:var(--ink);vertical-align:top;}
+.rep-table tr:hover td{background:#F0F4FF;}
+.rep-table tr:last-child td{border-bottom:none;}
+.rep-summary{font-size:0.82rem;color:var(--muted);margin-bottom:10px;}
+
+/* PAGE SECTIONS */
+.page{display:none;}
+.page.active{display:block;}
 </style>
 </head>
 <body>
+
 <header>
   <div class="brand"><span class="dot"></span> PHILIPS</div>
-  <h1>Consulta de Pedido</h1>
-  <p>Acompanhe o status do seu pedido informando o número da PO</p>
+  <h1>Portal de Pedidos</h1>
+  <p>Consulte o status do seu pedido ou a carteira por representante</p>
   <div class="data-badge" id="dataBadge">Carregando base de dados...</div>
 </header>
+
+<nav>
+  <button class="nav-btn active" onclick="showPage('consulta')">🔍 Consulta de Pedido</button>
+  <button class="nav-btn" onclick="showPage('representante')">👤 Carteira Representante</button>
+</nav>
+
 <main>
-  <div class="card search-card">
-    <div class="search-row">
-      <input type="text" id="poInput" placeholder="Digite o número da Customer PO..." autocomplete="off" disabled>
-      <button class="primary" id="searchBtn" disabled>Consultar</button>
+
+  <!-- PAGE: CONSULTA -->
+  <div class="page active" id="page-consulta">
+    <div class="card search-card">
+      <div class="search-row">
+        <input type="text" id="poInput" placeholder="Digite o número da Customer PO..." autocomplete="off" disabled>
+        <button class="primary" id="searchBtn" disabled>Consultar</button>
+      </div>
+      <div class="load-status" id="loadStatus">
+        <span class="spinner"></span> Conectando à base de dados...
+      </div>
     </div>
-    <div class="load-status" id="loadStatus">
-      <span class="spinner"></span> Conectando à base de dados...
-    </div>
+    <div id="results"></div>
   </div>
-  <div id="results"></div>
+
+  <!-- PAGE: REPRESENTANTE -->
+  <div class="page" id="page-representante">
+    <div class="card rep-card">
+      <div class="rep-select-row">
+        <select id="repSelect" disabled>
+          <option value="">Selecione um Representante...</option>
+        </select>
+        <button class="primary" id="repBtn" disabled>Ver Carteira</button>
+      </div>
+      <div class="load-status" id="repStatus" style="margin-top:12px;display:none;"></div>
+    </div>
+    <div id="repResults" style="margin-top:16px;"></div>
+  </div>
+
 </main>
-<footer>Philips Medical Systems &middot; Sales &amp; Service Delivery</footer>
+
+<footer style="text-align:center;color:var(--muted);font-size:0.78rem;padding:10px 20px 30px;">
+  Philips Medical Systems &middot; Sales &amp; Service Delivery
+</footer>
 
 <script>
 // =============================================================
-// CONFIGURAÇÃO — cole aqui o link do carteira.json
+// CONFIGURAÇÃO
 // =============================================================
-var JSON_URL = "https://salesdelivery.github.io/consulta-pedidos/carteira.json"; // ← Cole aqui o link direto do carteira.json
+var JSON_URL = ""; // ← Cole aqui o link do carteira.json no GitHub Pages
 // =============================================================
 
 var COLS = {
-  po: "Customer PO No.",
-  creation: "Creation Date",
-  customer: "Sold to Customer Name",
-  material: "Material Description",
-  rdd: "RDD",
-  prazo: "Prazo Contratual",
-  am: "Account Manager Name",
-  status: "Status",
-  cdd: "CDD",
-  deliveryDate: "Data de Entrega",
+  po:          "Customer PO No.",
+  creation:    "Creation Date",
+  customer:    "Sold to Customer Name",
+  material:    "Material Description",
+  materialCode:"Material",
+  rdd:         "RDD",
+  prazo:       "Prazo Contratual",
+  am:          "Account Manager Name",
+  status:      "Status",
+  cdd:         "CDD",
+  deliveryDate:"Data de Entrega",
   installDate: "Data de Instalação",
-  qty: "QTY",
-  material_code: "Material"
+  qty:         "QTY",
+  z4:          "Z4 Date",
+  billing:     "Billing Date",
+  pgto:        "PGTO",
+  gr:          "GR",
+  comentario:  "Comentários S&SD",
+  pareto:      "Pareto Nivel 1"
 };
 
 var DATA = [];
-var poInput = document.getElementById("poInput");
-var searchBtn = document.getElementById("searchBtn");
-var results = document.getElementById("results");
-var loadStatus = document.getElementById("loadStatus");
-var dataBadge = document.getElementById("dataBadge");
 
-// Converte número serial do Excel para objeto Date
-function excelSerialToDate(val) {
+// ── DOM refs ──
+var poInput   = document.getElementById("poInput");
+var searchBtn = document.getElementById("searchBtn");
+var results   = document.getElementById("results");
+var loadStatus= document.getElementById("loadStatus");
+var dataBadge = document.getElementById("dataBadge");
+var repSelect = document.getElementById("repSelect");
+var repBtn    = document.getElementById("repBtn");
+var repResults= document.getElementById("repResults");
+var repStatus = document.getElementById("repStatus");
+
+// ── Navigation ──
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('page-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ── Date helpers ──
+function excelToDate(val) {
   if (val === null || val === undefined || val === "" || val === "NaT") return null;
-  // Se for número serial do Excel (entre 40000 e 60000 = datas de 2009 a 2064)
   if (typeof val === "number" && val > 40000 && val < 60000) {
     var d = new Date(Date.UTC(1899, 11, 30));
     d.setUTCDate(d.getUTCDate() + Math.floor(val));
     return d;
   }
-  // Se já for string de data ISO (YYYY-MM-DD ou com T)
   if (typeof val === "string" && val.length >= 8) {
-    var parsed = new Date(val);
-    if (!isNaN(parsed.getTime())) return parsed;
+    var p = new Date(val);
+    if (!isNaN(p.getTime())) return p;
   }
   return null;
 }
 
-function formatDate(val) {
-  var d = excelSerialToDate(val);
+function fmtDate(val) {
+  var d = excelToDate(val);
   if (!d) return null;
-  var dd = String(d.getUTCDate()).padStart(2, "0");
-  var mm = String(d.getUTCMonth() + 1).padStart(2, "0");
-  var yy = d.getUTCFullYear();
-  return dd + "/" + mm + "/" + yy;
+  return String(d.getUTCDate()).padStart(2,"0") + "/" +
+         String(d.getUTCMonth()+1).padStart(2,"0") + "/" +
+         d.getUTCFullYear();
 }
 
-function toDateObj(val) {
-  return excelSerialToDate(val);
+function maxDate(a, b) {
+  var da = excelToDate(a), db = excelToDate(b);
+  if (!da && !db) return null;
+  if (!da) return b;
+  if (!db) return a;
+  return da >= db ? a : b;
 }
 
-function fieldHtml(label, value) {
-  var cls = value ? "" : "empty";
-  var display = value ? value : "—";
-  return '<div class="field"><span class="k">' + label + '</span><span class="v ' + cls + '">' + display + '</span></div>';
+// ── Load data ──
+function loadData() {
+  if (!JSON_URL) {
+    loadStatus.className = "load-status err";
+    loadStatus.innerHTML = "⚠️ JSON_URL não configurado.";
+    dataBadge.textContent = "Base não configurada";
+    return;
+  }
+  fetch(JSON_URL, {cache:"no-cache"})
+    .then(function(r){ if(!r.ok) throw new Error("HTTP "+r.status); return r.json(); })
+    .then(function(json){
+      DATA = (json.dados||[]).filter(function(r){ return r[COLS.po]; });
+      var gerado = json.gerado_em ? new Date(json.gerado_em) : null;
+      var ds = gerado ? fmtDate(gerado.toISOString()) : "—";
+      loadStatus.className = "load-status ok";
+      loadStatus.innerHTML = "✓ " + DATA.length + " itens carregados · Atualizado em " + ds;
+      dataBadge.textContent = "Base atualizada em " + ds;
+      poInput.disabled = false;
+      searchBtn.disabled = false;
+      poInput.focus();
+      populateRepresentantes();
+      results.innerHTML = '<div class="card"><div class="empty-state"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><div><strong>Base carregada</strong></div><div>Digite o número da PO para consultar.</div></div></div>';
+    })
+    .catch(function(err){
+      loadStatus.className = "load-status err";
+      loadStatus.innerHTML = "❌ Não foi possível carregar a base. Verifique o link ou as permissões.";
+      dataBadge.textContent = "Erro ao carregar";
+      console.error(err);
+    });
 }
 
-function statusPill(item) {
-  var entrega = toDateObj(item[COLS.deliveryDate]);
-  var prazo = toDateObj(item[COLS.prazo]);
-  var rdd = toDateObj(item[COLS.rdd]);
-  var now = new Date();
+// ── Group items by PO ──
+function groupByPO(items) {
+  // For each PO, merge rows: same dates → combine materials; different dates → use max date
+  var merged = {};
+  for (var i = 0; i < items.length; i++) {
+    var item = items[i];
+    var po = String(item[COLS.po]||"").trim();
+    if (!merged[po]) {
+      merged[po] = {
+        po:       po,
+        creation: item[COLS.creation],
+        customer: item[COLS.customer],
+        rdd:      item[COLS.rdd],
+        prazo:    item[COLS.prazo],
+        cdd:      item[COLS.cdd],
+        am:       item[COLS.am],
+        status:   item[COLS.status],
+        delivery: item[COLS.deliveryDate],
+        install:  item[COLS.installDate],
+        z4:       item[COLS.z4],
+        billing:  item[COLS.billing],
+        pgto:     item[COLS.pgto],
+        gr:       item[COLS.gr],
+        comentario: item[COLS.comentario],
+        pareto:   item[COLS.pareto],
+        materials: []
+      };
+    } else {
+      // Update dates to max
+      merged[po].creation = maxDate(merged[po].creation, item[COLS.creation]);
+      merged[po].rdd      = maxDate(merged[po].rdd,      item[COLS.rdd]);
+      merged[po].prazo    = maxDate(merged[po].prazo,    item[COLS.prazo]);
+      merged[po].cdd      = maxDate(merged[po].cdd,      item[COLS.cdd]);
+      merged[po].delivery = maxDate(merged[po].delivery, item[COLS.deliveryDate]);
+      merged[po].install  = maxDate(merged[po].install,  item[COLS.installDate]);
+      merged[po].z4       = maxDate(merged[po].z4,       item[COLS.z4]);
+      merged[po].billing  = maxDate(merged[po].billing,  item[COLS.billing]);
+      // Take first non-null for other fields
+      if (!merged[po].status   && item[COLS.status])    merged[po].status   = item[COLS.status];
+      if (!merged[po].pgto     && item[COLS.pgto])      merged[po].pgto     = item[COLS.pgto];
+      if (!merged[po].gr       && item[COLS.gr])        merged[po].gr       = item[COLS.gr];
+      if (!merged[po].comentario && item[COLS.comentario]) merged[po].comentario = item[COLS.comentario];
+      if (!merged[po].pareto   && item[COLS.pareto])    merged[po].pareto   = item[COLS.pareto];
+    }
+    merged[po].materials.push({
+      code: item[COLS.materialCode],
+      desc: item[COLS.material],
+      qty:  item[COLS.qty]
+    });
+  }
+  return merged;
+}
+
+// ── Status pill ──
+function statusPill(g) {
+  var delivery = excelToDate(g.delivery);
+  var z4       = excelToDate(g.z4);
+  var billing  = excelToDate(g.billing);
+  var prazo    = excelToDate(g.prazo);
+  var rdd      = excelToDate(g.rdd);
+  var now      = new Date();
+
+  if (delivery) return '<span class="status-pill status-ok">✓ Entregue</span>';
+  if (z4 && !billing) return '<span class="status-pill status-prod">⚙ Em Produção</span>';
   var ref = prazo || rdd;
-
-  if (entrega) return '<span class="status-pill status-ok">✓ Entregue</span>';
   if (ref && ref < now) return '<span class="status-pill status-late">⚠ Atrasado</span>';
   if (ref) {
-    var diff = (ref - now) / (1000 * 60 * 60 * 24);
+    var diff = (ref - now)/(1000*60*60*24);
     if (diff <= 30) return '<span class="status-pill status-warn">Em andamento</span>';
   }
   return '<span class="status-pill status-default">Em andamento</span>';
 }
 
-function buildTimeline(item) {
+// ── Render order card ──
+function renderOrderCard(g) {
+  var mats = g.materials;
+  var matRows = "";
+  for (var i = 0; i < mats.length; i++) {
+    matRows += '<tr><td>' + (mats[i].code||"—") + '</td><td>' + (mats[i].desc||"—") + '</td><td style="text-align:center">' + (mats[i].qty||"—") + '</td></tr>';
+  }
+
+  var html = '<div class="card order-card">';
+  html += '<div class="order-head">';
+  html += '<div><div class="po-label">Customer PO No.</div><div class="po-value">' + g.po + '</div></div>';
+  html += statusPill(g);
+  html += '</div>';
+  html += '<div class="field-grid">';
+  html += field("Cliente", g.customer);
+  html += field("Account Manager", g.am);
+  html += field("Data de Criação", fmtDate(g.creation));
+  html += field("RDD", fmtDate(g.rdd));
+  html += field("Prazo Contratual", fmtDate(g.prazo));
+  html += field("CDD", fmtDate(g.cdd));
+  html += field("PGTO", g.pgto);
+  html += field("GR", fmtDate(g.gr));
+  html += field("Pareto Nível 1", g.pareto);
+  html += field("Comentários S&SD", g.comentario);
+  // Materials table
+  html += '<div class="materials-block field">';
+  html += '<div class="k">Materiais</div>';
+  html += '<table class="mat-table"><thead><tr><th>Código</th><th>Descrição</th><th style="text-align:center">Qtd</th></tr></thead><tbody>' + matRows + '</tbody></table>';
+  html += '</div>';
+  html += '</div>';
+  // Timeline
+  html += buildTimeline(g);
+  html += '</div>';
+  return html;
+}
+
+function field(label, value) {
+  var cls = value ? "" : "empty";
+  var display = value ? String(value) : "—";
+  return '<div class="field"><span class="k">' + label + '</span><span class="v ' + cls + '">' + display + '</span></div>';
+}
+
+function buildTimeline(g) {
   var steps = [
-    { label: "Criação",    date: item[COLS.creation] },
-    { label: "RDD",        date: item[COLS.rdd] },
-    { label: "CDD",        date: item[COLS.cdd] },
-    { label: "Entrega",    date: item[COLS.deliveryDate] },
-    { label: "Instalação", date: item[COLS.installDate] }
+    {label:"Criação",    date:g.creation},
+    {label:"RDD",        date:g.rdd},
+    {label:"CDD",        date:g.cdd},
+    {label:"Z4",         date:g.z4},
+    {label:"Billing",    date:g.billing},
+    {label:"Entrega",    date:g.delivery},
+    {label:"Instalação", date:g.install}
   ];
   var html = '<div class="timeline">';
   for (var i = 0; i < steps.length; i++) {
     var s = steps[i];
-    var hasDate = toDateObj(s.date) !== null;
+    var hasDate = excelToDate(s.date) !== null;
+    var dotClass = hasDate ? (s.label === "Entrega" || s.label === "Instalação" ? "filled-ok" : "filled") : "";
     html += '<div class="tl-step">';
-    html += '<div class="tl-dot' + (hasDate ? ' filled' : '') + '"></div>';
+    html += '<div class="tl-dot ' + dotClass + '"></div>';
     html += '<div class="tl-label">' + s.label + '</div>';
-    html += '<div class="tl-date">' + (formatDate(s.date) || "—") + '</div>';
+    html += '<div class="tl-date">' + (fmtDate(s.date)||"—") + '</div>';
     html += '</div>';
   }
   html += '</div>';
   return html;
 }
 
-function renderOrderCard(item, idx, total) {
-  var html = '<div class="card order-card">';
-  if (total > 1) {
-    html += '<div class="multi-note">Item ' + (idx + 1) + ' de ' + total + ' associados a esta PO</div>';
-  }
-  html += '<div class="order-head">';
-  html += '<div><div class="po-label">Customer PO No.</div>';
-  html += '<div class="po-value">' + (item[COLS.po] || "") + '</div></div>';
-  html += statusPill(item);
-  html += '</div>';
-  html += '<div class="field-grid">';
-  html += fieldHtml("Cliente", item[COLS.customer]);
-  html += fieldHtml("Account Manager", item[COLS.am]);
-  html += fieldHtml("Data de Criação", formatDate(item[COLS.creation]));
-  html += fieldHtml("RDD (Data Requerida)", formatDate(item[COLS.rdd]));
-  html += fieldHtml("Prazo Contratual", formatDate(item[COLS.prazo]));
-  html += fieldHtml("Quantidade", item[COLS.qty]);
-  html += '<div class="material-block field"><span class="k">Material</span><span class="v">' + (item[COLS.material] || "—") + '</span></div>';
-  html += '</div>';
-  html += buildTimeline(item);
-  html += '</div>';
-  return html;
-}
-
+// ── Search ──
 function doSearch() {
   var query = poInput.value.trim().toLowerCase();
   if (!query) return;
-  var matches = [];
-  for (var i = 0; i < DATA.length; i++) {
-    var po = String(DATA[i][COLS.po] || "").toLowerCase();
-    if (po.indexOf(query) !== -1) matches.push(DATA[i]);
-  }
-  if (matches.length === 0) {
-    results.innerHTML = '<div class="card"><div class="empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><div><strong>Nenhum pedido encontrado</strong></div><div>Verifique o número da PO e tente novamente.</div></div></div>';
+  var matches = DATA.filter(function(r){
+    return String(r[COLS.po]||"").toLowerCase().indexOf(query) !== -1;
+  });
+  if (!matches.length) {
+    results.innerHTML = '<div class="card"><div class="empty-state"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><div><strong>Nenhum pedido encontrado</strong></div><div>Verifique o número da PO e tente novamente.</div></div></div>';
     return;
   }
+  var grouped = groupByPO(matches);
   var html = "";
-  for (var j = 0; j < matches.length; j++) {
-    html += renderOrderCard(matches[j], j, matches.length);
-  }
+  for (var po in grouped) { html += renderOrderCard(grouped[po]); }
   results.innerHTML = html;
 }
 
-poInput.addEventListener("keydown", function(e) { if (e.key === "Enter") doSearch(); });
-poInput.addEventListener("input", function() {
-  searchBtn.disabled = !(DATA.length && poInput.value.trim());
-});
+poInput.addEventListener("keydown", function(e){ if(e.key==="Enter") doSearch(); });
+poInput.addEventListener("input",   function(){ searchBtn.disabled = !(DATA.length && poInput.value.trim()); });
 searchBtn.addEventListener("click", doSearch);
 
-function loadData() {
-  if (!JSON_URL) {
-    loadStatus.className = "load-status err";
-    loadStatus.innerHTML = "⚠️ Link do JSON não configurado. Edite o arquivo HTML e insira o JSON_URL.";
-    dataBadge.textContent = "Base não configurada";
-    return;
+// ── Representante ──
+function populateRepresentantes() {
+  var reps = {};
+  for (var i = 0; i < DATA.length; i++) {
+    var am = DATA[i][COLS.am];
+    if (am) reps[am] = true;
   }
-  fetch(JSON_URL, { cache: "no-cache" })
-    .then(function(res) {
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      return res.json();
-    })
-    .then(function(json) {
-      DATA = (json.dados || []).filter(function(r) { return r[COLS.po]; });
-      var gerado = json.gerado_em ? new Date(json.gerado_em) : null;
-      var dataStr = gerado ? formatDate(gerado.toISOString()) : "—";
-      loadStatus.className = "load-status ok";
-      loadStatus.innerHTML = "✓ " + DATA.length + " pedidos carregados · Atualizado em " + dataStr;
-      dataBadge.textContent = "Base atualizada em " + dataStr;
-      poInput.disabled = false;
-      searchBtn.disabled = false;
-      poInput.focus();
-      results.innerHTML = '<div class="card"><div class="empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><div><strong>Base carregada com sucesso</strong></div><div>Digite o número da PO acima para consultar.</div></div></div>';
-    })
-    .catch(function(err) {
-      loadStatus.className = "load-status err";
-      loadStatus.innerHTML = "❌ Não foi possível carregar a base. Verifique o link ou as permissões do SharePoint.";
-      dataBadge.textContent = "Erro ao carregar base";
-      console.error(err);
-    });
+  var sorted = Object.keys(reps).sort();
+  var html = '<option value="">Selecione um Representante...</option>';
+  for (var j = 0; j < sorted.length; j++) {
+    html += '<option value="' + sorted[j].replace(/"/g,'&quot;') + '">' + sorted[j] + '</option>';
+  }
+  repSelect.innerHTML = html;
+  repSelect.disabled = false;
+  repBtn.disabled = false;
 }
 
-results.innerHTML = '<div class="card"><div class="empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><div><strong>Carregando base de dados...</strong></div></div></div>';
+repBtn.addEventListener("click", function(){
+  var rep = repSelect.value;
+  if (!rep) return;
+  var matches = DATA.filter(function(r){ return r[COLS.am] === rep; });
+  if (!matches.length) {
+    repResults.innerHTML = '<div class="card"><div class="empty-state"><div>Nenhum pedido encontrado para este representante.</div></div></div>';
+    return;
+  }
+  var cols = [
+    {key:COLS.po,        label:"Customer PO No."},
+    {key:COLS.materialCode, label:"Material"},
+    {key:COLS.material,  label:"Descrição"},
+    {key:COLS.qty,       label:"Qtd"},
+    {key:COLS.am,        label:"Account Manager"},
+    {key:COLS.pgto,      label:"PGTO"},
+    {key:COLS.cdd,       label:"CDD", isDate:true},
+    {key:COLS.gr,        label:"GR",  isDate:true},
+    {key:COLS.comentario,label:"Coment. S&SD"},
+    {key:COLS.pareto,    label:"Pareto Nível 1"}
+  ];
+  var thead = "<tr>";
+  for (var c = 0; c < cols.length; c++) {
+    thead += "<th>" + cols[c].label + "</th>";
+  }
+  thead += "</tr>";
 
+  var tbody = "";
+  for (var i = 0; i < matches.length; i++) {
+    var row = matches[i];
+    tbody += "<tr>";
+    for (var c = 0; c < cols.length; c++) {
+      var val = row[cols[c].key];
+      if (cols[c].isDate) val = fmtDate(val) || "—";
+      else val = (val !== null && val !== undefined && val !== "") ? val : "—";
+      tbody += "<td>" + val + "</td>";
+    }
+    tbody += "</tr>";
+  }
+
+  repResults.innerHTML =
+    '<div class="card" style="padding:20px;">' +
+    '<div class="rep-summary"><strong>' + matches.length + '</strong> itens encontrados para <strong>' + rep + '</strong></div>' +
+    '<div class="rep-table-wrap"><table class="rep-table"><thead>' + thead + '</thead><tbody>' + tbody + '</tbody></table></div>' +
+    '</div>';
+});
+
+// ── Init ──
+results.innerHTML = '<div class="card"><div class="empty-state"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><div>Carregando base de dados...</div></div></div>';
 loadData();
 </script>
 </body>
