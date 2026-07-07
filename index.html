@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Consulta de Pedido | Philips</title>
+<title>Portal de Pedidos | Philips</title>
 <style>
 :root{
   --blue:#0B5ED7;--blue-dark:#003876;
@@ -13,8 +13,6 @@
 }
 *{box-sizing:border-box;}
 body{margin:0;font-family:'Segoe UI',Roboto,Arial,sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;}
-
-/* HEADER */
 header{background:linear-gradient(135deg,var(--blue-dark),var(--blue));color:#fff;padding:22px 20px 50px;position:relative;overflow:hidden;}
 header::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,0.08);}
 .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.2rem;}
@@ -22,39 +20,30 @@ header::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;hei
 header h1{margin:14px 0 4px;font-size:1.5rem;font-weight:600;}
 header p{margin:0;opacity:0.85;font-size:0.9rem;}
 .data-badge{display:inline-block;background:rgba(255,255,255,0.18);border-radius:999px;padding:4px 12px;font-size:0.78rem;margin-top:8px;}
-
-/* NAV */
-nav{background:var(--blue-dark);display:flex;gap:0;position:relative;z-index:10;}
+nav{background:var(--blue-dark);display:flex;position:relative;z-index:10;}
 .nav-btn{background:none;border:none;color:rgba(255,255,255,0.75);padding:12px 22px;font-size:0.9rem;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;transition:all .15s;}
 .nav-btn:hover{color:#fff;background:rgba(255,255,255,0.08);}
 .nav-btn.active{color:#fff;border-bottom-color:#fff;}
-
-main{max-width:900px;margin:-30px auto 60px;padding:0 20px;position:relative;z-index:2;}
-
-/* CARDS */
+main{max-width:960px;margin:-30px auto 60px;padding:0 20px;position:relative;z-index:2;}
 .card{background:#fff;border-radius:14px;box-shadow:0 10px 30px rgba(10,31,51,0.08);border:1px solid var(--line);}
 .search-card{padding:20px;}
 .search-row{display:flex;gap:10px;flex-wrap:wrap;}
-.search-row input[type=text]{flex:1;min-width:200px;padding:13px 16px;border:1.5px solid var(--line);border-radius:10px;font-size:1rem;outline:none;transition:border-color .15s;}
-.search-row input[type=text]:focus{border-color:var(--blue);}
-.search-row input[type=text]:disabled{background:#F5F7FA;color:#A8B4C2;}
+.search-row input[type=text],.search-row input[type=password]{flex:1;min-width:200px;padding:13px 16px;border:1.5px solid var(--line);border-radius:10px;font-size:1rem;outline:none;transition:border-color .15s;}
+.search-row input:focus{border-color:var(--blue);}
+.search-row input:disabled{background:#F5F7FA;color:#A8B4C2;}
 button.primary{background:var(--blue);color:#fff;border:none;padding:13px 20px;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;transition:background .15s;white-space:nowrap;}
 button.primary:hover{background:var(--blue-dark);}
 button.primary:disabled{background:#9BB6D6;cursor:not-allowed;}
-
+button.ghost{background:none;border:1.5px solid var(--line);color:var(--muted);padding:10px 16px;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;}
+button.ghost:hover{border-color:var(--late);color:var(--late);}
 .load-status{margin-top:12px;font-size:0.85rem;color:var(--muted);display:flex;align-items:center;gap:8px;}
 .load-status.ok{color:var(--ok);}
 .load-status.err{color:var(--late);}
 .spinner{width:16px;height:16px;border:2px solid #DCE3EC;border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;flex-shrink:0;}
 @keyframes spin{to{transform:rotate(360deg);}}
-
 #results{margin-top:16px;}
-
-/* EMPTY STATE */
 .empty-state{padding:50px 24px;text-align:center;color:var(--muted);}
 .empty-state svg{opacity:0.4;margin-bottom:10px;}
-
-/* ORDER CARD */
 .order-card{padding:24px;margin-bottom:16px;}
 .order-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:16px;}
 .order-head .po-label{font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;font-weight:600;}
@@ -65,51 +54,51 @@ button.primary:disabled{background:#9BB6D6;cursor:not-allowed;}
 .status-late{background:#FCEAE8;color:var(--late);}
 .status-prod{background:#F0EAF9;color:var(--prod);}
 .status-default{background:#EAF1FB;color:var(--blue-dark);}
-
 .field-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 20px;}
 @media(max-width:560px){.field-grid{grid-template-columns:1fr;}}
 .field{display:flex;flex-direction:column;gap:3px;}
 .field .k{font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;font-weight:600;}
 .field .v{font-size:0.95rem;font-weight:500;color:var(--ink);}
 .field .v.empty{color:#A8B4C2;font-weight:400;font-style:italic;}
-
-/* MATERIALS TABLE */
 .materials-block{grid-column:1 / -1;margin-top:4px;}
 .materials-block .k{font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;font-weight:600;margin-bottom:8px;}
 .mat-table{width:100%;border-collapse:collapse;font-size:0.85rem;}
-.mat-table th{background:var(--paper);color:var(--muted);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.3px;font-weight:700;padding:7px 10px;text-align:left;border-bottom:2px solid var(--line);}
-.mat-table td{padding:7px 10px;border-bottom:1px solid var(--line);color:var(--ink);}
+.mat-table th{background:var(--paper);color:var(--muted);font-size:0.7rem;text-transform:uppercase;font-weight:700;padding:7px 10px;text-align:left;border-bottom:2px solid var(--line);}
+.mat-table td{padding:7px 10px;border-bottom:1px solid var(--line);}
 .mat-table tr:last-child td{border-bottom:none;}
-.mat-table tr:hover td{background:#F8FAFD;}
-
-/* TIMELINE */
 .timeline{margin-top:18px;display:flex;justify-content:space-between;position:relative;padding-top:6px;}
 .timeline::before{content:"";position:absolute;top:16px;left:5%;right:5%;height:2px;background:var(--line);z-index:0;}
 .tl-step{flex:1;text-align:center;position:relative;z-index:1;}
 .tl-dot{width:18px;height:18px;border-radius:50%;background:#fff;border:3px solid var(--line);margin:0 auto 6px;}
 .tl-dot.filled{border-color:var(--blue);background:var(--blue);}
 .tl-dot.filled-ok{border-color:var(--ok);background:var(--ok);}
-.tl-step .tl-label{font-size:0.65rem;color:var(--muted);font-weight:600;text-transform:uppercase;}
-.tl-step .tl-date{font-size:0.75rem;color:var(--ink);margin-top:2px;}
-
-/* REPRESENTANTE TAB */
+.tl-step .tl-label{font-size:0.62rem;color:var(--muted);font-weight:600;text-transform:uppercase;}
+.tl-step .tl-date{font-size:0.72rem;color:var(--ink);margin-top:2px;}
 .rep-card{padding:20px;}
 .rep-select-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
 .rep-select-row select{flex:1;min-width:200px;padding:13px 16px;border:1.5px solid var(--line);border-radius:10px;font-size:0.95rem;outline:none;cursor:pointer;background:#fff;}
 .rep-select-row select:focus{border-color:var(--blue);}
 .rep-select-row select:disabled{background:#F5F7FA;color:#A8B4C2;}
-
-.rep-table-wrap{margin-top:16px;overflow-x:auto;}
-.rep-table{width:100%;border-collapse:collapse;font-size:0.82rem;}
-.rep-table th{background:var(--blue-dark);color:#fff;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.3px;font-weight:700;padding:10px 10px;text-align:left;white-space:nowrap;}
-.rep-table td{padding:8px 10px;border-bottom:1px solid var(--line);color:var(--ink);vertical-align:top;}
+.login-box{margin-top:14px;padding:16px;background:var(--paper);border-radius:10px;border:1px solid var(--line);}
+.login-box .msg{font-size:0.85rem;color:var(--muted);margin-bottom:10px;}
+.login-err{color:var(--late);font-size:0.85rem;margin-top:8px;display:none;}
+.rep-logged{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;padding:12px 16px;background:#E5F6EE;border-radius:10px;font-size:0.9rem;color:var(--ok);font-weight:600;}
+.rep-search-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+.rep-search-row input{flex:1;min-width:180px;padding:11px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:0.9rem;outline:none;}
+.rep-search-row input:focus{border-color:var(--blue);}
+.rep-table-wrap{margin-top:14px;}
+.rep-table{width:100%;border-collapse:collapse;font-size:0.78rem;table-layout:auto;}
+.rep-table th{background:var(--blue-dark);color:#fff;font-size:0.66rem;text-transform:uppercase;font-weight:700;padding:9px 8px;text-align:left;white-space:normal;}
+.rep-table td{padding:8px 8px;border-bottom:1px solid var(--line);vertical-align:top;word-break:break-word;}
+/* Card de resultados ocupa a largura total da tela */
+#repResults .card{width:calc(100vw - 40px);max-width:1600px;position:relative;left:50%;transform:translateX(-50%);}
+@media(max-width:1000px){#repResults .card{width:100%;left:auto;transform:none;}.rep-table-wrap{overflow-x:auto;}}
 .rep-table tr:hover td{background:#F0F4FF;}
 .rep-table tr:last-child td{border-bottom:none;}
 .rep-summary{font-size:0.82rem;color:var(--muted);margin-bottom:10px;}
-
-/* PAGE SECTIONS */
 .page{display:none;}
 .page.active{display:block;}
+footer{text-align:center;color:var(--muted);font-size:0.78rem;padding:10px 20px 30px;}
 </style>
 </head>
 <body>
@@ -122,384 +111,441 @@ button.primary:disabled{background:#9BB6D6;cursor:not-allowed;}
 </header>
 
 <nav>
-  <button class="nav-btn active" onclick="showPage('consulta')">🔍 Consulta de Pedido</button>
-  <button class="nav-btn" onclick="showPage('representante')">👤 Carteira Representante</button>
+  <button class="nav-btn active" id="navConsulta">🔍 Consulta de Pedido</button>
+  <button class="nav-btn" id="navRep">👤 Carteira Representante</button>
 </nav>
 
 <main>
 
-  <!-- PAGE: CONSULTA -->
   <div class="page active" id="page-consulta">
     <div class="card search-card">
       <div class="search-row">
         <input type="text" id="poInput" placeholder="Digite o número da Customer PO..." autocomplete="off" disabled>
         <button class="primary" id="searchBtn" disabled>Consultar</button>
       </div>
-      <div class="load-status" id="loadStatus">
-        <span class="spinner"></span> Conectando à base de dados...
-      </div>
+      <div class="load-status" id="loadStatus"><span class="spinner"></span> Conectando à base de dados...</div>
     </div>
     <div id="results"></div>
   </div>
 
-  <!-- PAGE: REPRESENTANTE -->
   <div class="page" id="page-representante">
     <div class="card rep-card">
       <div class="rep-select-row">
         <select id="repSelect" disabled>
-          <option value="">Selecione um Representante...</option>
+          <option value="">Selecione o Representante...</option>
         </select>
-        <button class="primary" id="repBtn" disabled>Ver Carteira</button>
       </div>
-      <div class="load-status" id="repStatus" style="margin-top:12px;display:none;"></div>
+      <div class="login-box" id="loginBox" style="display:none;">
+        <div class="msg">🔒 Digite a senha de acesso da carteira <strong id="loginRepName"></strong>:</div>
+        <div class="search-row">
+          <input type="password" id="pwdInput" placeholder="Senha..." autocomplete="off">
+          <button class="primary" id="loginBtn">Acessar</button>
+        </div>
+        <div class="login-err" id="loginErr">❌ Senha incorreta. Tente novamente.</div>
+      </div>
+      <div class="rep-logged" id="repLogged" style="display:none;">
+        <span id="repLoggedName"></span>
+        <button class="ghost" id="logoutBtn">Sair</button>
+      </div>
+      <div class="rep-search-row" id="repSearchRow" style="display:none;">
+        <input type="text" id="repPoSearch" placeholder="Pesquisar por Customer PO No..." autocomplete="off">
+      </div>
     </div>
     <div id="repResults" style="margin-top:16px;"></div>
   </div>
 
 </main>
 
-<footer style="text-align:center;color:var(--muted);font-size:0.78rem;padding:10px 20px 30px;">
-  Philips Medical Systems &middot; Sales &amp; Service Delivery
-</footer>
+<footer>Philips Medical Systems &middot; Sales &amp; Service Delivery</footer>
 
 <script>
 // =============================================================
 // CONFIGURAÇÃO
 // =============================================================
-var JSON_URL = "https://salesdelivery.github.io/consulta-pedidos/carteira.json"; // ← Cole aqui o link do carteira.json no GitHub Pages
+var JSON_URL = "https://salesdelivery.github.io/consulta-pedidos/carteira.json"; // ← Cole aqui o link do carteira.json
 // =============================================================
 
+// Mapa de padronização: RAZÃO SOCIAL → Nome do Representante
+var NAME_MAP = {
+"REPRESENTACOES LTDA ME RAUBACH & TREVISA":"4MEDIC",
+"AGUIAR REPRESENTACOES LTDA ME":"AGUIAR",
+"REPRESENTACOES LTDA - EPP ALLIANCE MEDIC":"ALLIANCE",
+"SARAIVA EIRELI FERNANDO B":"BS IMAGEM",
+"BSB MED ASS TEC E C DE EQUIP M H LT":"BSB",
+"Carderari Vanessa":"CANAL DIRETO",
+"DE SOUZA SIDIRLEY SILVIO":"CANAL DIRETO",
+"DO AMARAL FELIPE AUGUSTO":"CANAL DIRETO",
+"João de Sá Vieira Junior João de Sá Viei":"CANAL DIRETO",
+"LUZ SISTER ANA CLAUDIA":"CANAL DIRETO",
+"MUNHOZ TATIANA DE FREITAS ARAUJO":"CANAL DIRETO",
+"QUESADA SIMONE NAUMANN":"CANAL DIRETO",
+"SEPULCHRE ANA LUIZA":"CANAL DIRETO",
+"Umeno Yamashita Ana Paula Prado":"CANAL DIRETO",
+"CARDIOVENT COMERCIO E SERVICOS LTDA":"CARDIOVENT",
+"Medical Ltda Equipar":"EQUIPAR",
+"REPRESENTACOES LTDA VP MEDICAL":"EQUIPAR",
+"EVOLUTION LTDA ME MEDICAL":"MEDICAL EVOLUTION",
+"MULT MED EQUIP HOSPITALARES LTDA":"MULT MED",
+"EM SAUDE LTDA NEXT SOLUCOES":"NEXT",
+"Hospitalares Ns Soluções":"NS HOSPITALAR",
+"POLLIMED COMERCIO E REPRES LTDA EPP":"POLLIMED",
+"EQUIPAMENTOS MED ECCS MANUTENCAO EM":"PROMEDCARE",
+"EQUIPAMENTOS MEDICOS LTDA PROMEDCARE COM":"PROMEDCARE",
+"MEDICOS LTDA IMAGEM SISTEMAS":"PROMEDCARE",
+"PROMEDICA COM E ASS TEC MEDICA LTDA":"PROMEDCARE",
+"GILVAN FREITAS MACEDO REPRESENT ME":"STANK HELP",
+"TECH MED EQUIPAMENTOS HOSPITALARES LTDA":"TECH MED",
+"SCM Tecnolife":"TECNOLIFE",
+"TECNOLIFE EQUIPAMENTOS MED LTDA EPP":"TECNOLIFE",
+"Tecnolife US Tecnolife":"TECNOLIFE",
+"TECNOMEDICA COM E ASS TEC HOS LT ME":"TECNOMEDICA",
+"SERVICOS PARA DIAGNOSTICOS LTDA UNICA IM":"ÚNICA/DANN",
+"UNICA IMAGEM PRO E SER P DIAG LT ME":"ÚNICA/DANN",
+"SERVICOS LTDA XTEC COMERCIO E":"XTEC"
+};
+
+// Hashes SHA-256 das senhas de cada representante
+var PWD_HASHES = {
+"4MEDIC":"7523fe409622aae7c5c1346b92df99c46c1bf6c27190735f51e0dce139a0d93e",
+"AGUIAR":"e3f62d57a67264b1f4e938f67ce2e2ee16e7166371a6257f60063fbc59bbc0c5",
+"ALLIANCE":"16b259aef3c7967519b11c647f17b71ae59527aabd30f4b4d616687039e323be",
+"BS IMAGEM":"2e7155a8b97ded14bfee42f4624ea707cecb83f2fba0ba3f6706aa2db9536bf1",
+"BSB":"b4687b2a69bb2556937595657bcebed8aa63b62adcf7a1e3517a0efbf6d83a35",
+"CANAL DIRETO":"de95bef9bad2568cfd19dd988ff7781189129643cc999077c9f06af28768d565",
+"CARDIOVENT":"60e186e974b34fd0390e651df4102006cca3b54b9610460cb5eb9d4ac468fd8b",
+"EQUIPAR":"311349fb5daaf4b94032aa165d40f7ad4f1534972bb70aa87cc0caefcad1e4f8",
+"MEDICAL EVOLUTION":"aa67dc8e9f4e505eed7280f430867fb8f399bd0fb3d747e8b68ca39e59196579",
+"MULT MED":"1282098de19d0d32a258101b78afb5d94114bbee1b72043f203fcf0d219c77cb",
+"NEXT":"7bcf52e92289b993baa485a5b13eab534e92538fa066109448f20a34ee34af3f",
+"NS HOSPITALAR":"84ea406e9da663e152a2b633974ca74135be8bcadaf32029be76ab280db55ad0",
+"POLLIMED":"f51372a8ded763053595e2518ed19e8cb15b83ff38b44270fc92aad54544ed62",
+"PROMEDCARE":"c4a0f40705f80316460b6ea91a71649163f28b894b0eb8b6af9ad9f52c9fb1da",
+"STANK HELP":"574eb2f1e5c855f24c6e8b62cefafe65af8e9f2248e81badf13b107d08606af5",
+"TECH MED":"0d780b14a33e87959e34edd4e8f80b0b89a8caa8ddf21eceb79fed144147d184",
+"TECNOLIFE":"46593b2222c47d989330fe6427f1d840fd86627011993528e9712807bd91da0e",
+"TECNOMEDICA":"bf29576ba6be0a3cfcfe94dbb4d2ec01e2755ef0f5f4746673ac92c4e44f7fe0",
+"ÚNICA/DANN":"76a91844d8bba5d2062dc0a3064eaa2c39288c725d1de5578699c91ac89d1459",
+"XTEC":"b2c4f1757505462c2fe85b3bea0b69a2c1081c8e7978892c7cd5743e2394994a"
+};
+
 var COLS = {
-  po:          "Customer PO No.",
-  creation:    "Creation Date",
-  customer:    "Sold to Customer Name",
-  material:    "Material Description",
-  materialCode:"Material",
-  rdd:         "RDD",
-  prazo:       "Prazo Contratual",
-  am:          "Account Manager Name",
-  status:      "Status",
-  cdd:         "CDD",
-  deliveryDate:"Data de Entrega",
-  installDate: "Data de Instalação",
-  qty:         "QTY",
-  z4:          "Z4 Date",
-  billing:     "Billing Date",
-  pgto:        "PGTO",
-  gr:          "GR",
-  comentario:  "Comentários S&SD",
-  pareto:      "Pareto Nivel 1"
+  po:"Customer PO No.", creation:"Creation Date", customer:"Sold to Customer Name",
+  material:"Material Description", materialCode:"Material", rdd:"RDD",
+  prazo:"Prazo Contratual", am:"Account Manager Name", status:"Status",
+  cdd:"CDD", deliveryDate:"Data de Entrega", installDate:"Data de Instalação",
+  qty:"QTY", z4:"Z4 Date", billing:"Billing Date", pgto:"PGTO", gr:"GR",
+  comentario:"Comentários S&SD", pareto:"Pareto Nivel 1"
 };
 
 var DATA = [];
+var loggedRep = null;
 
-// ── DOM refs ──
-var poInput   = document.getElementById("poInput");
-var searchBtn = document.getElementById("searchBtn");
-var results   = document.getElementById("results");
-var loadStatus= document.getElementById("loadStatus");
-var dataBadge = document.getElementById("dataBadge");
-var repSelect = document.getElementById("repSelect");
-var repBtn    = document.getElementById("repBtn");
-var repResults= document.getElementById("repResults");
-var repStatus = document.getElementById("repStatus");
+var poInput=document.getElementById("poInput"), searchBtn=document.getElementById("searchBtn"),
+    results=document.getElementById("results"), loadStatus=document.getElementById("loadStatus"),
+    dataBadge=document.getElementById("dataBadge"), repSelect=document.getElementById("repSelect"),
+    repResults=document.getElementById("repResults"), loginBox=document.getElementById("loginBox"),
+    loginRepName=document.getElementById("loginRepName"), pwdInput=document.getElementById("pwdInput"),
+    loginBtn=document.getElementById("loginBtn"), loginErr=document.getElementById("loginErr"),
+    repLogged=document.getElementById("repLogged"), repLoggedName=document.getElementById("repLoggedName"),
+    logoutBtn=document.getElementById("logoutBtn"), repSearchRow=document.getElementById("repSearchRow"),
+    repPoSearch=document.getElementById("repPoSearch");
 
 // ── Navigation ──
-function showPage(name) {
-  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
-  document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
-  document.getElementById('page-' + name).classList.add('active');
-  event.target.classList.add('active');
+document.getElementById("navConsulta").addEventListener("click", function(){ switchPage("consulta", this); });
+document.getElementById("navRep").addEventListener("click", function(){ switchPage("representante", this); });
+function switchPage(name, btn) {
+  document.querySelectorAll(".page").forEach(function(p){ p.classList.remove("active"); });
+  document.querySelectorAll(".nav-btn").forEach(function(b){ b.classList.remove("active"); });
+  document.getElementById("page-"+name).classList.add("active");
+  btn.classList.add("active");
 }
 
-// ── Date helpers ──
+// ── Helpers ──
+function normalizeRep(name) {
+  if (!name) return null;
+  var t = String(name).trim();
+  return NAME_MAP[t] || t;
+}
+
 function excelToDate(val) {
-  if (val === null || val === undefined || val === "" || val === "NaT") return null;
-  if (typeof val === "number" && val > 40000 && val < 60000) {
-    var d = new Date(Date.UTC(1899, 11, 30));
-    d.setUTCDate(d.getUTCDate() + Math.floor(val));
+  if (val===null||val===undefined||val===""||val==="NaT") return null;
+  if (typeof val==="number" && val>40000 && val<60000) {
+    var d = new Date(Date.UTC(1899,11,30));
+    d.setUTCDate(d.getUTCDate()+Math.floor(val));
     return d;
   }
-  if (typeof val === "string" && val.length >= 8) {
+  if (typeof val==="string" && val.length>=8) {
     var p = new Date(val);
     if (!isNaN(p.getTime())) return p;
   }
   return null;
 }
-
 function fmtDate(val) {
   var d = excelToDate(val);
   if (!d) return null;
-  return String(d.getUTCDate()).padStart(2,"0") + "/" +
-         String(d.getUTCMonth()+1).padStart(2,"0") + "/" +
-         d.getUTCFullYear();
+  return String(d.getUTCDate()).padStart(2,"0")+"/"+String(d.getUTCMonth()+1).padStart(2,"0")+"/"+d.getUTCFullYear();
+}
+function maxDate(a,b) {
+  var da=excelToDate(a), db=excelToDate(b);
+  if(!da&&!db) return null;
+  if(!da) return b;
+  if(!db) return a;
+  return da>=db?a:b;
+}
+function sha256(str) {
+  var buf = new TextEncoder().encode(str);
+  return crypto.subtle.digest("SHA-256", buf).then(function(hash){
+    var arr = Array.prototype.slice.call(new Uint8Array(hash));
+    return arr.map(function(b){ return b.toString(16).padStart(2,"0"); }).join("");
+  });
 }
 
-function maxDate(a, b) {
-  var da = excelToDate(a), db = excelToDate(b);
-  if (!da && !db) return null;
-  if (!da) return b;
-  if (!db) return a;
-  return da >= db ? a : b;
-}
-
-// ── Load data ──
+// ── Load ──
 function loadData() {
   if (!JSON_URL) {
-    loadStatus.className = "load-status err";
-    loadStatus.innerHTML = "⚠️ JSON_URL não configurado.";
-    dataBadge.textContent = "Base não configurada";
+    loadStatus.className="load-status err";
+    loadStatus.innerHTML="⚠️ JSON_URL não configurado.";
+    dataBadge.textContent="Base não configurada";
     return;
   }
-  fetch(JSON_URL, {cache:"no-cache"})
+  fetch(JSON_URL,{cache:"no-cache"})
     .then(function(r){ if(!r.ok) throw new Error("HTTP "+r.status); return r.json(); })
     .then(function(json){
-      DATA = (json.dados||[]).filter(function(r){ return r[COLS.po]; });
-      var gerado = json.gerado_em ? new Date(json.gerado_em) : null;
-      var ds = gerado ? fmtDate(gerado.toISOString()) : "—";
-      loadStatus.className = "load-status ok";
-      loadStatus.innerHTML = "✓ " + DATA.length + " itens carregados · Atualizado em " + ds;
-      dataBadge.textContent = "Base atualizada em " + ds;
-      poInput.disabled = false;
-      searchBtn.disabled = false;
-      poInput.focus();
-      populateRepresentantes();
-      results.innerHTML = '<div class="card"><div class="empty-state"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><div><strong>Base carregada</strong></div><div>Digite o número da PO para consultar.</div></div></div>';
+      DATA=(json.dados||[]).filter(function(r){ return r[COLS.po]; });
+      var g=json.gerado_em?new Date(json.gerado_em):null;
+      var ds=g?fmtDate(g.toISOString()):"—";
+      loadStatus.className="load-status ok";
+      loadStatus.innerHTML="✓ "+DATA.length+" itens carregados · Atualizado em "+ds;
+      dataBadge.textContent="Base atualizada em "+ds;
+      poInput.disabled=false; searchBtn.disabled=false; poInput.focus();
+      populateReps();
+      results.innerHTML=emptyCard("Base carregada","Digite o número da PO para consultar.");
     })
-    .catch(function(err){
-      loadStatus.className = "load-status err";
-      loadStatus.innerHTML = "❌ Não foi possível carregar a base. Verifique o link ou as permissões.";
-      dataBadge.textContent = "Erro ao carregar";
-      console.error(err);
+    .catch(function(e){
+      loadStatus.className="load-status err";
+      loadStatus.innerHTML="❌ Não foi possível carregar a base. Verifique o link ou as permissões.";
+      dataBadge.textContent="Erro ao carregar";
+      console.error(e);
     });
 }
+function emptyCard(title, sub) {
+  return '<div class="card"><div class="empty-state"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><div><strong>'+title+'</strong></div><div>'+(sub||"")+'</div></div></div>';
+}
 
-// ── Group items by PO ──
+// ── Group by PO ──
 function groupByPO(items) {
-  // For each PO, merge rows: same dates → combine materials; different dates → use max date
-  var merged = {};
-  for (var i = 0; i < items.length; i++) {
-    var item = items[i];
-    var po = String(item[COLS.po]||"").trim();
-    if (!merged[po]) {
-      merged[po] = {
-        po:       po,
-        creation: item[COLS.creation],
-        customer: item[COLS.customer],
-        rdd:      item[COLS.rdd],
-        prazo:    item[COLS.prazo],
-        cdd:      item[COLS.cdd],
-        am:       item[COLS.am],
-        status:   item[COLS.status],
-        delivery: item[COLS.deliveryDate],
-        install:  item[COLS.installDate],
-        z4:       item[COLS.z4],
-        billing:  item[COLS.billing],
-        pgto:     item[COLS.pgto],
-        gr:       item[COLS.gr],
-        comentario: item[COLS.comentario],
-        pareto:   item[COLS.pareto],
-        materials: []
-      };
+  var m = {};
+  for (var i=0;i<items.length;i++) {
+    var it=items[i], po=String(it[COLS.po]||"").trim();
+    if (!m[po]) {
+      m[po]={po:po,creation:it[COLS.creation],customer:it[COLS.customer],rdd:it[COLS.rdd],
+        prazo:it[COLS.prazo],cdd:it[COLS.cdd],am:normalizeRep(it[COLS.am]),status:it[COLS.status],
+        delivery:it[COLS.deliveryDate],install:it[COLS.installDate],z4:it[COLS.z4],
+        billing:it[COLS.billing],pgto:it[COLS.pgto],gr:it[COLS.gr],
+        comentario:it[COLS.comentario],pareto:it[COLS.pareto],materials:[]};
     } else {
-      // Update dates to max
-      merged[po].creation = maxDate(merged[po].creation, item[COLS.creation]);
-      merged[po].rdd      = maxDate(merged[po].rdd,      item[COLS.rdd]);
-      merged[po].prazo    = maxDate(merged[po].prazo,    item[COLS.prazo]);
-      merged[po].cdd      = maxDate(merged[po].cdd,      item[COLS.cdd]);
-      merged[po].delivery = maxDate(merged[po].delivery, item[COLS.deliveryDate]);
-      merged[po].install  = maxDate(merged[po].install,  item[COLS.installDate]);
-      merged[po].z4       = maxDate(merged[po].z4,       item[COLS.z4]);
-      merged[po].billing  = maxDate(merged[po].billing,  item[COLS.billing]);
-      // Take first non-null for other fields
-      if (!merged[po].status   && item[COLS.status])    merged[po].status   = item[COLS.status];
-      if (!merged[po].pgto     && item[COLS.pgto])      merged[po].pgto     = item[COLS.pgto];
-      if (!merged[po].gr       && item[COLS.gr])        merged[po].gr       = item[COLS.gr];
-      if (!merged[po].comentario && item[COLS.comentario]) merged[po].comentario = item[COLS.comentario];
-      if (!merged[po].pareto   && item[COLS.pareto])    merged[po].pareto   = item[COLS.pareto];
+      m[po].creation=maxDate(m[po].creation,it[COLS.creation]);
+      m[po].rdd=maxDate(m[po].rdd,it[COLS.rdd]);
+      m[po].prazo=maxDate(m[po].prazo,it[COLS.prazo]);
+      m[po].cdd=maxDate(m[po].cdd,it[COLS.cdd]);
+      m[po].delivery=maxDate(m[po].delivery,it[COLS.deliveryDate]);
+      m[po].install=maxDate(m[po].install,it[COLS.installDate]);
+      m[po].z4=maxDate(m[po].z4,it[COLS.z4]);
+      m[po].billing=maxDate(m[po].billing,it[COLS.billing]);
+      if(!m[po].status&&it[COLS.status])m[po].status=it[COLS.status];
+      if(!m[po].pgto&&it[COLS.pgto])m[po].pgto=it[COLS.pgto];
+      if(!m[po].gr&&it[COLS.gr])m[po].gr=it[COLS.gr];
+      if(!m[po].comentario&&it[COLS.comentario])m[po].comentario=it[COLS.comentario];
+      if(!m[po].pareto&&it[COLS.pareto])m[po].pareto=it[COLS.pareto];
     }
-    merged[po].materials.push({
-      code: item[COLS.materialCode],
-      desc: item[COLS.material],
-      qty:  item[COLS.qty]
-    });
+    m[po].materials.push({code:it[COLS.materialCode],desc:it[COLS.material],qty:it[COLS.qty]});
   }
-  return merged;
+  return m;
 }
 
 // ── Status pill ──
 function statusPill(g) {
-  var delivery = excelToDate(g.delivery);
-  var z4       = excelToDate(g.z4);
-  var billing  = excelToDate(g.billing);
-  var prazo    = excelToDate(g.prazo);
-  var rdd      = excelToDate(g.rdd);
-  var now      = new Date();
-
+  var delivery=excelToDate(g.delivery), z4=excelToDate(g.z4), billing=excelToDate(g.billing),
+      prazo=excelToDate(g.prazo), rdd=excelToDate(g.rdd), now=new Date();
   if (delivery) return '<span class="status-pill status-ok">✓ Entregue</span>';
   if (z4 && !billing) return '<span class="status-pill status-prod">⚙ Em Produção</span>';
-  var ref = prazo || rdd;
-  if (ref && ref < now) return '<span class="status-pill status-late">⚠ Atrasado</span>';
-  if (ref) {
-    var diff = (ref - now)/(1000*60*60*24);
-    if (diff <= 30) return '<span class="status-pill status-warn">Em andamento</span>';
-  }
+  var ref=prazo||rdd;
+  if (ref && ref<now) return '<span class="status-pill status-late">⚠ Atrasado</span>';
+  if (ref) { var diff=(ref-now)/(864e5); if(diff<=30) return '<span class="status-pill status-warn">Em andamento</span>'; }
   return '<span class="status-pill status-default">Em andamento</span>';
 }
 
-// ── Render order card ──
-function renderOrderCard(g) {
-  var mats = g.materials;
-  var matRows = "";
-  for (var i = 0; i < mats.length; i++) {
-    matRows += '<tr><td>' + (mats[i].code||"—") + '</td><td>' + (mats[i].desc||"—") + '</td><td style="text-align:center">' + (mats[i].qty||"—") + '</td></tr>';
-  }
-
-  var html = '<div class="card order-card">';
-  html += '<div class="order-head">';
-  html += '<div><div class="po-label">Customer PO No.</div><div class="po-value">' + g.po + '</div></div>';
-  html += statusPill(g);
-  html += '</div>';
-  html += '<div class="field-grid">';
-  html += field("Cliente", g.customer);
-  html += field("Account Manager", g.am);
-  html += field("Data de Criação", fmtDate(g.creation));
-  html += field("RDD", fmtDate(g.rdd));
-  html += field("Prazo Contratual", fmtDate(g.prazo));
-  html += field("CDD", fmtDate(g.cdd));
-  html += field("PGTO", g.pgto);
-  html += field("GR", fmtDate(g.gr));
-  html += field("Pareto Nível 1", g.pareto);
-  html += field("Comentários S&SD", g.comentario);
-  // Materials table
-  html += '<div class="materials-block field">';
-  html += '<div class="k">Materiais</div>';
-  html += '<table class="mat-table"><thead><tr><th>Código</th><th>Descrição</th><th style="text-align:center">Qtd</th></tr></thead><tbody>' + matRows + '</tbody></table>';
-  html += '</div>';
-  html += '</div>';
-  // Timeline
-  html += buildTimeline(g);
-  html += '</div>';
-  return html;
+function field(label,value) {
+  var cls=value?"":"empty", d=value?String(value):"—";
+  return '<div class="field"><span class="k">'+label+'</span><span class="v '+cls+'">'+d+'</span></div>';
 }
 
-function field(label, value) {
-  var cls = value ? "" : "empty";
-  var display = value ? String(value) : "—";
-  return '<div class="field"><span class="k">' + label + '</span><span class="v ' + cls + '">' + display + '</span></div>';
+// ── Render order ──
+function renderOrderCard(g) {
+  var matRows="";
+  for (var i=0;i<g.materials.length;i++) {
+    var mt=g.materials[i];
+    matRows+='<tr><td>'+(mt.code||"—")+'</td><td>'+(mt.desc||"—")+'</td><td style="text-align:center">'+(mt.qty||"—")+'</td></tr>';
+  }
+  var h='<div class="card order-card">';
+  h+='<div class="order-head"><div><div class="po-label">Customer PO No.</div><div class="po-value">'+g.po+'</div></div>'+statusPill(g)+'</div>';
+  h+='<div class="field-grid">';
+  h+=field("Cliente",g.customer);
+  h+=field("Representante",g.am);
+  h+=field("Data de Booking",fmtDate(g.creation));
+  h+=field("RDD",fmtDate(g.rdd));
+  h+=field("Prazo Contratual",fmtDate(g.prazo));
+  h+=field("Previsão de Estoque",fmtDate(g.cdd));
+  h+=field("Status Pagamento",g.pgto);
+  h+=field("Data de Entrada no Estoque",fmtDate(g.gr));
+  h+=field("Planejamento",g.pareto);
+  h+=field("Informações Relevantes",g.comentario);
+  h+='<div class="materials-block field"><div class="k">Materiais</div><table class="mat-table"><thead><tr><th>Código</th><th>Descrição</th><th style="text-align:center">Qtd</th></tr></thead><tbody>'+matRows+'</tbody></table></div>';
+  h+='</div>';
+  h+=buildTimeline(g);
+  h+='</div>';
+  return h;
 }
 
 function buildTimeline(g) {
-  var steps = [
-    {label:"Criação",    date:g.creation},
-    {label:"RDD",        date:g.rdd},
-    {label:"CDD",        date:g.cdd},
-    {label:"Z4",         date:g.z4},
-    {label:"Billing",    date:g.billing},
-    {label:"Entrega",    date:g.delivery},
-    {label:"Instalação", date:g.install}
+  var steps=[
+    {label:"Booking",date:g.creation},
+    {label:"RDD",date:g.rdd},
+    {label:"Previsão de Estoque",date:g.cdd},
+    {label:"Produção",date:g.z4},
+    {label:"Faturamento",date:g.billing},
+    {label:"Entrega",date:g.delivery},
+    {label:"Instalação",date:g.install}
   ];
-  var html = '<div class="timeline">';
-  for (var i = 0; i < steps.length; i++) {
-    var s = steps[i];
-    var hasDate = excelToDate(s.date) !== null;
-    var dotClass = hasDate ? (s.label === "Entrega" || s.label === "Instalação" ? "filled-ok" : "filled") : "";
-    html += '<div class="tl-step">';
-    html += '<div class="tl-dot ' + dotClass + '"></div>';
-    html += '<div class="tl-label">' + s.label + '</div>';
-    html += '<div class="tl-date">' + (fmtDate(s.date)||"—") + '</div>';
-    html += '</div>';
+  var h='<div class="timeline">';
+  for (var i=0;i<steps.length;i++) {
+    var s=steps[i], has=excelToDate(s.date)!==null;
+    var cls=has?(s.label==="Entrega"||s.label==="Instalação"?"filled-ok":"filled"):"";
+    h+='<div class="tl-step"><div class="tl-dot '+cls+'"></div><div class="tl-label">'+s.label+'</div><div class="tl-date">'+(fmtDate(s.date)||"—")+'</div></div>';
   }
-  html += '</div>';
-  return html;
+  h+='</div>';
+  return h;
 }
 
-// ── Search ──
+// ── Search PO ──
 function doSearch() {
-  var query = poInput.value.trim().toLowerCase();
-  if (!query) return;
-  var matches = DATA.filter(function(r){
-    return String(r[COLS.po]||"").toLowerCase().indexOf(query) !== -1;
-  });
-  if (!matches.length) {
-    results.innerHTML = '<div class="card"><div class="empty-state"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><div><strong>Nenhum pedido encontrado</strong></div><div>Verifique o número da PO e tente novamente.</div></div></div>';
-    return;
-  }
-  var grouped = groupByPO(matches);
-  var html = "";
-  for (var po in grouped) { html += renderOrderCard(grouped[po]); }
-  results.innerHTML = html;
+  var q=poInput.value.trim().toLowerCase();
+  if (!q) return;
+  var mt=DATA.filter(function(r){ return String(r[COLS.po]||"").toLowerCase().indexOf(q)!==-1; });
+  if (!mt.length) { results.innerHTML=emptyCard("Nenhum pedido encontrado","Verifique o número da PO e tente novamente."); return; }
+  var g=groupByPO(mt), h="";
+  for (var po in g) h+=renderOrderCard(g[po]);
+  results.innerHTML=h;
 }
-
-poInput.addEventListener("keydown", function(e){ if(e.key==="Enter") doSearch(); });
-poInput.addEventListener("input",   function(){ searchBtn.disabled = !(DATA.length && poInput.value.trim()); });
-searchBtn.addEventListener("click", doSearch);
+poInput.addEventListener("keydown",function(e){ if(e.key==="Enter") doSearch(); });
+poInput.addEventListener("input",function(){ searchBtn.disabled=!(DATA.length&&poInput.value.trim()); });
+searchBtn.addEventListener("click",doSearch);
 
 // ── Representante ──
-function populateRepresentantes() {
-  var reps = {};
-  for (var i = 0; i < DATA.length; i++) {
-    var am = DATA[i][COLS.am];
-    if (am) reps[am] = true;
+function populateReps() {
+  var reps={};
+  for (var i=0;i<DATA.length;i++) {
+    var am=normalizeRep(DATA[i][COLS.am]);
+    if (am) reps[am]=true;
   }
-  var sorted = Object.keys(reps).sort();
-  var html = '<option value="">Selecione um Representante...</option>';
-  for (var j = 0; j < sorted.length; j++) {
-    html += '<option value="' + sorted[j].replace(/"/g,'&quot;') + '">' + sorted[j] + '</option>';
+  var sorted=Object.keys(reps).sort();
+  var h='<option value="">Selecione o Representante...</option>';
+  for (var j=0;j<sorted.length;j++) {
+    h+='<option value="'+sorted[j].replace(/"/g,'&quot;')+'">'+sorted[j]+'</option>';
   }
-  repSelect.innerHTML = html;
-  repSelect.disabled = false;
-  repBtn.disabled = false;
+  repSelect.innerHTML=h;
+  repSelect.disabled=false;
 }
 
-repBtn.addEventListener("click", function(){
-  var rep = repSelect.value;
-  if (!rep) return;
-  var matches = DATA.filter(function(r){ return r[COLS.am] === rep; });
-  if (!matches.length) {
-    repResults.innerHTML = '<div class="card"><div class="empty-state"><div>Nenhum pedido encontrado para este representante.</div></div></div>';
-    return;
-  }
-  var cols = [
-    {key:COLS.po,        label:"Customer PO No."},
-    {key:COLS.materialCode, label:"Material"},
-    {key:COLS.material,  label:"Descrição"},
-    {key:COLS.qty,       label:"Qtd"},
-    {key:COLS.am,        label:"Account Manager"},
-    {key:COLS.pgto,      label:"PGTO"},
-    {key:COLS.cdd,       label:"CDD", isDate:true},
-    {key:COLS.gr,        label:"GR",  isDate:true},
-    {key:COLS.comentario,label:"Coment. S&SD"},
-    {key:COLS.pareto,    label:"Pareto Nível 1"}
-  ];
-  var thead = "<tr>";
-  for (var c = 0; c < cols.length; c++) {
-    thead += "<th>" + cols[c].label + "</th>";
-  }
-  thead += "</tr>";
-
-  var tbody = "";
-  for (var i = 0; i < matches.length; i++) {
-    var row = matches[i];
-    tbody += "<tr>";
-    for (var c = 0; c < cols.length; c++) {
-      var val = row[cols[c].key];
-      if (cols[c].isDate) val = fmtDate(val) || "—";
-      else val = (val !== null && val !== undefined && val !== "") ? val : "—";
-      tbody += "<td>" + val + "</td>";
-    }
-    tbody += "</tr>";
-  }
-
-  repResults.innerHTML =
-    '<div class="card" style="padding:20px;">' +
-    '<div class="rep-summary"><strong>' + matches.length + '</strong> itens encontrados para <strong>' + rep + '</strong></div>' +
-    '<div class="rep-table-wrap"><table class="rep-table"><thead>' + thead + '</thead><tbody>' + tbody + '</tbody></table></div>' +
-    '</div>';
+repSelect.addEventListener("change",function(){
+  var rep=repSelect.value;
+  logout(false);
+  if (!rep) { loginBox.style.display="none"; return; }
+  loginRepName.textContent=rep;
+  loginBox.style.display="block";
+  loginErr.style.display="none";
+  pwdInput.value="";
+  pwdInput.focus();
 });
 
+loginBtn.addEventListener("click",tryLogin);
+pwdInput.addEventListener("keydown",function(e){ if(e.key==="Enter") tryLogin(); });
+
+function tryLogin() {
+  var rep=repSelect.value, pwd=pwdInput.value;
+  if (!rep||!pwd) return;
+  sha256(pwd).then(function(hash){
+    if (PWD_HASHES[rep] && hash===PWD_HASHES[rep]) {
+      loggedRep=rep;
+      loginBox.style.display="none";
+      repLogged.style.display="flex";
+      repLoggedName.textContent="✓ Carteira: "+rep;
+      repSearchRow.style.display="flex";
+      repPoSearch.value="";
+      renderRepTable();
+    } else {
+      loginErr.style.display="block";
+      pwdInput.value="";
+      pwdInput.focus();
+    }
+  });
+}
+
+logoutBtn.addEventListener("click",function(){ logout(true); });
+function logout(resetSelect) {
+  loggedRep=null;
+  repLogged.style.display="none";
+  repSearchRow.style.display="none";
+  repResults.innerHTML="";
+  if (resetSelect) { repSelect.value=""; loginBox.style.display="none"; }
+}
+
+repPoSearch.addEventListener("input",renderRepTable);
+
+function renderRepTable() {
+  if (!loggedRep) return;
+  var q=repPoSearch.value.trim().toLowerCase();
+  var mt=DATA.filter(function(r){
+    if (normalizeRep(r[COLS.am])!==loggedRep) return false;
+    if (q && String(r[COLS.po]||"").toLowerCase().indexOf(q)===-1) return false;
+    return true;
+  });
+  if (!mt.length) {
+    repResults.innerHTML='<div class="card"><div class="empty-state"><div>Nenhum pedido encontrado'+(q?" para esta pesquisa":" para este representante")+'.</div></div></div>';
+    return;
+  }
+  var cols=[
+    {key:COLS.po,label:"Customer PO No."},
+    {key:COLS.materialCode,label:"Material"},
+    {key:COLS.material,label:"Descrição"},
+    {key:COLS.qty,label:"Qtd"},
+    {key:COLS.am,label:"Representante",isRep:true},
+    {key:COLS.pgto,label:"Status Pagamento"},
+    {key:COLS.cdd,label:"Previsão de Estoque",isDate:true},
+    {key:COLS.gr,label:"Data Entrada Estoque",isDate:true},
+    {key:COLS.comentario,label:"Informações Relevantes"},
+    {key:COLS.pareto,label:"Planejamento"}
+  ];
+  var thead="<tr>";
+  for (var c=0;c<cols.length;c++) thead+="<th>"+cols[c].label+"</th>";
+  thead+="</tr>";
+  var tbody="";
+  for (var i=0;i<mt.length;i++) {
+    tbody+="<tr>";
+    for (var c2=0;c2<cols.length;c2++) {
+      var v=mt[i][cols[c2].key];
+      if (cols[c2].isRep) v=normalizeRep(v);
+      else if (cols[c2].isDate) v=fmtDate(v)||"—";
+      v=(v!==null&&v!==undefined&&v!=="")?v:"—";
+      tbody+="<td>"+v+"</td>";
+    }
+    tbody+="</tr>";
+  }
+  repResults.innerHTML='<div class="card" style="padding:20px;"><div class="rep-summary"><strong>'+mt.length+'</strong> itens na carteira de <strong>'+loggedRep+'</strong>'+(q?' (filtrado por "'+repPoSearch.value+'")':'')+'</div><div class="rep-table-wrap"><table class="rep-table"><thead>'+thead+'</thead><tbody>'+tbody+'</tbody></table></div></div>';
+}
+
 // ── Init ──
-results.innerHTML = '<div class="card"><div class="empty-state"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><div>Carregando base de dados...</div></div></div>';
+results.innerHTML=emptyCard("Carregando base de dados...","");
 loadData();
 </script>
 </body>
