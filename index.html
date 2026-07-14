@@ -4,12 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Portal de Pedidos | Philips</title>
+<!-- SheetJS: usado para exportar a carteira para Excel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 :root{
   --blue:#0B5ED7;--blue-dark:#003876;
   --ink:#0A1F33;--paper:#F7F9FC;--line:#DCE3EC;
   --ok:#0F8A5F;--warn:#C77700;--late:#C0392B;--muted:#5A6B7D;
-  --prod:#6A3BAD;
+  --prod:#6A3BAD;--dhl-y:#FFCC00;--dhl-r:#D40511;
 }
 *{box-sizing:border-box;}
 body{margin:0;font-family:'Segoe UI',Roboto,Arial,sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;}
@@ -36,6 +38,8 @@ button.primary:hover{background:var(--blue-dark);}
 button.primary:disabled{background:#9BB6D6;cursor:not-allowed;}
 button.ghost{background:none;border:1.5px solid var(--line);color:var(--muted);padding:10px 16px;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;}
 button.ghost:hover{border-color:var(--late);color:var(--late);}
+button.export{background:#1D6F42;color:#fff;border:none;padding:10px 16px;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;white-space:nowrap;}
+button.export:hover{background:#155230;}
 .load-status{margin-top:12px;font-size:0.85rem;color:var(--muted);display:flex;align-items:center;gap:8px;}
 .load-status.ok{color:var(--ok);}
 .load-status.err{color:var(--late);}
@@ -66,6 +70,12 @@ button.ghost:hover{border-color:var(--late);color:var(--late);}
 .mat-table th{background:var(--paper);color:var(--muted);font-size:0.7rem;text-transform:uppercase;font-weight:700;padding:7px 10px;text-align:left;border-bottom:2px solid var(--line);}
 .mat-table td{padding:7px 10px;border-bottom:1px solid var(--line);}
 .mat-table tr:last-child td{border-bottom:none;}
+/* Comentário fixo destacado */
+.fixed-note{grid-column:1 / -1;background:#FFF8E6;border:1px solid #F0DEAA;border-left:4px solid var(--warn);border-radius:10px;padding:12px 16px;font-size:0.88rem;color:#7A4A00;font-weight:500;}
+/* Botão DHL */
+.dhl-row{margin-top:14px;display:flex;justify-content:flex-end;}
+.dhl-btn{display:inline-flex;align-items:center;gap:8px;background:var(--dhl-y);color:var(--dhl-r);border:none;padding:8px 14px;border-radius:8px;font-size:0.82rem;font-weight:800;font-style:italic;letter-spacing:0.5px;cursor:pointer;text-decoration:none;box-shadow:0 2px 6px rgba(0,0,0,0.12);transition:transform .1s;}
+.dhl-btn:hover{transform:scale(1.04);}
 .timeline{margin-top:18px;display:flex;justify-content:space-between;position:relative;padding-top:6px;}
 .timeline::before{content:"";position:absolute;top:16px;left:5%;right:5%;height:2px;background:var(--line);z-index:0;}
 .tl-step{flex:1;text-align:center;position:relative;z-index:1;}
@@ -83,6 +93,7 @@ button.ghost:hover{border-color:var(--late);color:var(--late);}
 .login-box .msg{font-size:0.85rem;color:var(--muted);margin-bottom:10px;}
 .login-err{color:var(--late);font-size:0.85rem;margin-top:8px;display:none;}
 .rep-logged{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;padding:12px 16px;background:#E5F6EE;border-radius:10px;font-size:0.9rem;color:var(--ok);font-weight:600;}
+.rep-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
 .rep-search-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
 .rep-search-row input{flex:1;min-width:180px;padding:11px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:0.9rem;outline:none;}
 .rep-search-row input:focus{border-color:var(--blue);}
@@ -90,12 +101,13 @@ button.ghost:hover{border-color:var(--late);color:var(--late);}
 .rep-table{width:100%;border-collapse:collapse;font-size:0.78rem;table-layout:auto;}
 .rep-table th{background:var(--blue-dark);color:#fff;font-size:0.66rem;text-transform:uppercase;font-weight:700;padding:9px 8px;text-align:left;white-space:normal;}
 .rep-table td{padding:8px 8px;border-bottom:1px solid var(--line);vertical-align:top;word-break:break-word;}
-/* Card de resultados ocupa a largura total da tela */
-#repResults .card{width:calc(100vw - 40px);max-width:1600px;position:relative;left:50%;transform:translateX(-50%);}
-@media(max-width:1000px){#repResults .card{width:100%;left:auto;transform:none;}.rep-table-wrap{overflow-x:auto;}}
+.rep-table tbody tr{cursor:pointer;}
 .rep-table tr:hover td{background:#F0F4FF;}
 .rep-table tr:last-child td{border-bottom:none;}
 .rep-summary{font-size:0.82rem;color:var(--muted);margin-bottom:10px;}
+.rep-hint{font-size:0.75rem;color:var(--muted);margin-top:8px;font-style:italic;}
+#repResults .card{width:calc(100vw - 40px);max-width:1600px;position:relative;left:50%;transform:translateX(-50%);}
+@media(max-width:1000px){#repResults .card{width:100%;left:auto;transform:none;}.rep-table-wrap{overflow-x:auto;}}
 .page{display:none;}
 .page.active{display:block;}
 footer{text-align:center;color:var(--muted);font-size:0.78rem;padding:10px 20px 30px;}
@@ -117,6 +129,7 @@ footer{text-align:center;color:var(--muted);font-size:0.78rem;padding:10px 20px 
 
 <main>
 
+  <!-- ══════════ ABA: CONSULTA DE PEDIDO ══════════ -->
   <div class="page active" id="page-consulta">
     <div class="card search-card">
       <div class="search-row">
@@ -128,6 +141,7 @@ footer{text-align:center;color:var(--muted);font-size:0.78rem;padding:10px 20px 
     <div id="results"></div>
   </div>
 
+  <!-- ══════════ ABA: CARTEIRA REPRESENTANTE ══════════ -->
   <div class="page" id="page-representante">
     <div class="card rep-card">
       <div class="rep-select-row">
@@ -145,7 +159,10 @@ footer{text-align:center;color:var(--muted);font-size:0.78rem;padding:10px 20px 
       </div>
       <div class="rep-logged" id="repLogged" style="display:none;">
         <span id="repLoggedName"></span>
-        <button class="ghost" id="logoutBtn">Sair</button>
+        <div class="rep-actions">
+          <button class="export" id="exportBtn">📥 Exportar para Excel</button>
+          <button class="ghost" id="logoutBtn">Sair</button>
+        </div>
       </div>
       <div class="rep-search-row" id="repSearchRow" style="display:none;">
         <input type="text" id="repPoSearch" placeholder="Pesquisar por Customer PO No..." autocomplete="off">
@@ -165,7 +182,7 @@ footer{text-align:center;color:var(--muted);font-size:0.78rem;padding:10px 20px 
 var JSON_URL = "https://salesdelivery.github.io/consulta-pedidos/carteira.json"; // ← Cole aqui o link do carteira.json
 // =============================================================
 
-// Mapa de padronização: RAZÃO SOCIAL → Nome do Representante
+// ── Mapa de padronização: RAZÃO SOCIAL → Nome do Representante ──
 var NAME_MAP = {
 "REPRESENTACOES LTDA ME RAUBACH & TREVISA":"4MEDIC",
 "AGUIAR REPRESENTACOES LTDA ME":"AGUIAR",
@@ -204,7 +221,7 @@ var NAME_MAP = {
 "SERVICOS LTDA XTEC COMERCIO E":"XTEC"
 };
 
-// Hashes SHA-256 das senhas de cada representante
+// ── Hashes SHA-256 das senhas de cada representante ──
 var PWD_HASHES = {
 "4MEDIC":"7523fe409622aae7c5c1346b92df99c46c1bf6c27190735f51e0dce139a0d93e",
 "AGUIAR":"e3f62d57a67264b1f4e938f67ce2e2ee16e7166371a6257f60063fbc59bbc0c5",
@@ -228,13 +245,17 @@ var PWD_HASHES = {
 "XTEC":"b2c4f1757505462c2fe85b3bea0b69a2c1081c8e7978892c7cd5743e2394994a"
 };
 
+// ── Mapeamento das colunas do JSON ──
 var COLS = {
   po:"Customer PO No.", creation:"Creation Date", customer:"Sold to Customer Name",
-  material:"Material Description", materialCode:"Material", rdd:"RDD",
+  material:"Material Description", materialCode:"Material",
   prazo:"Prazo Contratual", am:"Account Manager Name", status:"Status",
-  cdd:"CDD", deliveryDate:"Data de Entrega", installDate:"Data de Instalação",
-  qty:"QTY", z4:"Z4 Date", billing:"Billing Date", pgto:"PGTO", gr:"GR",
-  comentario:"Comentários S&SD", pareto:"Pareto Nivel 1"
+  deliveryDate:"Data de Entrega", installDate:"Data de Instalação",
+  qty:"QTY", z4:"Z4 Date", billing:"Billing Date", pgto:"PGTO",
+  comentario:"Comentários S&SD", pareto:"Pareto Nivel 1",
+  prevEstoque:"Previsão de Estoque",   // nova coluna (1.2)
+  empenho:"Data do Empenho",           // nova coluna (1.3)
+  publico:"Público Privado"            // nova coluna (2.3)
 };
 
 var DATA = [];
@@ -248,16 +269,17 @@ var poInput=document.getElementById("poInput"), searchBtn=document.getElementByI
     loginBtn=document.getElementById("loginBtn"), loginErr=document.getElementById("loginErr"),
     repLogged=document.getElementById("repLogged"), repLoggedName=document.getElementById("repLoggedName"),
     logoutBtn=document.getElementById("logoutBtn"), repSearchRow=document.getElementById("repSearchRow"),
-    repPoSearch=document.getElementById("repPoSearch");
+    repPoSearch=document.getElementById("repPoSearch"), exportBtn=document.getElementById("exportBtn"),
+    navConsulta=document.getElementById("navConsulta"), navRep=document.getElementById("navRep");
 
-// ── Navigation ──
-document.getElementById("navConsulta").addEventListener("click", function(){ switchPage("consulta", this); });
-document.getElementById("navRep").addEventListener("click", function(){ switchPage("representante", this); });
-function switchPage(name, btn) {
+// ── Navegação entre abas ──
+navConsulta.addEventListener("click", function(){ switchPage("consulta"); });
+navRep.addEventListener("click", function(){ switchPage("representante"); });
+function switchPage(name) {
   document.querySelectorAll(".page").forEach(function(p){ p.classList.remove("active"); });
   document.querySelectorAll(".nav-btn").forEach(function(b){ b.classList.remove("active"); });
   document.getElementById("page-"+name).classList.add("active");
-  btn.classList.add("active");
+  (name==="consulta"?navConsulta:navRep).classList.add("active");
 }
 
 // ── Helpers ──
@@ -266,7 +288,6 @@ function normalizeRep(name) {
   var t = String(name).trim();
   return NAME_MAP[t] || t;
 }
-
 function excelToDate(val) {
   if (val===null||val===undefined||val===""||val==="NaT") return null;
   if (typeof val==="number" && val>40000 && val<60000) {
@@ -292,6 +313,11 @@ function maxDate(a,b) {
   if(!db) return a;
   return da>=db?a:b;
 }
+// Identifica se o pedido é público (licitação)
+function isPublico(val) {
+  return String(val||"").toLowerCase().indexOf("públic") !== -1 ||
+         String(val||"").toLowerCase().indexOf("public") !== -1;
+}
 function sha256(str) {
   var buf = new TextEncoder().encode(str);
   return crypto.subtle.digest("SHA-256", buf).then(function(hash){
@@ -300,7 +326,7 @@ function sha256(str) {
   });
 }
 
-// ── Load ──
+// ── Carga da base ──
 function loadData() {
   if (!JSON_URL) {
     loadStatus.className="load-status err";
@@ -332,46 +358,48 @@ function emptyCard(title, sub) {
   return '<div class="card"><div class="empty-state"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><div><strong>'+title+'</strong></div><div>'+(sub||"")+'</div></div></div>';
 }
 
-// ── Group by PO ──
+// ── Agrupamento por PO ──
+// Regras: linhas com mesmas datas → agrupa materiais no mesmo quadro.
+//         datas diferentes → considera a maior data de cada campo.
 function groupByPO(items) {
   var m = {};
   for (var i=0;i<items.length;i++) {
     var it=items[i], po=String(it[COLS.po]||"").trim();
     if (!m[po]) {
-      m[po]={po:po,creation:it[COLS.creation],customer:it[COLS.customer],rdd:it[COLS.rdd],
-        prazo:it[COLS.prazo],cdd:it[COLS.cdd],am:normalizeRep(it[COLS.am]),status:it[COLS.status],
+      m[po]={po:po,creation:it[COLS.creation],customer:it[COLS.customer],
+        prazo:it[COLS.prazo],am:normalizeRep(it[COLS.am]),status:it[COLS.status],
         delivery:it[COLS.deliveryDate],install:it[COLS.installDate],z4:it[COLS.z4],
-        billing:it[COLS.billing],pgto:it[COLS.pgto],gr:it[COLS.gr],
-        comentario:it[COLS.comentario],pareto:it[COLS.pareto],materials:[]};
+        billing:it[COLS.billing],pgto:it[COLS.pgto],
+        comentario:it[COLS.comentario],pareto:it[COLS.pareto],
+        prevEstoque:it[COLS.prevEstoque],empenho:it[COLS.empenho],publico:it[COLS.publico],
+        materials:[]};
     } else {
       m[po].creation=maxDate(m[po].creation,it[COLS.creation]);
-      m[po].rdd=maxDate(m[po].rdd,it[COLS.rdd]);
       m[po].prazo=maxDate(m[po].prazo,it[COLS.prazo]);
-      m[po].cdd=maxDate(m[po].cdd,it[COLS.cdd]);
       m[po].delivery=maxDate(m[po].delivery,it[COLS.deliveryDate]);
       m[po].install=maxDate(m[po].install,it[COLS.installDate]);
       m[po].z4=maxDate(m[po].z4,it[COLS.z4]);
       m[po].billing=maxDate(m[po].billing,it[COLS.billing]);
+      m[po].prevEstoque=maxDate(m[po].prevEstoque,it[COLS.prevEstoque]);
+      m[po].empenho=maxDate(m[po].empenho,it[COLS.empenho]);
       if(!m[po].status&&it[COLS.status])m[po].status=it[COLS.status];
       if(!m[po].pgto&&it[COLS.pgto])m[po].pgto=it[COLS.pgto];
-      if(!m[po].gr&&it[COLS.gr])m[po].gr=it[COLS.gr];
-      if(!m[po].comentario&&it[COLS.comentario])m[po].comentario=it[COLS.comentario];
       if(!m[po].pareto&&it[COLS.pareto])m[po].pareto=it[COLS.pareto];
+      if(!m[po].publico&&it[COLS.publico])m[po].publico=it[COLS.publico];
     }
     m[po].materials.push({code:it[COLS.materialCode],desc:it[COLS.material],qty:it[COLS.qty]});
   }
   return m;
 }
 
-// ── Status pill ──
+// ── Status do pedido ──
 function statusPill(g) {
   var delivery=excelToDate(g.delivery), z4=excelToDate(g.z4), billing=excelToDate(g.billing),
-      prazo=excelToDate(g.prazo), rdd=excelToDate(g.rdd), now=new Date();
+      prazo=excelToDate(g.prazo), now=new Date();
   if (delivery) return '<span class="status-pill status-ok">✓ Entregue</span>';
   if (z4 && !billing) return '<span class="status-pill status-prod">⚙ Em Produção</span>';
-  var ref=prazo||rdd;
-  if (ref && ref<now) return '<span class="status-pill status-late">⚠ Atrasado</span>';
-  if (ref) { var diff=(ref-now)/(864e5); if(diff<=30) return '<span class="status-pill status-warn">Em andamento</span>'; }
+  if (prazo && prazo<now) return '<span class="status-pill status-late">⚠ Atrasado</span>';
+  if (prazo) { var diff=(prazo-now)/(864e5); if(diff<=30) return '<span class="status-pill status-warn">Em andamento</span>'; }
   return '<span class="status-pill status-default">Em andamento</span>';
 }
 
@@ -380,7 +408,7 @@ function field(label,value) {
   return '<div class="field"><span class="k">'+label+'</span><span class="v '+cls+'">'+d+'</span></div>';
 }
 
-// ── Render order ──
+// ── Card do pedido (Consulta) ──
 function renderOrderCard(g) {
   var matRows="";
   for (var i=0;i<g.materials.length;i++) {
@@ -393,25 +421,31 @@ function renderOrderCard(g) {
   h+=field("Cliente",g.customer);
   h+=field("Representante",g.am);
   h+=field("Data de Booking",fmtDate(g.creation));
-  h+=field("RDD",fmtDate(g.rdd));
   h+=field("Prazo Contratual",fmtDate(g.prazo));
-  h+=field("Previsão de Estoque",fmtDate(g.cdd));
+  h+=field("Previsão de Estoque",fmtDate(g.prevEstoque));
   h+=field("Status Pagamento",g.pgto);
-  h+=field("Data de Entrada no Estoque",fmtDate(g.gr));
   h+=field("Planejamento",g.pareto);
-  h+=field("Informações Relevantes",g.comentario);
+  // 1.3 — Data do Empenho: somente para pedidos Públicos
+  if (isPublico(g.publico)) {
+    h+=field("Data do Empenho", fmtDate(g.empenho) || "À confirmar");
+  }
+  // Tabela de materiais
   h+='<div class="materials-block field"><div class="k">Materiais</div><table class="mat-table"><thead><tr><th>Código</th><th>Descrição</th><th style="text-align:center">Qtd</th></tr></thead><tbody>'+matRows+'</tbody></table></div>';
+  // 1.7 — Comentário fixo destacado (sempre visível)
+  h+='<div class="fixed-note">📌 Data de entrega será entre 10 a 15 dias da data de entrada de estoque (se status Pagamento Aprovado).</div>';
   h+='</div>';
   h+=buildTimeline(g);
+  // 1.8 — Link DHL Track & Trace (próximo ao Faturamento na linha do tempo)
+  h+='<div class="dhl-row"><a class="dhl-btn" href="https://mysctrackandtrace.dhl.com/" target="_blank" rel="noopener" title="Rastrear Nota Fiscal na DHL">DHL &nbsp;▸ Rastrear Nota Fiscal</a></div>';
   h+='</div>';
   return h;
 }
 
+// ── Linha do tempo (sem RDD e sem Entrada no Estoque) ──
 function buildTimeline(g) {
   var steps=[
     {label:"Booking",date:g.creation},
-    {label:"RDD",date:g.rdd},
-    {label:"Previsão de Estoque",date:g.cdd},
+    {label:"Previsão de Estoque",date:g.prevEstoque},
     {label:"Produção",date:g.z4},
     {label:"Faturamento",date:g.billing},
     {label:"Entrega",date:g.delivery},
@@ -427,7 +461,7 @@ function buildTimeline(g) {
   return h;
 }
 
-// ── Search PO ──
+// ── Pesquisa por PO (Consulta) ──
 function doSearch() {
   var q=poInput.value.trim().toLowerCase();
   if (!q) return;
@@ -437,11 +471,19 @@ function doSearch() {
   for (var po in g) h+=renderOrderCard(g[po]);
   results.innerHTML=h;
 }
+// 2.4 — abre a Consulta com uma PO específica (clique na linha da Carteira)
+function openConsultaWithPO(po) {
+  switchPage("consulta");
+  poInput.value = po;
+  searchBtn.disabled = false;
+  doSearch();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
 poInput.addEventListener("keydown",function(e){ if(e.key==="Enter") doSearch(); });
 poInput.addEventListener("input",function(){ searchBtn.disabled=!(DATA.length&&poInput.value.trim()); });
 searchBtn.addEventListener("click",doSearch);
 
-// ── Representante ──
+// ── Carteira Representante ──
 function populateReps() {
   var reps={};
   for (var i=0;i<DATA.length;i++) {
@@ -502,47 +544,94 @@ function logout(resetSelect) {
 
 repPoSearch.addEventListener("input",renderRepTable);
 
-function renderRepTable() {
-  if (!loggedRep) return;
-  var q=repPoSearch.value.trim().toLowerCase();
-  var mt=DATA.filter(function(r){
-    if (normalizeRep(r[COLS.am])!==loggedRep) return false;
-    if (q && String(r[COLS.po]||"").toLowerCase().indexOf(q)===-1) return false;
-    return true;
-  });
-  if (!mt.length) {
-    repResults.innerHTML='<div class="card"><div class="empty-state"><div>Nenhum pedido encontrado'+(q?" para esta pesquisa":" para este representante")+'.</div></div></div>';
-    return;
-  }
-  var cols=[
+// Colunas da tabela da Carteira (2.1 Cliente e 2.3 Licitação adicionadas)
+function getRepCols() {
+  return [
     {key:COLS.po,label:"Customer PO No."},
+    {key:COLS.customer,label:"Cliente"},
     {key:COLS.materialCode,label:"Material"},
     {key:COLS.material,label:"Descrição"},
     {key:COLS.qty,label:"Qtd"},
     {key:COLS.am,label:"Representante",isRep:true},
     {key:COLS.pgto,label:"Status Pagamento"},
-    {key:COLS.cdd,label:"Previsão de Estoque",isDate:true},
-    {key:COLS.gr,label:"Data Entrada Estoque",isDate:true},
+    {key:COLS.prevEstoque,label:"Previsão de Estoque",isDate:true},
+    {key:COLS.publico,label:"Licitação",isLicitacao:true},
     {key:COLS.comentario,label:"Informações Relevantes"},
     {key:COLS.pareto,label:"Planejamento"}
   ];
+}
+
+// Retorna as linhas atualmente filtradas da carteira
+function getFilteredRepRows() {
+  if (!loggedRep) return [];
+  var q=repPoSearch.value.trim().toLowerCase();
+  return DATA.filter(function(r){
+    if (normalizeRep(r[COLS.am])!==loggedRep) return false;
+    if (q && String(r[COLS.po]||"").toLowerCase().indexOf(q)===-1) return false;
+    return true;
+  });
+}
+
+function cellValue(row, col) {
+  var v=row[col.key];
+  if (col.isRep) v=normalizeRep(v);
+  else if (col.isDate) v=fmtDate(v)||"—";
+  else if (col.isLicitacao) v=(v!==null&&v!==undefined&&v!=="")?v:"À confirmar";
+  return (v!==null&&v!==undefined&&v!=="")?v:"—";
+}
+
+function renderRepTable() {
+  if (!loggedRep) return;
+  var mt=getFilteredRepRows();
+  var q=repPoSearch.value.trim();
+  if (!mt.length) {
+    repResults.innerHTML='<div class="card"><div class="empty-state"><div>Nenhum pedido encontrado'+(q?" para esta pesquisa":" para este representante")+'.</div></div></div>';
+    return;
+  }
+  var cols=getRepCols();
   var thead="<tr>";
   for (var c=0;c<cols.length;c++) thead+="<th>"+cols[c].label+"</th>";
   thead+="</tr>";
   var tbody="";
   for (var i=0;i<mt.length;i++) {
-    tbody+="<tr>";
+    var po=String(mt[i][COLS.po]||"").replace(/"/g,'&quot;');
+    tbody+='<tr data-po="'+po+'">';
     for (var c2=0;c2<cols.length;c2++) {
-      var v=mt[i][cols[c2].key];
-      if (cols[c2].isRep) v=normalizeRep(v);
-      else if (cols[c2].isDate) v=fmtDate(v)||"—";
-      v=(v!==null&&v!==undefined&&v!=="")?v:"—";
-      tbody+="<td>"+v+"</td>";
+      tbody+="<td>"+cellValue(mt[i],cols[c2])+"</td>";
     }
     tbody+="</tr>";
   }
-  repResults.innerHTML='<div class="card" style="padding:20px;"><div class="rep-summary"><strong>'+mt.length+'</strong> itens na carteira de <strong>'+loggedRep+'</strong>'+(q?' (filtrado por "'+repPoSearch.value+'")':'')+'</div><div class="rep-table-wrap"><table class="rep-table"><thead>'+thead+'</thead><tbody>'+tbody+'</tbody></table></div></div>';
+  repResults.innerHTML='<div class="card" style="padding:20px;"><div class="rep-summary"><strong>'+mt.length+'</strong> itens na carteira de <strong>'+loggedRep+'</strong>'+(q?' (filtrado por "'+q+'")':'')+'</div><div class="rep-table-wrap"><table class="rep-table" id="repTable"><thead>'+thead+'</thead><tbody>'+tbody+'</tbody></table></div><div class="rep-hint">💡 Clique em uma linha para abrir a Consulta do Pedido</div></div>';
+
+  // 2.4 — clique na linha abre a Consulta de Pedido
+  var rows=document.querySelectorAll("#repTable tbody tr");
+  for (var r=0;r<rows.length;r++) {
+    rows[r].addEventListener("click", function(){
+      openConsultaWithPO(this.getAttribute("data-po"));
+    });
+  }
 }
+
+// 2.2 — Exportar para Excel os dados filtrados (com cabeçalhos)
+exportBtn.addEventListener("click", function(){
+  var mt=getFilteredRepRows();
+  if (!mt.length) return;
+  var cols=getRepCols();
+  var aoa=[cols.map(function(c){ return c.label; })];
+  for (var i=0;i<mt.length;i++) {
+    var row=[];
+    for (var c=0;c<cols.length;c++) {
+      var v=cellValue(mt[i],cols[c]);
+      row.push(v==="—"?"":v);
+    }
+    aoa.push(row);
+  }
+  var ws=XLSX.utils.aoa_to_sheet(aoa);
+  var wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,"Carteira");
+  var fname="Carteira_"+loggedRep.replace(/[^A-Za-z0-9]/g,"_")+"_"+new Date().toISOString().split("T")[0]+".xlsx";
+  XLSX.writeFile(wb,fname);
+});
 
 // ── Init ──
 results.innerHTML=emptyCard("Carregando base de dados...","");
