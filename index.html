@@ -15,18 +15,16 @@
 }
 *{box-sizing:border-box;}
 body{margin:0;font-family:'Segoe UI',Roboto,Arial,sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;}
-header{background:linear-gradient(135deg,var(--blue-dark),var(--blue));color:#fff;padding:22px 20px 50px;position:relative;overflow:hidden;}
-header::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,0.08);}
-.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.2rem;}
-.brand .dot{width:10px;height:10px;border-radius:50%;background:#fff;}
-header h1{margin:14px 0 4px;font-size:1.5rem;font-weight:600;}
-header p{margin:0;opacity:0.85;font-size:0.9rem;}
-.data-badge{display:inline-block;background:rgba(255,255,255,0.18);border-radius:999px;padding:4px 12px;font-size:0.78rem;margin-top:8px;}
+/* ── Banner (imagem no topo) ── */
+header{position:relative;background:#0A2A5C;padding:0;overflow:hidden;}
+.banner-img{display:block;width:100%;aspect-ratio:3.59/1;max-height:320px;object-fit:cover;object-position:center;}
+@media(max-width:768px){.banner-img{aspect-ratio:3/1;max-height:none;object-position:22% center;}}
+.data-badge{position:absolute;bottom:12px;right:14px;background:rgba(6,18,46,0.75);color:#fff;border:1px solid rgba(255,255,255,0.25);border-radius:999px;padding:4px 12px;font-size:0.78rem;backdrop-filter:blur(4px);}
 nav{background:var(--blue-dark);display:flex;position:relative;z-index:10;}
 .nav-btn{background:none;border:none;color:rgba(255,255,255,0.75);padding:12px 22px;font-size:0.9rem;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;transition:all .15s;}
 .nav-btn:hover{color:#fff;background:rgba(255,255,255,0.08);}
 .nav-btn.active{color:#fff;border-bottom-color:#fff;}
-main{max-width:960px;margin:-30px auto 60px;padding:0 20px;position:relative;z-index:2;}
+main{max-width:960px;margin:24px auto 60px;padding:0 20px;position:relative;z-index:2;}
 .card{background:#fff;border-radius:14px;box-shadow:0 10px 30px rgba(10,31,51,0.08);border:1px solid var(--line);}
 .search-card{padding:20px;}
 .search-row{display:flex;gap:10px;flex-wrap:wrap;}
@@ -116,9 +114,7 @@ footer{text-align:center;color:var(--muted);font-size:0.78rem;padding:10px 20px 
 <body>
 
 <header>
-  <div class="brand"><span class="dot"></span> PHILIPS</div>
-  <h1>Portal de Pedidos</h1>
-  <p>Consulte o status do seu pedido ou a carteira por representante</p>
+  <img class="banner-img" src="banner.jpg" alt="Philips — Consulta de Pedidos. Acompanhe cada etapa. Entregamos confiança.">
   <div class="data-badge" id="dataBadge">Carregando base de dados...</div>
 </header>
 
@@ -562,11 +558,16 @@ function getRepCols() {
 }
 
 // Retorna as linhas atualmente filtradas da carteira
+// Exibe apenas ordens em aberto: Status em branco ou "Installing".
+// Ordens com Status "Recognized" (faturadas/instaladas) não aparecem.
 function getFilteredRepRows() {
   if (!loggedRep) return [];
   var q=repPoSearch.value.trim().toLowerCase();
   return DATA.filter(function(r){
     if (normalizeRep(r[COLS.am])!==loggedRep) return false;
+    // Filtro de ordens em aberto
+    var st=String(r[COLS.status]||"").trim().toLowerCase();
+    if (st!=="" && st!=="installing") return false;
     if (q && String(r[COLS.po]||"").toLowerCase().indexOf(q)===-1) return false;
     return true;
   });
@@ -601,7 +602,7 @@ function renderRepTable() {
     }
     tbody+="</tr>";
   }
-  repResults.innerHTML='<div class="card" style="padding:20px;"><div class="rep-summary"><strong>'+mt.length+'</strong> itens na carteira de <strong>'+loggedRep+'</strong>'+(q?' (filtrado por "'+q+'")':'')+'</div><div class="rep-table-wrap"><table class="rep-table" id="repTable"><thead>'+thead+'</thead><tbody>'+tbody+'</tbody></table></div><div class="rep-hint">💡 Clique em uma linha para abrir a Consulta do Pedido</div></div>';
+  repResults.innerHTML='<div class="card" style="padding:20px;"><div class="rep-summary"><strong>'+mt.length+'</strong> ordens em aberto na carteira de <strong>'+loggedRep+'</strong>'+(q?' (filtrado por "'+q+'")':'')+'</div><div class="rep-table-wrap"><table class="rep-table" id="repTable"><thead>'+thead+'</thead><tbody>'+tbody+'</tbody></table></div><div class="rep-hint">💡 Clique em uma linha para abrir a Consulta do Pedido</div></div>';
 
   // 2.4 — clique na linha abre a Consulta de Pedido
   var rows=document.querySelectorAll("#repTable tbody tr");
