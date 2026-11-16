@@ -115,6 +115,35 @@ button.primary:disabled{background:#9BB6D6;cursor:not-allowed;}
 .lrow .a .t2{font-size:0.68rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px;}
 .lrow .b{font-size:0.7rem;font-weight:700;white-space:nowrap;flex-shrink:0;}
 @media(max-width:560px){.m-sophia{max-width:92%;}.ocard .grid{grid-template-columns:1fr 1fr;}}
+.pill-prod{background:#F0EAF9;color:#6A3BAD;}
+/* escolha cliente/representante */
+.choice-row{display:flex;gap:10px;}
+.choice-btn{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:16px 12px;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;gap:3px;align-items:center;text-align:center;}
+.choice-btn:hover{border-color:var(--blue);background:#F4F8FE;}
+.choice-btn:disabled{opacity:0.5;cursor:not-allowed;}
+.choice-btn .ct{font-size:0.95rem;font-weight:800;color:var(--blue-dark);}
+.choice-btn .cs{font-size:0.72rem;color:var(--muted);}
+.backlink{background:none;border:none;color:var(--muted);font-size:0.8rem;font-weight:600;font-family:inherit;cursor:pointer;padding:4px;align-self:center;}
+.backlink:hover{color:var(--blue);}
+/* painel administrador */
+#screen-admin{display:none;min-height:100%;flex-direction:column;background:var(--paper);}
+.adm-head{background:linear-gradient(135deg,#003876,#0B5ED7);color:#fff;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;}
+.adm-head .t{font-size:1.05rem;font-weight:800;}
+.adm-head button{background:rgba(255,255,255,0.14);border:none;border-radius:10px;color:#fff;font-size:0.78rem;font-weight:600;font-family:inherit;padding:8px 14px;cursor:pointer;}
+.adm-body{max-width:760px;margin:0 auto;width:100%;padding:20px 16px 50px;display:flex;flex-direction:column;gap:16px;}
+.adm-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:10px;}
+.adm-card .h{font-size:0.95rem;font-weight:800;color:var(--blue-dark);}
+.adm-card p{margin:0;font-size:0.8rem;color:var(--muted);line-height:1.55;}
+.adm-card select,.adm-card input{border:1.5px solid var(--line);border-radius:10px;padding:11px 14px;font-size:0.88rem;font-family:inherit;color:var(--ink);background:#fff;outline:none;}
+.adm-card select:focus,.adm-card input:focus{border-color:var(--blue);}
+.adm-row{display:flex;gap:8px;flex-wrap:wrap;}
+.adm-row input{flex:1;min-width:140px;}
+.adm-row .primary{padding:11px 16px;font-size:0.85rem;}
+button.ghost2{background:none;border:1.5px solid var(--line);color:var(--muted);border-radius:10px;padding:11px 16px;font-size:0.85rem;font-weight:600;font-family:inherit;cursor:pointer;}
+button.ghost2:hover{border-color:var(--blue);color:var(--blue);}
+.usr-row{display:flex;align-items:center;justify-content:space-between;border:1px solid #EEF2F7;border-radius:8px;padding:7px 11px;font-size:0.8rem;font-weight:600;margin-bottom:5px;}
+.usr-row button{background:none;border:none;color:var(--late);cursor:pointer;font-size:0.72rem;font-weight:700;font-family:inherit;}
+#admBlock{width:100%;min-height:170px;border:1.5px solid var(--line);border-radius:10px;padding:12px;font-family:monospace;font-size:0.66rem;color:var(--ink);}
 </style>
 </head>
 <body>
@@ -151,22 +180,38 @@ button.primary:disabled{background:#9BB6D6;cursor:not-allowed;}
       </g>
     </svg>
     <h1>Olá! Eu sou a Sophia</h1>
-    <p>Sua assistente de pedidos Philips. Pergunte sobre suas ordens e eu respondo na hora, com a base do dia.</p>
+    <p>Sua assistente de pedidos Philips. Pergunte sobre seus pedidos e eu respondo na hora, com a base do dia.</p>
     <div class="hero-badge" id="baseBadge"><span class="dot"></span><span id="baseBadgeTxt">Carregando base de dados...</span></div>
   </div>
   <div class="login-sheet">
-    <div class="t">Entrar na conversa</div>
-    <div>
-      <label for="repSelect">Sua carteira (representante)</label>
-      <select id="repSelect" disabled><option value="">Carregando...</option></select>
+    <div id="stepChoice">
+      <div class="t" style="margin-bottom:12px;">Como você quer entrar?</div>
+      <div class="choice-row">
+        <button class="choice-btn" id="btnCliente" disabled>
+          <span class="ct">Sou Cliente</span>
+          <span class="cs">Consultar meu pedido</span>
+        </button>
+        <button class="choice-btn" id="btnRep" disabled>
+          <span class="ct">Sou Representante</span>
+          <span class="cs">Acessar minha carteira</span>
+        </button>
+      </div>
     </div>
-    <div>
-      <label for="pwdInput">Senha de acesso</label>
-      <input id="pwdInput" type="password" placeholder="Digite sua senha" autocomplete="off" disabled>
+    <div id="stepLogin" style="display:none;">
+      <div class="t">Entrar na conversa</div>
+      <div style="margin-top:12px;">
+        <label for="repSelect">Usuário</label>
+        <select id="repSelect"><option value="">Selecione o usuário...</option></select>
+      </div>
+      <div style="margin-top:10px;">
+        <label for="pwdInput">Senha</label>
+        <input id="pwdInput" type="password" placeholder="Digite sua senha" autocomplete="off">
+      </div>
+      <div class="login-err" id="loginErr" style="margin-top:8px;">Senha incorreta. Tente novamente.</div>
+      <button class="primary" id="loginBtn" style="margin-top:12px;width:100%;">Conversar com a Sophia</button>
+      <div style="text-align:center;"><button class="backlink" id="backChoice">← Voltar</button></div>
     </div>
-    <div class="login-err" id="loginErr">Senha incorreta. Tente novamente.</div>
-    <button class="primary" id="loginBtn" disabled>Conversar com a Sophia</button>
-    <div class="login-note">Cada representante acessa apenas a própria carteira.<br>Philips Medical Systems · Sales &amp; Service Delivery</div>
+    <div class="login-note">Philips Medical Systems · Sales &amp; Service Delivery</div>
   </div>
 </div>
 
@@ -215,6 +260,37 @@ button.primary:disabled{background:#9BB6D6;cursor:not-allowed;}
   </div>
 </div>
 
+<!-- ═══════ ADMINISTRADOR ═══════ -->
+<div id="screen-admin">
+  <div class="adm-head">
+    <div class="t">⚙ Administração — Fast Flow</div>
+    <button id="admExit">Sair</button>
+  </div>
+  <div class="adm-body">
+    <div class="adm-card">
+      <div class="h">Acessar uma carteira</div>
+      <p>O administrador acessa todas as funções de qualquer carteira — ou a visão geral com todas as ordens.</p>
+      <select id="admRepSelect"></select>
+      <div class="adm-row">
+        <button class="primary" id="admOpenRep">Abrir chat da carteira</button>
+        <button class="ghost2" id="admOpenCliente">Abrir como cliente</button>
+      </div>
+    </div>
+    <div class="adm-card">
+      <div class="h">Perfis de acesso (login e senha)</div>
+      <p>Crie um perfil novo (ex: um novo representante) ou gere nova senha para um existente. A mudança vale <strong>imediatamente nesta sessão</strong> para teste; para valer para todos, substitua o bloco <code>var PWD_HASHES = {...}</code> no index.html do GitHub pelo bloco gerado abaixo. O nome do perfil deve ser igual ao nome padronizado da carteira para que o login encontre as ordens.</p>
+      <div id="admUsers"></div>
+      <div class="adm-row">
+        <input type="text" id="admNewUser" placeholder="Usuário (ex: NOVO REP)">
+        <input type="text" id="admNewPwd" placeholder="Senha">
+        <button class="primary" id="admCreate">Criar / atualizar</button>
+      </div>
+      <div class="login-err" id="admMsg" style="display:none;"></div>
+      <textarea id="admBlock" readonly spellcheck="false" style="display:none;"></textarea>
+    </div>
+  </div>
+</div>
+
 <script>
 // =====================================================================
 // CONFIGURAÇÃO
@@ -222,6 +298,8 @@ button.primary:disabled{background:#9BB6D6;cursor:not-allowed;}
 var JSON_URL = "https://salesdelivery.github.io/consulta-pedidos/carteira.json";        // ← link do carteira.json (o mesmo de hoje)
 var NF_PDF_BASE = "nf/";  // pasta dos PDFs de NF no repositório (nf/54977.pdf)
 var DHL_URL = "https://mysctrackandtrace.dhl.com/";
+var ADMIN_HASH = "341892d480c261f5fc53c92b7a88cf2c50d1aecaf1765d4d3b4f19e89a86b18f"; // senha do perfil administrador
+var MATERIAIS_NACIONAIS = {"795190":1,"795208":1,"795210":1,"795218":1};
 // =====================================================================
 
 // ── Padronização de representantes (razão social → nome) ──
@@ -303,7 +381,7 @@ var C = {
   transportadora:"Transportadora"
 };
 
-var DATA = [], baseDateStr = "—", loggedRep = null, awaiting = null;
+var DATA = [], baseDateStr = "—", loggedRep = null, awaiting = null, persona = null;
 
 // ════════════════ Helpers ════════════════
 function $(id){ return document.getElementById(id); }
@@ -364,6 +442,7 @@ function digitsOf(v){ return String(v===null||v===undefined?"":v).replace(/\D/g,
 
 // linhas da carteira do representante logado
 function myRows(){ 
+  if(persona==="cliente" || loggedRep==="*") return DATA.slice();
   return DATA.filter(function(r){ return normalizeRep(r[C.am])===loggedRep; });
 }
 function myOpenRows(){ 
@@ -418,13 +497,40 @@ function groupByOPP(rows){
   return order.map(function(k){ return m[k]; });
 }
 
+// ── Regras de negócio derivadas ──
+function isFaturadoGroup(g){ return g.itemCount>0 && g.recogCount===g.itemCount; }
+function isNacionalGroup(g){
+  for(var i=0;i<g.materials.length;i++){
+    var c = digitsOf(g.materials[i].code).replace(/^0+/,"");
+    if(MATERIAIS_NACIONAIS[c]) return true;
+  }
+  return false;
+}
+// Estoque: nacional → Em produção até faturar; importado → MB52 decide; faturada → Faturado
+function derivedEstoque(g){
+  if(isFaturadoGroup(g)) return "Faturado";
+  if(isNacionalGroup(g)) return "Em produção";
+  if(norm(g.estoque)==="disponivel") return "Disponível";
+  return "Em importação";
+}
+// Pagamento: licitação ou faturada → sempre Aprovado
+function derivedPgto(g){
+  if(isFaturadoGroup(g)) return "Aprovado";
+  if(isPublico(g.publico)) return "Aprovado";
+  return g.pgto || "";
+}
+// Planejamento: faturada → Faturado
+function derivedPareto(g){
+  if(isFaturadoGroup(g)) return "Faturado";
+  return g.pareto || "";
+}
 function statusInfo(g){
-  var now = new Date();
   if(toDate(g.entregaReal)) return {cls:"pill-ok", label:"✓ Entregue"};
-  if(g.itemCount && g.recogCount===g.itemCount) return {cls:"pill-ok", label:"✓ Faturado"};
-  var prazo = toDate(g.prazo);
-  if(prazo && prazo < now) return {cls:"pill-late", label:"⚠ Atrasado"};
-  if(norm(g.estoque)==="disponivel") return {cls:"pill-teal", label:"Em Estoque"};
+  if(isFaturadoGroup(g)) return {cls:"pill-ok", label:"✓ Faturado"};
+  var est = derivedEstoque(g);
+  if(est==="Disponível") return {cls:"pill-teal", label:"Em Estoque"};
+  if(est==="Em produção") return {cls:"pill-prod", label:"Em Produção"};
+  if(est==="Em importação") return {cls:"pill-blue", label:"Em Importação"};
   return {cls:"pill-blue", label:"Em andamento"};
 }
 
@@ -449,6 +555,7 @@ function addCardNow(html){
   msgs.appendChild(d); scrollBottom();
 }
 function addChipsNow(list){
+  if(persona==="cliente") return;
   var wrap = document.createElement("div"); wrap.className="chips";
   list.forEach(function(c){
     var b = document.createElement("button"); b.className="chip"; b.textContent=c.label;
@@ -502,13 +609,14 @@ function orderCardHtml(g){
   h += '<div class="grid">';
   h += fieldHtml("Cliente", g.customer);
   h += fieldHtml("Data de Booking", fmtDate(g.creation));
-  var estN = norm(g.estoque);
-  var estTxt = estN==="disponivel" ? "Disponível" : (estN==="indisponivel" ? "Ainda não disponível" : null);
-  var estColor = estN==="disponivel" ? "color:#0E7490;font-weight:700;" : "";
-  h += '<div class="f"><span class="k">Estoque</span><span class="'+(estTxt?"v":"v dim")+'" style="'+estColor+'">'+(estTxt?estTxt:"—")+'</span></div>';
-  var pgtoColor = norm(g.pgto)==="aprovado" ? "color:#0F8A5F;font-weight:700;" : (norm(g.pgto)==="pendente" ? "color:#C77700;font-weight:700;" : "");
-  h += '<div class="f"><span class="k">Pagamento</span><span class="'+(g.pgto?"v":"v dim")+'" style="'+pgtoColor+'">'+(g.pgto?esc(g.pgto):"—")+'</span></div>';
+  var estTxt = derivedEstoque(g);
+  var estColor = estTxt==="Disponível" ? "color:#0E7490;font-weight:700;" : (estTxt==="Faturado" ? "color:#0F8A5F;font-weight:700;" : (estTxt==="Em produção" ? "color:#6A3BAD;font-weight:700;" : ""));
+  h += '<div class="f"><span class="k">Estoque</span><span class="v" style="'+estColor+'">'+esc(estTxt)+'</span></div>';
+  var pgtoTxt = derivedPgto(g);
+  var pgtoColor = norm(pgtoTxt)==="aprovado" ? "color:#0F8A5F;font-weight:700;" : (norm(pgtoTxt)==="pendente" ? "color:#C77700;font-weight:700;" : "");
+  h += '<div class="f"><span class="k">Pagamento</span><span class="'+(pgtoTxt?"v":"v dim")+'" style="'+pgtoColor+'">'+(pgtoTxt?esc(pgtoTxt):"—")+'</span></div>';
   h += fieldHtml("Prazo Contratual", fmtDate(g.prazo));
+  h += fieldHtml("Previsão de Entrega", fmtDate(g.prevEntrega));
   var licTxt = (g.publico!==null&&g.publico!==undefined&&String(g.publico).trim()!=="") ? g.publico : "À confirmar";
   h += fieldHtml("Licitação", licTxt);
   if(isPublico(g.publico)){
@@ -517,7 +625,8 @@ function orderCardHtml(g){
   if(g.entregaReal) h += fieldHtml("Entrega Realizada", fmtDate(g.entregaReal));
   if(g.transportadora) h += fieldHtml("Transportadora", g.transportadora);
   if(g.transpStatus) h += fieldHtml("Status do Transporte", g.transpStatus);
-  if(g.pareto) h += fieldHtml("Planejamento", g.pareto);
+  var parTxt = derivedPareto(g);
+  if(parTxt) h += fieldHtml("Planejamento", parTxt);
   h += '</div>';
   // materiais
   var rows = "";
@@ -534,7 +643,9 @@ function orderCardHtml(g){
       var cur = em && em.getUTCFullYear()===now.getFullYear() && em.getUTCMonth()===now.getMonth();
       nfh += '<div class="nf-row"><span class="n">NF '+esc(nfo.nf)+'</span>';
       if(fmtDate(nfo.emissao)) nfh += '<span class="d">emitida em '+fmtDate(nfo.emissao)+'</span>';
-      if(cur){
+      if(persona==="cliente"){
+        // cliente consulta o número da NF; o download fica com o representante/Philips
+      } else if(cur){
         nfh += '<a class="nf-btn" href="'+NF_PDF_BASE+encodeURIComponent(nfo.nf)+'.pdf" target="_blank" rel="noopener" title="Baixar NF em PDF">Baixar PDF</a>';
       } else {
         nfh += '<span class="nf-old">NF de mês anterior — solicite à Philips</span>';
@@ -543,21 +654,19 @@ function orderCardHtml(g){
     });
     h += '<div class="sect"><div class="k">Notas Fiscais</div>'+nfh+'</div>';
   }
-  // linha do tempo: Booking → Estoque → Faturamento → Entrega
+  // linha do tempo: Booking → Faturamento → Entrega
   var temBooking = !!toDate(g.creation);
-  var temEstoque = estN==="disponivel" || !!toDate(g.billing) || g.nfs.length>0 || !!toDate(g.entregaReal);
-  var temFat = !!toDate(g.billing) || g.nfs.length>0;
+  var temFat = !!toDate(g.billing) || g.nfs.length>0 || isFaturadoGroup(g);
   var temEnt = !!toDate(g.entregaReal);
   function stHtml(on, ok, label, dt){
     return '<div class="st"><div class="dot '+(ok?"ok":(on?"on":""))+'"></div><div class="l">'+label+'</div><div class="dt">'+(dt||"—")+'</div></div>';
   }
   h += '<div class="tl">';
   h += stHtml(temBooking,false,"Booking",fmtDate(g.creation));
-  h += stHtml(temEstoque,false,"Estoque","");
   h += stHtml(temFat,false,"Faturamento",fmtDate(g.billing)||(g.nfs.length&&fmtDate(g.nfs[0].emissao))||"");
-  h += stHtml(false,temEnt,"Entrega",fmtDate(g.entregaReal)||"");
+  h += stHtml(false,temEnt,"Entrega",fmtDate(g.entregaReal)||fmtDate(g.prevEntrega)||"");
   h += '</div>';
-  h += '<div class="note">A entrega acontece entre 10 e 15 dias após a entrada em estoque, com o pagamento aprovado.</div>';
+  h += '<div class="note">A entrega acontece entre 10 e 15 dias após o faturamento.</div>';
   if(g.nfs.length){
     h += '<div class="dhl-row"><a class="dhl-btn" href="'+DHL_URL+'" target="_blank" rel="noopener" title="Rastrear Nota Fiscal na DHL">DHL &nbsp;▸ Rastrear</a></div>';
   }
@@ -609,12 +718,18 @@ function moreChips(){
   ].concat(mainChips().slice(0,3));
 }
 
+function greetCliente(){
+  var hora = new Date().getHours();
+  var sauda = hora<12 ? "Bom dia" : (hora<18 ? "Boa tarde" : "Boa noite");
+  sophia([{t:"msg",html:sauda+"! Eu sou a <strong>Sophia</strong>, assistente de pedidos da Philips.<br><br>Sobre qual pedido você quer falar? Me diga o <strong>número do pedido (OPP)</strong> — ele foi enviado por e-mail de <strong>salesdeliveryfastflow@philips.com</strong> — ou o nome (ou parte do nome) do seu hospital ou clínica."}]);
+}
 function greet(){
+  if(persona==="cliente"){ greetCliente(); return; }
   var open = groupByOPP(myOpenRows());
   var now = new Date();
   var entregasMes = open.filter(function(g){ return sameMonth(g.prevEntrega, now) || sameMonth(g.entregaReal, now); }).length;
-  var pendentes = open.filter(function(g){ return norm(g.pgto)==="pendente"; }).length;
-  var estoqueOk = open.filter(function(g){ return norm(g.estoque)==="disponivel"; }).length;
+  var pendentes = open.filter(function(g){ return norm(derivedPgto(g))==="pendente"; }).length;
+  var estoqueOk = open.filter(function(g){ return derivedEstoque(g)==="Disponível"; }).length;
   var hora = new Date().getHours();
   var sauda = hora<12 ? "Bom dia" : (hora<18 ? "Boa tarde" : "Boa noite");
   var html = sauda+"! Você está na carteira <strong>"+esc(loggedRep)+"</strong>.<br><br>";
@@ -636,10 +751,10 @@ function intentOPP(q){
     return po && dq && (po.indexOf(dq)!==-1 || dq.indexOf(po)!==-1);
   });
   if(!matches.length){
-    sophia([
-      {t:"msg",html:"Não encontrei nenhuma ordem com a OPP <strong>"+esc(q)+"</strong> na sua carteira. Confere o número? Se a ordem for de outra carteira, ela não aparece aqui."},
-      {t:"chips",list:mainChips()}
-    ]);
+    var nf404 = persona==="cliente"
+      ? "Não encontrei nenhum pedido com o número <strong>"+esc(q)+"</strong>. Confira o número enviado por e-mail de <strong>salesdeliveryfastflow@philips.com</strong> — ou me diga o nome do seu hospital ou clínica."
+      : "Não encontrei nenhuma ordem com a OPP <strong>"+esc(q)+"</strong> na sua carteira. Confere o número? Se a ordem for de outra carteira, ela não aparece aqui.";
+    sophia([{t:"msg",html:nf404},{t:"chips",list:mainChips()}]);
     return;
   }
   var groups = groupByOPP(matches);
@@ -656,8 +771,9 @@ function intentOPP(q){
   var resumo = "";
   if(st0.label.indexOf("Entregue")!==-1) resumo = "foi <strong>entregue em "+fmtDate(g0.entregaReal)+"</strong>";
   else if(st0.label.indexOf("Faturado")!==-1) resumo = "já está <strong>faturada</strong>"+(g0.nfs.length?" (NF "+esc(g0.nfs[0].nf)+")":"");
-  else if(st0.label.indexOf("Atrasado")!==-1) resumo = "está <strong>em atraso</strong> frente ao prazo contratual — o time S&amp;SD está acompanhando";
   else if(st0.label.indexOf("Estoque")!==-1) resumo = "o equipamento <strong>já está disponível em estoque</strong>";
+  else if(st0.label.indexOf("Produção")!==-1) resumo = "o equipamento está <strong>em produção</strong>";
+  else if(st0.label.indexOf("Importação")!==-1) resumo = "o equipamento está <strong>em importação</strong>";
   else resumo = "está <strong>em andamento</strong>";
   parts.push({t:"msg",html:"Encontrei! A <strong>OPP "+esc(g0.opp)+"</strong> do <strong>"+esc(g0.customer||"")+"</strong> tem "+g0.itemCount+" "+(g0.itemCount===1?"item":"itens")+" e "+resumo+". Olha o resumo:"});
   groups.forEach(function(g){ parts.push({t:"card",html:orderCardHtml(g)}); });
@@ -688,8 +804,11 @@ function intentCliente(qRaw){
   }).filter(function(x){ return x.score>0; });
   scored.sort(function(a,b){ return b.score-a.score; });
   if(!scored.length){
+    var cli404 = persona==="cliente"
+      ? "Não encontrei nenhum pedido com esse nome. Tente outra parte do nome — ou me diga o número do pedido (OPP), enviado por e-mail de <strong>salesdeliveryfastflow@philips.com</strong>."
+      : "Não encontrei nenhum cliente com esse nome na sua carteira. Tente outra parte do nome — ou toque em uma opção:";
     sophia([
-      {t:"msg",html:"Não encontrei nenhum cliente com esse nome na sua carteira. Tente outra parte do nome — ou toque em uma opção:"},
+      {t:"msg",html:cli404},
       {t:"chips",list:mainChips()}
     ]);
     return;
@@ -709,7 +828,7 @@ function intentCliente(qRaw){
   var fat = groups.length - abertas.length;
   var html = "O <strong>"+esc(cname)+"</strong> tem <strong>"+abertas.length+" "+(abertas.length===1?"pedido em aberto":"pedidos em aberto")+"</strong>";
   if(fat) html += " e "+fat+" já faturado"+(fat>1?"s":"");
-  html += " na sua carteira"+(groups.length?". Toque para ver os detalhes:":".");
+  html += (persona==="cliente"?"":" na sua carteira")+(groups.length?". Toque para ver os detalhes:":".");
   sophia([
     {t:"msg",html:html},
     {t:"card",html:listRowsHtml(groups.slice(0,12), function(g){ var s=statusInfo(g); return '<span class="pill '+s.cls+'" style="font-size:0.62rem;">'+s.label+'</span>'; })},
@@ -737,7 +856,7 @@ function intentEntregas(){
   var groups = groupByOPP(myOpenRows());
   var doMes = groups.filter(function(g){ return sameMonth(g.prevEntrega, now) || sameMonth(g.entregaReal, now); });
   if(!doMes.length){
-    sophia([{t:"msg",html:"Não há entregas previstas para este mês na sua carteira. Assim que o faturamento acontecer, o prazo é de 10 a 15 dias após a entrada em estoque (com pagamento aprovado)."},{t:"chips",list:mainChips()}]);
+    sophia([{t:"msg",html:"Não há entregas previstas para este mês na sua carteira. Assim que o faturamento acontecer, o prazo é de 10 a 15 dias após o faturamento."},{t:"chips",list:mainChips()}]);
     return;
   }
   sophia([
@@ -752,18 +871,18 @@ function intentEntregas(){
 
 function intentPagamentos(){
   var groups = groupByOPP(myOpenRows());
-  var pend = groups.filter(function(g){ return norm(g.pgto)==="pendente"; });
+  var pend = groups.filter(function(g){ return norm(derivedPgto(g))==="pendente"; });
   if(!pend.length){
     sophia([{t:"msg",html:"Boa notícia: não há ordens com pagamento pendente na sua carteira."},{t:"chips",list:mainChips()}]);
     return;
   }
-  var comEstoque = pend.filter(function(g){ return norm(g.estoque)==="disponivel"; }).length;
+  var comEstoque = pend.filter(function(g){ return derivedEstoque(g)==="Disponível"; }).length;
   var html = "Encontrei <strong>"+pend.length+" "+(pend.length===1?"ordem":"ordens")+" com pagamento pendente</strong> na sua carteira.";
   if(comEstoque) html += " "+(comEstoque===1?"Uma delas já está":comEstoque+" delas já estão")+" disponíve"+(comEstoque===1?"l":"is")+" em estoque — vale agilizar com o cliente:";
   sophia([
     {t:"msg",html:html},
     {t:"card",html:listRowsHtml(pend, function(g){
-      return norm(g.estoque)==="disponivel" ? '<span style="color:#0E7490;">Em estoque</span>' : '<span style="color:#C77700;">Pendente</span>';
+      return derivedEstoque(g)==="Disponível" ? '<span style="color:#0E7490;">Em estoque</span>' : '<span style="color:#C77700;">Pendente</span>';
     })},
     {t:"chips",list:mainChips()}
   ]);
@@ -797,15 +916,16 @@ function intentEmpenhos(){
 }
 
 function intentEstoque(){
-  var groups = groupByOPP(myOpenRows()).filter(function(g){ return norm(g.estoque)==="disponivel"; });
+  var groups = groupByOPP(myOpenRows()).filter(function(g){ return derivedEstoque(g)==="Disponível"; });
   if(!groups.length){
     sophia([{t:"msg",html:"Nenhuma ordem da sua carteira está com o equipamento disponível em estoque neste momento. Te aviso assim que a base registrar a entrada!"},{t:"chips",list:mainChips()}]);
     return;
   }
   sophia([
-    {t:"msg",html:"<strong>"+groups.length+" "+(groups.length===1?"ordem já está":"ordens já estão")+" com equipamento disponível em estoque</strong>. Com o pagamento aprovado, a entrega acontece em 10 a 15 dias:"},
+    {t:"msg",html:"<strong>"+groups.length+" "+(groups.length===1?"ordem já está":"ordens já estão")+" com equipamento disponível em estoque</strong>. Após o faturamento, a entrega acontece em 10 a 15 dias:"},
     {t:"card",html:listRowsHtml(groups, function(g){
-      return norm(g.pgto)==="aprovado" ? '<span style="color:#0F8A5F;">Pgto. aprovado</span>' : '<span style="color:#C77700;">'+esc(g.pgto||"Pgto. à confirmar")+'</span>';
+      var dp = derivedPgto(g);
+      return norm(dp)==="aprovado" ? '<span style="color:#0F8A5F;">Pgto. aprovado</span>' : '<span style="color:#C77700;">'+esc(dp||"Pgto. à confirmar")+'</span>';
     })},
     {t:"chips",list:mainChips()}
   ]);
@@ -856,7 +976,7 @@ function intentExport(){
     var ws = XLSX.utils.aoa_to_sheet(aoa);
     var wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Carteira");
-    var fname = "Carteira_"+loggedRep.replace(/[^A-Za-z0-9]/g,"_")+"_"+new Date().toISOString().split("T")[0]+".xlsx";
+    var fname = "Carteira_"+(loggedRep==="*"?"TODAS":loggedRep).replace(/[^A-Za-z0-9]/g,"_")+"_"+new Date().toISOString().split("T")[0]+".xlsx";
     XLSX.writeFile(wb, fname);
     sophia([{t:"msg",html:"Prontinho! Baixei a sua carteira completa em Excel ("+rows.length+" itens). Confere na pasta de downloads."},{t:"chips",list:mainChips()}]);
   }catch(e){
@@ -877,6 +997,14 @@ function interpret(raw){
   if(!t) return;
   if(awaiting === "opp"){ awaiting = null; var dq0 = digitsOf(raw); if(dq0.length>=4){ intentOPP(dq0); } else { intentOPP(raw); } return; }
   if(awaiting === "cliente"){ awaiting = null; intentCliente(raw); return; }
+  if(persona==="cliente"){
+    var dqc = (t.match(/\d{5,}/) || [null])[0];
+    if(dqc){ intentOPP(dqc); return; }
+    if(/^(oi|ola|bom dia|boa tarde|boa noite|eai|e ai|hey|opa)\b/.test(t) && t.length < 22){ greet(); return; }
+    if(t.indexOf("obrigad")!==-1 || t.indexOf("valeu")!==-1 || t.indexOf("tchau")!==-1){ sophia([{t:"msg",html:"Por nada! A Philips agradece o contato. 👋"}]); return; }
+    intentCliente(raw);
+    return;
+  }
   var dq = (t.match(/\d{5,}/) || [null])[0];
   if(dq){ intentOPP(dq); return; }
   if(/^(oi|ola|bom dia|boa tarde|boa noite|eai|e ai|hey|opa)\b/.test(t) && t.length < 22){ greet(); return; }
@@ -932,45 +1060,122 @@ function populateReps(){
     if(am) reps[am] = true;
   });
   var sorted = Object.keys(reps).sort();
-  var h = '<option value="">Selecione sua carteira...</option>';
+  window._repList = sorted;
+  var h = '<option value="">Selecione o usuário...</option>';
   sorted.forEach(function(nm){ h += '<option value="'+esc(nm)+'">'+esc(nm)+'</option>'; });
-  var sel = $("repSelect");
-  sel.innerHTML = h;
-  sel.disabled = false;
-  $("pwdInput").disabled = false;
-  $("loginBtn").disabled = false;
+  h += '<option value="__ADMIN__">ADMINISTRADOR</option>';
+  $("repSelect").innerHTML = h;
+  $("btnCliente").disabled = false;
+  $("btnRep").disabled = false;
+}
+function enterChat(rep, asPersona){
+  persona = asPersona;
+  loggedRep = rep;
+  $("screen-login").style.display = "none";
+  $("screen-admin").style.display = "none";
+  $("screen-chat").style.display = "flex";
+  var sub;
+  if(persona==="cliente") sub = "Atendimento ao cliente · base de "+baseDateStr;
+  else if(rep==="*") sub = "Todas as carteiras · base de "+baseDateStr;
+  else sub = "Carteira "+rep+" · base de "+baseDateStr;
+  $("headSub").textContent = sub;
+  msgs.innerHTML = "";
+  var today = new Date();
+  addSys("Hoje, "+pad2(today.getHours())+"h"+pad2(today.getMinutes()));
+  greet();
+  chatInput.focus();
 }
 function tryLogin(){
   var rep = $("repSelect").value, pwd = $("pwdInput").value;
   $("loginErr").style.display = "none";
-  if(!rep){ $("loginErr").textContent = "Selecione a sua carteira."; $("loginErr").style.display = "block"; return; }
+  if(!rep){ $("loginErr").textContent = "Selecione o usuário."; $("loginErr").style.display = "block"; return; }
   if(!pwd){ $("loginErr").textContent = "Digite a sua senha."; $("loginErr").style.display = "block"; return; }
   sha256(pwd).then(function(hash){
-    if(PWD_HASHES[rep] && hash === PWD_HASHES[rep]){
-      loggedRep = rep;
-      $("screen-login").style.display = "none";
-      var sc = $("screen-chat");
-      sc.style.display = "flex";
-      $("headSub").textContent = "Carteira "+rep+" · base de "+baseDateStr;
-      msgs.innerHTML = "";
-      var today = new Date();
-      addSys("Hoje, "+pad2(today.getHours())+"h"+pad2(today.getMinutes()));
-      greet();
-      chatInput.focus();
-    } else {
-      $("loginErr").textContent = "Senha incorreta. Tente novamente.";
-      $("loginErr").style.display = "block";
-      $("pwdInput").value = "";
-      $("pwdInput").focus();
+    if(rep==="__ADMIN__"){
+      if(hash===ADMIN_HASH){ $("pwdInput").value=""; openAdmin(); }
+      else { loginFail(); }
+      return;
     }
+    if(PWD_HASHES[rep] && hash === PWD_HASHES[rep]){
+      $("pwdInput").value="";
+      enterChat(rep, "rep");
+    } else { loginFail(); }
   });
 }
+function loginFail(){
+  $("loginErr").textContent = "Senha incorreta. Tente novamente.";
+  $("loginErr").style.display = "block";
+  $("pwdInput").value = "";
+  $("pwdInput").focus();
+}
 function logout(){
-  loggedRep = null; awaiting = null;
+  loggedRep = null; persona = null; awaiting = null;
   msgs.innerHTML = "";
   $("screen-chat").style.display = "none";
+  $("screen-admin").style.display = "none";
   $("screen-login").style.display = "flex";
+  $("stepChoice").style.display = "block";
+  $("stepLogin").style.display = "none";
+  $("loginErr").style.display = "none";
   $("pwdInput").value = "";
+}
+
+// ════════════════ Painel do administrador ════════════════
+function openAdmin(){
+  $("screen-login").style.display = "none";
+  $("screen-chat").style.display = "none";
+  $("screen-admin").style.display = "flex";
+  var h = '<option value="*">TODAS AS CARTEIRAS (visão geral)</option>';
+  (window._repList||[]).forEach(function(nm){ h += '<option value="'+esc(nm)+'">'+esc(nm)+'</option>'; });
+  $("admRepSelect").innerHTML = h;
+  renderAdmUsers();
+}
+function renderAdmUsers(){
+  var h = "";
+  Object.keys(PWD_HASHES).sort().forEach(function(u){
+    h += '<div class="usr-row"><span>'+esc(u)+'</span><button data-user="'+esc(u)+'" class="usr-del" type="button">remover</button></div>';
+  });
+  $("admUsers").innerHTML = h;
+  var dels = document.querySelectorAll(".usr-del");
+  for(var i=0;i<dels.length;i++){
+    dels[i].addEventListener("click", function(){
+      var u = this.getAttribute("data-user");
+      delete PWD_HASHES[u];
+      renderAdmUsers();
+      showAdmBlock("Perfil \""+u+"\" removido desta sessão. Para valer para todos, substitua o bloco no index.html do GitHub pelo bloco abaixo:");
+    });
+  }
+}
+function showAdmBlock(msg){
+  var lines = Object.keys(PWD_HASHES).sort().map(function(u){
+    return '"'+u.replace(/"/g,'\\"')+'":"'+PWD_HASHES[u]+'"';
+  });
+  var block = "var PWD_HASHES = {\n" + lines.join(",\n") + "\n};";
+  var m = $("admMsg");
+  m.textContent = msg;
+  m.style.display = "block";
+  m.style.color = "#0F8A5F";
+  var ta = $("admBlock");
+  ta.value = block;
+  ta.style.display = "block";
+}
+function admCreateProfile(){
+  var u = $("admNewUser").value.trim().toUpperCase();
+  var p = $("admNewPwd").value;
+  var m = $("admMsg");
+  if(!u || !p){
+    m.textContent = "Preencha usuário e senha.";
+    m.style.color = "#C0392B";
+    m.style.display = "block";
+    return;
+  }
+  sha256(p).then(function(hash){
+    var existed = !!PWD_HASHES[u];
+    PWD_HASHES[u] = hash;
+    renderAdmUsers();
+    $("admNewUser").value = ""; $("admNewPwd").value = "";
+    showAdmBlock((existed ? "Senha de \""+u+"\" atualizada" : "Perfil \""+u+"\" criado")+" — já vale nesta sessão para teste. Para valer para todos, substitua o bloco \"var PWD_HASHES\" no index.html do GitHub pelo bloco abaixo:");
+  });
 }
 
 // ════════════════ Boot ════════════════
@@ -980,9 +1185,16 @@ document.addEventListener("DOMContentLoaded", function(){
   $("loginBtn").addEventListener("click", tryLogin);
   $("pwdInput").addEventListener("keydown", function(e){ if(e.key==="Enter") tryLogin(); });
   $("logoutBtn").addEventListener("click", logout);
+  $("btnCliente").addEventListener("click", function(){ enterChat(null, "cliente"); });
+  $("btnRep").addEventListener("click", function(){ $("stepChoice").style.display="none"; $("stepLogin").style.display="block"; });
+  $("backChoice").addEventListener("click", function(){ $("stepLogin").style.display="none"; $("stepChoice").style.display="block"; $("loginErr").style.display="none"; });
+  $("admExit").addEventListener("click", logout);
+  $("admOpenRep").addEventListener("click", function(){ enterChat($("admRepSelect").value || "*", "rep"); });
+  $("admOpenCliente").addEventListener("click", function(){ enterChat(null, "cliente"); });
+  $("admCreate").addEventListener("click", admCreateProfile);
   function send(){
     var v = chatInput.value.trim();
-    if(!v || !loggedRep) return;
+    if(!v || !persona) return;
     removeChips();
     addUser(v);
     chatInput.value = "";
