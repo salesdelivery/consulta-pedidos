@@ -3,182 +3,228 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portal de Pedidos | Philips</title>
-<!-- SheetJS: usado para exportar a carteira para Excel -->
+<title>Sophia | Philips Pedidos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 :root{
-  --blue:#0B5ED7;--blue-dark:#003876;
-  --ink:#0A1F33;--paper:#F7F9FC;--line:#DCE3EC;
-  --ok:#0F8A5F;--warn:#C77700;--late:#C0392B;--muted:#5A6B7D;
-  --prod:#6A3BAD;--dhl-y:#FFCC00;--dhl-r:#D40511;
+  --blue:#0B5ED7;--blue-dark:#003876;--ink:#0A1F33;--paper:#EDF2F9;
+  --line:#DCE3EC;--muted:#5A6B7D;--ok:#0F8A5F;--warn:#C77700;--late:#C0392B;--teal:#0E7490;
 }
 *{box-sizing:border-box;}
-body{margin:0;font-family:'Segoe UI',Roboto,Arial,sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;}
-/* ── Banner (imagem no topo) ── */
-header{position:relative;background:#0A2A5C;padding:0;overflow:hidden;}
-.banner-img{display:block;width:100%;aspect-ratio:3.59/1;max-height:320px;object-fit:cover;object-position:center;}
-@media(max-width:768px){.banner-img{aspect-ratio:3/1;max-height:none;object-position:22% center;}}
-.data-badge{position:absolute;bottom:12px;right:14px;background:rgba(6,18,46,0.75);color:#fff;border:1px solid rgba(255,255,255,0.25);border-radius:999px;padding:4px 12px;font-size:0.78rem;backdrop-filter:blur(4px);}
-nav{background:var(--blue-dark);display:flex;position:relative;z-index:10;}
-.nav-btn{background:none;border:none;color:rgba(255,255,255,0.75);padding:12px 22px;font-size:0.9rem;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;transition:all .15s;}
-.nav-btn:hover{color:#fff;background:rgba(255,255,255,0.08);}
-.nav-btn.active{color:#fff;border-bottom-color:#fff;}
-main{max-width:960px;margin:24px auto 60px;padding:0 20px;position:relative;z-index:2;}
-.card{background:#fff;border-radius:14px;box-shadow:0 10px 30px rgba(10,31,51,0.08);border:1px solid var(--line);}
-.search-card{padding:20px;}
-.search-row{display:flex;gap:10px;flex-wrap:wrap;}
-.search-row input[type=text],.search-row input[type=password]{flex:1;min-width:200px;padding:13px 16px;border:1.5px solid var(--line);border-radius:10px;font-size:1rem;outline:none;transition:border-color .15s;}
-.search-row input:focus{border-color:var(--blue);}
-.search-row input:disabled{background:#F5F7FA;color:#A8B4C2;}
-button.primary{background:var(--blue);color:#fff;border:none;padding:13px 20px;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;transition:background .15s;white-space:nowrap;}
+html,body{height:100%;}
+body{margin:0;font-family:'Inter','Segoe UI',system-ui,sans-serif;background:var(--paper);color:var(--ink);}
+
+/* ═══════ TELA DE ENTRADA ═══════ */
+#screen-login{min-height:100%;display:flex;flex-direction:column;background:linear-gradient(170deg,#003876 0%,#0B5ED7 55%,#1D74E8 100%);color:#fff;}
+.login-hero{flex:1 1 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:36px 24px 24px;text-align:center;}
+.logo-chip{background:#fff;border-radius:12px;padding:9px 20px;box-shadow:0 4px 14px rgba(0,20,60,0.3);}
+.logo-chip img{display:block;height:22px;width:auto;}
+.login-hero h1{margin:0;font-size:1.85rem;font-weight:800;letter-spacing:-0.5px;}
+.login-hero p{margin:0;font-size:0.92rem;line-height:1.55;opacity:0.88;max-width:300px;}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,0.14);border-radius:999px;padding:6px 14px;font-size:0.78rem;font-weight:600;}
+.hero-badge .dot{width:8px;height:8px;border-radius:50%;background:#5EE8A6;display:inline-block;}
+.hero-badge.err .dot{background:#FF8D7E;}
+.login-sheet{flex:0 0 auto;background:#fff;border-radius:24px 24px 0 0;padding:26px 24px 34px;color:var(--ink);display:flex;flex-direction:column;gap:14px;box-shadow:0 -12px 40px rgba(0,20,60,0.35);max-width:560px;width:100%;margin:0 auto;}
+.login-sheet .t{font-size:0.95rem;font-weight:700;}
+.login-sheet label{font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;}
+.login-sheet select,.login-sheet input{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:13px 16px;font-size:0.95rem;font-family:inherit;color:var(--ink);background:#fff;outline:none;}
+.login-sheet select:focus,.login-sheet input:focus{border-color:var(--blue);}
+.login-sheet select:disabled,.login-sheet input:disabled{background:#F5F7FA;color:#A8B4C2;}
+button.primary{background:var(--blue);color:#fff;border:none;border-radius:12px;padding:15px;font-size:0.95rem;font-weight:700;font-family:inherit;cursor:pointer;}
 button.primary:hover{background:var(--blue-dark);}
 button.primary:disabled{background:#9BB6D6;cursor:not-allowed;}
-button.ghost{background:none;border:1.5px solid var(--line);color:var(--muted);padding:10px 16px;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;}
-button.ghost:hover{border-color:var(--late);color:var(--late);}
-button.export{background:#1D6F42;color:#fff;border:none;padding:10px 16px;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;white-space:nowrap;}
-button.export:hover{background:#155230;}
-.load-status{margin-top:12px;font-size:0.85rem;color:var(--muted);display:flex;align-items:center;gap:8px;}
-.load-status.ok{color:var(--ok);}
-.load-status.err{color:var(--late);}
-.spinner{width:16px;height:16px;border:2px solid #DCE3EC;border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;flex-shrink:0;}
-@keyframes spin{to{transform:rotate(360deg);}}
-#results{margin-top:16px;}
-.empty-state{padding:50px 24px;text-align:center;color:var(--muted);}
-.empty-state svg{opacity:0.4;margin-bottom:10px;}
-.order-card{padding:24px;margin-bottom:16px;}
-.order-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:16px;}
-.order-head .po-label{font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;font-weight:600;}
-.order-head .po-value{font-size:1.1rem;font-weight:700;color:var(--blue-dark);}
-.status-pill{display:inline-block;padding:5px 13px;border-radius:999px;font-size:0.8rem;font-weight:700;white-space:nowrap;}
-.status-ok{background:#E5F6EE;color:var(--ok);}
-.status-warn{background:#FFF3E0;color:var(--warn);}
-.status-late{background:#FCEAE8;color:var(--late);}
-.status-prod{background:#F0EAF9;color:var(--prod);}
-.status-default{background:#EAF1FB;color:var(--blue-dark);}
-.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 20px;}
-@media(max-width:560px){.field-grid{grid-template-columns:1fr;}}
-.field{display:flex;flex-direction:column;gap:3px;}
-.field .k{font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;font-weight:600;}
-.field .v{font-size:0.95rem;font-weight:500;color:var(--ink);}
-.field .v.empty{color:#A8B4C2;font-weight:400;font-style:italic;}
-.materials-block{grid-column:1 / -1;margin-top:4px;}
-.materials-block .k{font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;font-weight:600;margin-bottom:8px;}
-.mat-table{width:100%;border-collapse:collapse;font-size:0.85rem;}
-.mat-table th{background:var(--paper);color:var(--muted);font-size:0.7rem;text-transform:uppercase;font-weight:700;padding:7px 10px;text-align:left;border-bottom:2px solid var(--line);}
-.mat-table td{padding:7px 10px;border-bottom:1px solid var(--line);}
-.mat-table tr:last-child td{border-bottom:none;}
-/* Comentário fixo destacado */
-.fixed-note{grid-column:1 / -1;background:#FFF8E6;border:1px solid #F0DEAA;border-left:4px solid var(--warn);border-radius:10px;padding:12px 16px;font-size:0.88rem;color:#7A4A00;font-weight:500;}
-/* Botão DHL */
-.dhl-row{margin-top:14px;display:flex;justify-content:flex-end;}
-.dhl-btn{display:inline-flex;align-items:center;gap:8px;background:var(--dhl-y);color:var(--dhl-r);border:none;padding:8px 14px;border-radius:8px;font-size:0.82rem;font-weight:800;font-style:italic;letter-spacing:0.5px;cursor:pointer;text-decoration:none;box-shadow:0 2px 6px rgba(0,0,0,0.12);transition:transform .1s;}
-.dhl-btn:hover{transform:scale(1.04);}
-.timeline{margin-top:18px;display:flex;justify-content:space-between;position:relative;padding-top:6px;}
-.timeline::before{content:"";position:absolute;top:16px;left:5%;right:5%;height:2px;background:var(--line);z-index:0;}
-.tl-step{flex:1;text-align:center;position:relative;z-index:1;}
-.tl-dot{width:18px;height:18px;border-radius:50%;background:#fff;border:3px solid var(--line);margin:0 auto 6px;}
-.tl-dot.filled{border-color:var(--blue);background:var(--blue);}
-.tl-dot.filled-ok{border-color:var(--ok);background:var(--ok);}
-.tl-step .tl-label{font-size:0.62rem;color:var(--muted);font-weight:600;text-transform:uppercase;}
-.tl-step .tl-date{font-size:0.72rem;color:var(--ink);margin-top:2px;}
-.rep-card{padding:20px;}
-.rep-select-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
-.rep-select-row select{flex:1;min-width:200px;padding:13px 16px;border:1.5px solid var(--line);border-radius:10px;font-size:0.95rem;outline:none;cursor:pointer;background:#fff;}
-.rep-select-row select:focus{border-color:var(--blue);}
-.rep-select-row select:disabled{background:#F5F7FA;color:#A8B4C2;}
-.login-box{margin-top:14px;padding:16px;background:var(--paper);border-radius:10px;border:1px solid var(--line);}
-.login-box .msg{font-size:0.85rem;color:var(--muted);margin-bottom:10px;}
-.login-err{color:var(--late);font-size:0.85rem;margin-top:8px;display:none;}
-.rep-logged{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;padding:12px 16px;background:#E5F6EE;border-radius:10px;font-size:0.9rem;color:var(--ok);font-weight:600;}
-.rep-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
-.rep-search-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
-.rep-search-row input{flex:1;min-width:180px;padding:11px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:0.9rem;outline:none;}
-.rep-search-row input:focus{border-color:var(--blue);}
-.rep-table-wrap{margin-top:14px;}
-.rep-table{width:100%;border-collapse:collapse;font-size:0.78rem;table-layout:auto;}
-.rep-table th{background:var(--blue-dark);color:#fff;font-size:0.66rem;text-transform:uppercase;font-weight:700;padding:9px 8px;text-align:left;white-space:normal;}
-.rep-table td{padding:8px 8px;border-bottom:1px solid var(--line);vertical-align:top;word-break:break-word;}
-.rep-table tbody tr{cursor:pointer;}
-.rep-table tr:hover td{background:#F0F4FF;}
-.rep-table tr:last-child td{border-bottom:none;}
-.rep-summary{font-size:0.82rem;color:var(--muted);margin-bottom:10px;}
-.rep-hint{font-size:0.75rem;color:var(--muted);margin-top:8px;font-style:italic;}
-#repResults .card{width:calc(100vw - 40px);max-width:1600px;position:relative;left:50%;transform:translateX(-50%);}
-@media(max-width:1000px){#repResults .card{width:100%;left:auto;transform:none;}.rep-table-wrap{overflow-x:auto;}}
-.page{display:none;}
-.page.active{display:block;}
-footer{text-align:center;color:var(--muted);font-size:0.78rem;padding:10px 20px 30px;}
+.login-err{display:none;color:var(--late);font-size:0.85rem;font-weight:600;}
+.login-note{font-size:0.72rem;color:var(--muted);text-align:center;line-height:1.5;}
+
+/* ═══════ CHAT ═══════ */
+#screen-chat{display:none;height:100%;height:100dvh;flex-direction:column;max-width:760px;margin:0 auto;background:var(--paper);box-shadow:0 0 40px rgba(10,31,51,0.08);}
+.chat-head{flex:0 0 auto;background:linear-gradient(135deg,#003876,#0B5ED7);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:12px;}
+.chat-head .who{display:flex;flex-direction:column;gap:2px;min-width:0;}
+.chat-head .who .n{font-size:1rem;font-weight:700;}
+.chat-head .who .s{font-size:0.72rem;opacity:0.85;display:flex;align-items:center;gap:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.chat-head .who .s .dot{width:7px;height:7px;border-radius:50%;background:#5EE8A6;display:inline-block;flex-shrink:0;}
+.chat-head button{margin-left:auto;background:rgba(255,255,255,0.14);border:none;border-radius:10px;color:#fff;font-size:0.76rem;font-weight:600;font-family:inherit;padding:8px 13px;cursor:pointer;flex-shrink:0;}
+.chat-head button:hover{background:rgba(255,255,255,0.25);}
+#msgs{flex:1 1 auto;overflow-y:auto;padding:18px 14px 10px;display:flex;flex-direction:column;gap:12px;-webkit-overflow-scrolling:touch;}
+.m-sys{align-self:center;background:#DEE7F3;color:var(--muted);font-size:0.68rem;font-weight:600;border-radius:999px;padding:4px 12px;}
+.m-sophia{align-self:flex-start;max-width:86%;background:#fff;border-radius:16px 16px 16px 4px;padding:12px 15px;font-size:0.88rem;line-height:1.55;box-shadow:0 2px 10px rgba(10,31,51,0.07);word-wrap:break-word;}
+.m-user{align-self:flex-end;max-width:80%;background:var(--blue);color:#fff;border-radius:16px 16px 4px 16px;padding:11px 15px;font-size:0.88rem;line-height:1.5;box-shadow:0 2px 10px rgba(11,94,215,0.25);word-wrap:break-word;}
+.m-card{align-self:flex-start;width:100%;max-width:420px;}
+.chips{align-self:flex-start;display:flex;flex-wrap:wrap;gap:8px;max-width:95%;}
+.chip{border:1.5px solid var(--blue);color:var(--blue);background:#fff;border-radius:999px;padding:8px 14px;font-size:0.8rem;font-weight:600;font-family:inherit;cursor:pointer;}
+.chip:hover{background:#EAF2FE;}
+.typing{align-self:flex-start;background:#fff;border-radius:16px 16px 16px 4px;padding:13px 17px;box-shadow:0 2px 10px rgba(10,31,51,0.07);display:flex;gap:5px;}
+.typing i{width:7px;height:7px;border-radius:50%;background:#A8B4C2;animation:tp 1s infinite;}
+.typing i:nth-child(2){animation-delay:0.15s;}
+.typing i:nth-child(3){animation-delay:0.3s;}
+@keyframes tp{0%,60%,100%{transform:translateY(0);opacity:0.5;}30%{transform:translateY(-4px);opacity:1;}}
+.inbar{flex:0 0 auto;background:#fff;border-top:1px solid #E4EAF2;padding:11px 12px;padding-bottom:calc(11px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:10px;}
+.inbar input{flex:1 1 auto;min-width:0;border:1.5px solid var(--line);border-radius:999px;padding:12px 18px;font-size:0.9rem;font-family:inherit;color:var(--ink);outline:none;}
+.inbar input:focus{border-color:var(--blue);}
+.inbar button{flex:0 0 auto;width:44px;height:44px;border-radius:50%;border:none;background:var(--blue);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.inbar button:hover{background:var(--blue-dark);}
+
+/* ═══════ CARD DO PEDIDO ═══════ */
+.ocard{background:#fff;border-radius:16px;box-shadow:0 4px 16px rgba(10,31,51,0.1);overflow:hidden;}
+.ocard .oh{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 15px;border-bottom:1px solid #ECF1F7;}
+.ocard .oh .k{font-size:0.62rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;}
+.ocard .oh .v{font-size:1rem;font-weight:800;color:var(--blue-dark);}
+.pill{font-size:0.72rem;font-weight:700;border-radius:999px;padding:5px 12px;white-space:nowrap;}
+.pill-ok{background:#E5F6EE;color:var(--ok);}
+.pill-teal{background:#DFF3F8;color:var(--teal);}
+.pill-warn{background:#FFF3E0;color:var(--warn);}
+.pill-late{background:#FCEAE8;color:var(--late);}
+.pill-blue{background:#EAF1FB;color:var(--blue-dark);}
+.ocard .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;padding:13px 15px;}
+.ocard .f{display:flex;flex-direction:column;gap:1px;min-width:0;}
+.ocard .f .k{font-size:0.6rem;font-weight:700;color:var(--muted);text-transform:uppercase;}
+.ocard .f .v{font-size:0.8rem;font-weight:600;word-wrap:break-word;}
+.ocard .f .v.dim{color:#A8B4C2;font-weight:400;font-style:italic;}
+.ocard .sect{padding:0 15px 12px;}
+.ocard .sect .k{font-size:0.6rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px;}
+.mt{width:100%;border-collapse:collapse;font-size:0.76rem;}
+.mt th{background:#F6F9FC;color:var(--muted);font-size:0.58rem;text-transform:uppercase;font-weight:700;padding:6px 8px;text-align:left;border-bottom:2px solid var(--line);}
+.mt td{padding:6px 8px;border-bottom:1px solid #EEF2F7;}
+.mt tr:last-child td{border-bottom:none;}
+.nf-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:#F8FAFD;margin-bottom:6px;}
+.nf-row .n{font-size:0.8rem;font-weight:700;color:var(--blue-dark);}
+.nf-row .d{font-size:0.7rem;color:var(--muted);}
+.nf-btn{display:inline-flex;align-items:center;gap:6px;margin-left:auto;background:var(--blue);color:#fff;border-radius:8px;padding:6px 12px;font-size:0.7rem;font-weight:700;text-decoration:none;}
+.nf-btn:hover{background:var(--blue-dark);}
+.nf-old{margin-left:auto;font-size:0.66rem;color:var(--muted);font-style:italic;}
+.tl{display:flex;justify-content:space-between;position:relative;padding:6px 15px 14px;}
+.tl::before{content:"";position:absolute;top:12px;left:12%;right:12%;height:2px;background:var(--line);}
+.tl .st{flex:1;text-align:center;position:relative;}
+.tl .dot{width:13px;height:13px;border-radius:50%;background:#fff;border:3px solid var(--line);margin:0 auto 4px;box-sizing:border-box;}
+.tl .dot.on{border-color:var(--blue);background:var(--blue);}
+.tl .dot.ok{border-color:var(--ok);background:var(--ok);}
+.tl .l{font-size:0.56rem;font-weight:700;color:var(--muted);text-transform:uppercase;}
+.tl .dt{font-size:0.62rem;color:var(--ink);margin-top:1px;}
+.note{margin:0 15px 14px;background:#FFF8E6;border:1px solid #F0DEAA;border-left:4px solid var(--warn);border-radius:10px;padding:10px 13px;font-size:0.73rem;line-height:1.5;color:#7A4A00;}
+.dhl-row{display:flex;justify-content:flex-end;padding:0 15px 14px;}
+.dhl-btn{display:inline-flex;align-items:center;background:#FFCC00;color:#D40511;border-radius:8px;padding:7px 13px;font-size:0.72rem;font-weight:800;font-style:italic;letter-spacing:0.4px;text-decoration:none;box-shadow:0 2px 6px rgba(0,0,0,0.12);}
+.dhl-btn:hover{transform:scale(1.03);}
+
+/* lista de ordens dentro do chat */
+.lrow{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #E4EAF2;border-radius:10px;padding:9px 12px;background:#fff;margin-bottom:6px;cursor:pointer;width:100%;text-align:left;font-family:inherit;}
+.lrow:hover{background:#F0F4FF;border-color:var(--blue);}
+.lrow .a{display:flex;flex-direction:column;gap:1px;min-width:0;}
+.lrow .a .t1{font-size:0.8rem;font-weight:700;color:var(--blue-dark);}
+.lrow .a .t2{font-size:0.68rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px;}
+.lrow .b{font-size:0.7rem;font-weight:700;white-space:nowrap;flex-shrink:0;}
+@media(max-width:560px){.m-sophia{max-width:92%;}.ocard .grid{grid-template-columns:1fr 1fr;}}
 </style>
 </head>
 <body>
 
-<header>
-  <img class="banner-img" src="banner.jpg" alt="Philips — Consulta de Pedidos. Acompanhe cada etapa. Entregamos confiança.">
-  <div class="data-badge" id="dataBadge">Carregando base de dados...</div>
-</header>
-
-<nav>
-  <button class="nav-btn active" id="navConsulta">🔍 Consulta de Pedido</button>
-  <button class="nav-btn" id="navRep">👤 Carteira Representante</button>
-</nav>
-
-<main>
-
-  <!-- ══════════ ABA: CONSULTA DE PEDIDO ══════════ -->
-  <div class="page active" id="page-consulta">
-    <div class="card search-card">
-      <div class="search-row">
-        <input type="text" id="poInput" placeholder="Digite o número da Customer PO..." autocomplete="off" disabled>
-        <button class="primary" id="searchBtn" disabled>Consultar</button>
-      </div>
-      <div class="load-status" id="loadStatus"><span class="spinner"></span> Conectando à base de dados...</div>
-    </div>
-    <div id="results"></div>
+<!-- ═══════ ENTRADA ═══════ -->
+<div id="screen-login">
+  <div class="login-hero">
+    <div class="logo-chip"><img src="philips-logo.png" alt="Philips"></div>
+    <svg width="96" height="96" viewBox="0 0 96 96" role="img" aria-label="Sophia, sua assistente de pedidos" style="display:block;">
+      <defs><clipPath id="avclip1"><circle cx="48" cy="48" r="45"/></clipPath></defs>
+      <circle cx="48" cy="48" r="47" fill="#CFE3FA" stroke="rgba(255,255,255,0.6)" stroke-width="2.5"/>
+      <g clip-path="url(#avclip1)">
+        <path d="M16 96 C16 73 30 64 48 64 C66 64 80 73 80 96 Z" fill="#0B5ED7"/>
+        <path d="M41 63 L48 73 L55 63 Z" fill="#FFFFFF"/>
+        <rect x="42" y="52" width="12" height="14" rx="5" fill="#EDB98B"/>
+        <ellipse cx="48" cy="37" rx="21" ry="22" fill="#4A332A"/>
+        <rect x="26" y="33" width="9" height="27" rx="4.5" fill="#4A332A"/>
+        <rect x="61" y="33" width="9" height="27" rx="4.5" fill="#4A332A"/>
+        <circle cx="30.5" cy="42" r="3.5" fill="#EDB98B"/>
+        <circle cx="65.5" cy="42" r="3.5" fill="#EDB98B"/>
+        <ellipse cx="48" cy="40" rx="16.5" ry="17.5" fill="#F7CDA4"/>
+        <path d="M30 37 C31 23 65 23 66 37 C59 29 37 29 30 37 Z" fill="#4A332A"/>
+        <circle cx="41.5" cy="40.5" r="2.3" fill="#33261E"/>
+        <circle cx="54.5" cy="40.5" r="2.3" fill="#33261E"/>
+        <path d="M38 36 C40 34.6 43 34.6 44.5 35.6" stroke="#4A332A" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+        <path d="M51.5 35.6 C53 34.6 56 34.6 58 36" stroke="#4A332A" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+        <circle cx="36.5" cy="46" r="2.6" fill="#F0A17E" opacity="0.5"/>
+        <circle cx="59.5" cy="46" r="2.6" fill="#F0A17E" opacity="0.5"/>
+        <path d="M42.5 48 C45 51 51 51 53.5 48" stroke="#9C5B33" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M27 31 C30 17 66 17 69 31" stroke="#0B5ED7" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+        <rect x="23.5" y="36" width="7" height="12" rx="3.5" fill="#0B5ED7"/>
+        <path d="M27 48 C27 55 36 58 42.5 56.8" stroke="#0B5ED7" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+        <circle cx="44" cy="56.6" r="2.8" fill="#0B5ED7"/>
+      </g>
+    </svg>
+    <h1>Olá! Eu sou a Sophia</h1>
+    <p>Sua assistente de pedidos Philips. Pergunte sobre suas ordens e eu respondo na hora, com a base do dia.</p>
+    <div class="hero-badge" id="baseBadge"><span class="dot"></span><span id="baseBadgeTxt">Carregando base de dados...</span></div>
   </div>
-
-  <!-- ══════════ ABA: CARTEIRA REPRESENTANTE ══════════ -->
-  <div class="page" id="page-representante">
-    <div class="card rep-card">
-      <div class="rep-select-row">
-        <select id="repSelect" disabled>
-          <option value="">Selecione o Representante...</option>
-        </select>
-      </div>
-      <div class="login-box" id="loginBox" style="display:none;">
-        <div class="msg">🔒 Digite a senha de acesso da carteira <strong id="loginRepName"></strong>:</div>
-        <div class="search-row">
-          <input type="password" id="pwdInput" placeholder="Senha..." autocomplete="off">
-          <button class="primary" id="loginBtn">Acessar</button>
-        </div>
-        <div class="login-err" id="loginErr">❌ Senha incorreta. Tente novamente.</div>
-      </div>
-      <div class="rep-logged" id="repLogged" style="display:none;">
-        <span id="repLoggedName"></span>
-        <div class="rep-actions">
-          <button class="export" id="exportBtn">📥 Exportar para Excel</button>
-          <button class="ghost" id="logoutBtn">Sair</button>
-        </div>
-      </div>
-      <div class="rep-search-row" id="repSearchRow" style="display:none;">
-        <input type="text" id="repPoSearch" placeholder="Pesquisar por Customer PO No..." autocomplete="off">
-      </div>
+  <div class="login-sheet">
+    <div class="t">Entrar na conversa</div>
+    <div>
+      <label for="repSelect">Sua carteira (representante)</label>
+      <select id="repSelect" disabled><option value="">Carregando...</option></select>
     </div>
-    <div id="repResults" style="margin-top:16px;"></div>
+    <div>
+      <label for="pwdInput">Senha de acesso</label>
+      <input id="pwdInput" type="password" placeholder="Digite sua senha" autocomplete="off" disabled>
+    </div>
+    <div class="login-err" id="loginErr">Senha incorreta. Tente novamente.</div>
+    <button class="primary" id="loginBtn" disabled>Conversar com a Sophia</button>
+    <div class="login-note">Cada representante acessa apenas a própria carteira.<br>Philips Medical Systems · Sales &amp; Service Delivery</div>
   </div>
+</div>
 
-</main>
-
-<footer>Philips Medical Systems &middot; Sales &amp; Service Delivery</footer>
+<!-- ═══════ CHAT ═══════ -->
+<div id="screen-chat">
+  <div class="chat-head">
+    <svg width="42" height="42" viewBox="0 0 96 96" role="img" aria-label="Sophia" style="display:block;flex-shrink:0;">
+      <defs><clipPath id="avclip2"><circle cx="48" cy="48" r="45"/></clipPath></defs>
+      <circle cx="48" cy="48" r="47" fill="#CFE3FA" stroke="rgba(255,255,255,0.6)" stroke-width="2.5"/>
+      <g clip-path="url(#avclip2)">
+        <path d="M16 96 C16 73 30 64 48 64 C66 64 80 73 80 96 Z" fill="#0B5ED7"/>
+        <path d="M41 63 L48 73 L55 63 Z" fill="#FFFFFF"/>
+        <rect x="42" y="52" width="12" height="14" rx="5" fill="#EDB98B"/>
+        <ellipse cx="48" cy="37" rx="21" ry="22" fill="#4A332A"/>
+        <rect x="26" y="33" width="9" height="27" rx="4.5" fill="#4A332A"/>
+        <rect x="61" y="33" width="9" height="27" rx="4.5" fill="#4A332A"/>
+        <circle cx="30.5" cy="42" r="3.5" fill="#EDB98B"/>
+        <circle cx="65.5" cy="42" r="3.5" fill="#EDB98B"/>
+        <ellipse cx="48" cy="40" rx="16.5" ry="17.5" fill="#F7CDA4"/>
+        <path d="M30 37 C31 23 65 23 66 37 C59 29 37 29 30 37 Z" fill="#4A332A"/>
+        <circle cx="41.5" cy="40.5" r="2.3" fill="#33261E"/>
+        <circle cx="54.5" cy="40.5" r="2.3" fill="#33261E"/>
+        <path d="M38 36 C40 34.6 43 34.6 44.5 35.6" stroke="#4A332A" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+        <path d="M51.5 35.6 C53 34.6 56 34.6 58 36" stroke="#4A332A" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+        <circle cx="36.5" cy="46" r="2.6" fill="#F0A17E" opacity="0.5"/>
+        <circle cx="59.5" cy="46" r="2.6" fill="#F0A17E" opacity="0.5"/>
+        <path d="M42.5 48 C45 51 51 51 53.5 48" stroke="#9C5B33" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M27 31 C30 17 66 17 69 31" stroke="#0B5ED7" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+        <rect x="23.5" y="36" width="7" height="12" rx="3.5" fill="#0B5ED7"/>
+        <path d="M27 48 C27 55 36 58 42.5 56.8" stroke="#0B5ED7" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+        <circle cx="44" cy="56.6" r="2.8" fill="#0B5ED7"/>
+      </g>
+    </svg>
+    <div class="who">
+      <div class="n">Sophia</div>
+      <div class="s"><span class="dot"></span><span id="headSub">—</span></div>
+    </div>
+    <button id="logoutBtn">Sair</button>
+  </div>
+  <div id="msgs"></div>
+  <div class="inbar">
+    <input type="text" id="chatInput" placeholder="Pergunte por OPP ou cliente..." autocomplete="off" aria-label="Mensagem para a Sophia">
+    <button id="sendBtn" aria-label="Enviar mensagem">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7Z"/></svg>
+    </button>
+  </div>
+</div>
 
 <script>
-// =============================================================
+// =====================================================================
 // CONFIGURAÇÃO
-// =============================================================
-var JSON_URL = "https://salesdelivery.github.io/consulta-pedidos/carteira.json"; // ← Cole aqui o link do carteira.json
-// =============================================================
+// =====================================================================
+var JSON_URL = "https://salesdelivery.github.io/consulta-pedidos/carteira.json";        // ← link do carteira.json (o mesmo de hoje)
+var NF_PDF_BASE = "nf/";  // pasta dos PDFs de NF no repositório (nf/54977.pdf)
+var DHL_URL = "https://mysctrackandtrace.dhl.com/";
+// =====================================================================
 
-// ── Mapa de padronização: RAZÃO SOCIAL → Nome do Representante ──
+// ── Padronização de representantes (razão social → nome) ──
 var NAME_MAP = {
 "REPRESENTACOES LTDA ME RAUBACH & TREVISA":"4MEDIC",
 "AGUIAR REPRESENTACOES LTDA ME":"AGUIAR",
@@ -217,7 +263,7 @@ var NAME_MAP = {
 "SERVICOS LTDA XTEC COMERCIO E":"XTEC"
 };
 
-// ── Hashes SHA-256 das senhas de cada representante ──
+// ── Hashes SHA-256 das senhas (as mesmas do portal) ──
 var PWD_HASHES = {
 "4MEDIC":"7523fe409622aae7c5c1346b92df99c46c1bf6c27190735f51e0dce139a0d93e",
 "AGUIAR":"e3f62d57a67264b1f4e938f67ce2e2ee16e7166371a6257f60063fbc59bbc0c5",
@@ -241,402 +287,711 @@ var PWD_HASHES = {
 "XTEC":"b2c4f1757505462c2fe85b3bea0b69a2c1081c8e7978892c7cd5743e2394994a"
 };
 
-// ── Mapeamento das colunas do JSON ──
-var COLS = {
-  po:"Customer PO No.", creation:"Creation Date", customer:"Sold to Customer Name",
-  material:"Material Description", materialCode:"Material",
-  prazo:"Prazo Contratual", am:"Account Manager Name", status:"Status",
-  deliveryDate:"Data de Entrega", installDate:"Data de Instalação",
-  qty:"QTY", z4:"Z4 Date", billing:"Billing Date", pgto:"PGTO",
-  comentario:"Comentários S&SD", pareto:"Pareto Nivel 1",
-  prevEstoque:"Previsão de Estoque",   // nova coluna (1.2)
-  empenho:"Data do Empenho",           // nova coluna (1.3)
-  publico:"Público Privado"            // nova coluna (2.3)
+// ── Colunas da base carteira.json ──
+var C = {
+  opp:"Customer PO No.", sd:"Sales Document", item:"SO Item", tipo:"Tipo de Ordem",
+  creation:"Creation Date", customer:"Sold to Customer Name",
+  mat:"Material", desc:"Material Description", qty:"QTY",
+  am:"Account Manager Name", status:"Status", statusSSD:"Status S&SD",
+  prazo:"Prazo Contratual", prevEstoque:"Previsão de Estoque",
+  prevEntrega:"Data de Entrega", prevInstal:"Data de Instalação",
+  z4:"Z4 Date", billing:"Billing Date", pgto:"PGTO",
+  coment:"Comentários S&SD", pareto:"Pareto Nivel 1",
+  empenho:"Data do Empenho", publico:"Público Privado",
+  estoque:"Estoque", nf:"NF", nfEmissao:"NF Data Emissão",
+  transpStatus:"Status Transporte", entregaReal:"Data Entrega Real",
+  transportadora:"Transportadora"
 };
 
-var DATA = [];
-var loggedRep = null;
+var DATA = [], baseDateStr = "—", loggedRep = null, awaiting = null;
 
-var poInput=document.getElementById("poInput"), searchBtn=document.getElementById("searchBtn"),
-    results=document.getElementById("results"), loadStatus=document.getElementById("loadStatus"),
-    dataBadge=document.getElementById("dataBadge"), repSelect=document.getElementById("repSelect"),
-    repResults=document.getElementById("repResults"), loginBox=document.getElementById("loginBox"),
-    loginRepName=document.getElementById("loginRepName"), pwdInput=document.getElementById("pwdInput"),
-    loginBtn=document.getElementById("loginBtn"), loginErr=document.getElementById("loginErr"),
-    repLogged=document.getElementById("repLogged"), repLoggedName=document.getElementById("repLoggedName"),
-    logoutBtn=document.getElementById("logoutBtn"), repSearchRow=document.getElementById("repSearchRow"),
-    repPoSearch=document.getElementById("repPoSearch"), exportBtn=document.getElementById("exportBtn"),
-    navConsulta=document.getElementById("navConsulta"), navRep=document.getElementById("navRep");
-
-// ── Navegação entre abas ──
-navConsulta.addEventListener("click", function(){ switchPage("consulta"); });
-navRep.addEventListener("click", function(){ switchPage("representante"); });
-function switchPage(name) {
-  document.querySelectorAll(".page").forEach(function(p){ p.classList.remove("active"); });
-  document.querySelectorAll(".nav-btn").forEach(function(b){ b.classList.remove("active"); });
-  document.getElementById("page-"+name).classList.add("active");
-  (name==="consulta"?navConsulta:navRep).classList.add("active");
+// ════════════════ Helpers ════════════════
+function $(id){ return document.getElementById(id); }
+function pad2(n){ n=String(n); return n.length<2 ? "0"+n : n; }
+function norm(s){
+  s = String(s===null||s===undefined?"":s).toLowerCase();
+  try { s = s.normalize("NFD").replace(/[̀-ͯ]/g,""); } catch(e){}
+  return s;
 }
-
-// ── Helpers ──
-function normalizeRep(name) {
-  if (!name) return null;
+function esc(s){
+  return String(s===null||s===undefined?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function normalizeRep(name){
+  if(!name) return null;
   var t = String(name).trim();
   return NAME_MAP[t] || t;
 }
-function excelToDate(val) {
-  if (val===null||val===undefined||val===""||val==="NaT") return null;
-  if (typeof val==="number" && val>40000 && val<60000) {
+function toDate(val){
+  if(val===null||val===undefined||val===""||val==="NaT") return null;
+  if(typeof val==="number" && val>40000 && val<60000){
     var d = new Date(Date.UTC(1899,11,30));
     d.setUTCDate(d.getUTCDate()+Math.floor(val));
     return d;
   }
-  if (typeof val==="string" && val.length>=8) {
-    var p = new Date(val);
-    if (!isNaN(p.getTime())) return p;
+  if(typeof val==="string" && val.length>=8){
+    var p = new Date(val.length===10 ? val+"T00:00:00Z" : val);
+    if(!isNaN(p.getTime())) return p;
   }
   return null;
 }
-function fmtDate(val) {
-  var d = excelToDate(val);
-  if (!d) return null;
-  return String(d.getUTCDate()).padStart(2,"0")+"/"+String(d.getUTCMonth()+1).padStart(2,"0")+"/"+d.getUTCFullYear();
+function fmtDate(val){
+  var d = toDate(val);
+  if(!d) return null;
+  return pad2(d.getUTCDate())+"/"+pad2(d.getUTCMonth()+1)+"/"+d.getUTCFullYear();
 }
-function maxDate(a,b) {
-  var da=excelToDate(a), db=excelToDate(b);
+function maxDate(a,b){
+  var da=toDate(a), db=toDate(b);
   if(!da&&!db) return null;
   if(!da) return b;
   if(!db) return a;
-  return da>=db?a:b;
+  return da>=db ? a : b;
 }
-// Identifica se o pedido é público (licitação)
-function isPublico(val) {
-  return String(val||"").toLowerCase().indexOf("públic") !== -1 ||
-         String(val||"").toLowerCase().indexOf("public") !== -1;
+function sameMonth(val, ref){
+  var d = toDate(val);
+  if(!d) return false;
+  return d.getUTCFullYear()===ref.getFullYear() && d.getUTCMonth()===ref.getMonth();
 }
-function sha256(str) {
+function sha256(str){
   var buf = new TextEncoder().encode(str);
   return crypto.subtle.digest("SHA-256", buf).then(function(hash){
     var arr = Array.prototype.slice.call(new Uint8Array(hash));
-    return arr.map(function(b){ return b.toString(16).padStart(2,"0"); }).join("");
+    return arr.map(function(b){ var h=b.toString(16); return h.length<2?"0"+h:h; }).join("");
   });
 }
+function isPublico(v){ var n=norm(v); return n.indexOf("public")!==-1; }
+function isRecognized(row){ return norm(row[C.status]).indexOf("recognized")!==-1; }
+function digitsOf(v){ return String(v===null||v===undefined?"":v).replace(/\D/g,""); }
 
-// ── Carga da base ──
-function loadData() {
-  if (!JSON_URL) {
-    loadStatus.className="load-status err";
-    loadStatus.innerHTML="⚠️ JSON_URL não configurado.";
-    dataBadge.textContent="Base não configurada";
+// linhas da carteira do representante logado
+function myRows(){ 
+  return DATA.filter(function(r){ return normalizeRep(r[C.am])===loggedRep; });
+}
+function myOpenRows(){ 
+  return myRows().filter(function(r){ return !isRecognized(r); });
+}
+
+// ════════════════ Agrupamento por OPP ════════════════
+function groupByOPP(rows){
+  var m = {}, order = [];
+  rows.forEach(function(it){
+    var opp = String(it[C.opp]||"").trim();
+    if(!opp) return;
+    if(!m[opp]){
+      m[opp] = {
+        opp:opp, customer:it[C.customer], creation:it[C.creation], prazo:it[C.prazo],
+        prevEstoque:it[C.prevEstoque], prevEntrega:it[C.prevEntrega], prevInstal:it[C.prevInstal],
+        z4:it[C.z4], billing:it[C.billing], pgto:it[C.pgto], pareto:it[C.pareto],
+        coment:it[C.coment], empenho:it[C.empenho], publico:it[C.publico],
+        estoque:it[C.estoque], entregaReal:it[C.entregaReal], transpStatus:it[C.transpStatus],
+        transportadora:it[C.transportadora],
+        itemCount:0, recogCount:0, materials:[], nfs:[]
+      };
+      order.push(opp);
+    } else {
+      var g = m[opp];
+      g.creation = maxDate(g.creation, it[C.creation]);
+      g.prazo = maxDate(g.prazo, it[C.prazo]);
+      g.prevEntrega = maxDate(g.prevEntrega, it[C.prevEntrega]);
+      g.prevInstal = maxDate(g.prevInstal, it[C.prevInstal]);
+      g.billing = maxDate(g.billing, it[C.billing]);
+      g.empenho = maxDate(g.empenho, it[C.empenho]);
+      g.entregaReal = maxDate(g.entregaReal, it[C.entregaReal]);
+      if(!g.pgto && it[C.pgto]) g.pgto = it[C.pgto];
+      if(!g.pareto && it[C.pareto]) g.pareto = it[C.pareto];
+      if(!g.coment && it[C.coment]) g.coment = it[C.coment];
+      if(!g.publico && it[C.publico]) g.publico = it[C.publico];
+      if(norm(it[C.estoque])==="disponivel") g.estoque = "Disponível";
+      if(!g.transpStatus && it[C.transpStatus]) g.transpStatus = it[C.transpStatus];
+      if(!g.transportadora && it[C.transportadora]) g.transportadora = it[C.transportadora];
+    }
+    var g2 = m[opp];
+    g2.itemCount++;
+    if(isRecognized(it)) g2.recogCount++;
+    g2.materials.push({code:it[C.mat], desc:it[C.desc], qty:it[C.qty]});
+    var nfv = it[C.nf];
+    if(nfv!==null && nfv!==undefined && String(nfv).trim()!==""){
+      nfv = String(nfv).trim();
+      var has = g2.nfs.some(function(x){ return x.nf===nfv; });
+      if(!has) g2.nfs.push({nf:nfv, emissao:it[C.nfEmissao]});
+    }
+  });
+  return order.map(function(k){ return m[k]; });
+}
+
+function statusInfo(g){
+  var now = new Date();
+  if(toDate(g.entregaReal)) return {cls:"pill-ok", label:"✓ Entregue"};
+  if(g.itemCount && g.recogCount===g.itemCount) return {cls:"pill-ok", label:"✓ Faturado"};
+  var prazo = toDate(g.prazo);
+  if(prazo && prazo < now) return {cls:"pill-late", label:"⚠ Atrasado"};
+  if(norm(g.estoque)==="disponivel") return {cls:"pill-teal", label:"Em Estoque"};
+  return {cls:"pill-blue", label:"Em andamento"};
+}
+
+// ════════════════ UI do chat ════════════════
+var msgs, chatInput;
+function scrollBottom(){ msgs.scrollTop = msgs.scrollHeight; }
+function addSys(text){
+  var d = document.createElement("div"); d.className="m-sys"; d.textContent=text;
+  msgs.appendChild(d); scrollBottom();
+}
+function addUser(text){
+  var d = document.createElement("div"); d.className="m-user"; d.textContent=text;
+  msgs.appendChild(d); scrollBottom();
+}
+function addSophiaNow(html){
+  var d = document.createElement("div"); d.className="m-sophia"; d.innerHTML=html;
+  msgs.appendChild(d); scrollBottom();
+  return d;
+}
+function addCardNow(html){
+  var d = document.createElement("div"); d.className="m-card"; d.innerHTML=html;
+  msgs.appendChild(d); scrollBottom();
+}
+function addChipsNow(list){
+  var wrap = document.createElement("div"); wrap.className="chips";
+  list.forEach(function(c){
+    var b = document.createElement("button"); b.className="chip"; b.textContent=c.label;
+    b.addEventListener("click", function(){
+      removeChips();
+      addUser(c.label);
+      setTimeout(function(){ c.action(); }, 150);
+    });
+    wrap.appendChild(b);
+  });
+  msgs.appendChild(wrap); scrollBottom();
+}
+function removeChips(){
+  var olds = msgs.querySelectorAll(".chips");
+  for(var i=0;i<olds.length;i++) olds[i].parentNode.removeChild(olds[i]);
+}
+var typingEl = null;
+function showTyping(){
+  typingEl = document.createElement("div");
+  typingEl.className="typing";
+  typingEl.innerHTML="<i></i><i></i><i></i>";
+  msgs.appendChild(typingEl); scrollBottom();
+}
+function hideTyping(){
+  if(typingEl && typingEl.parentNode) typingEl.parentNode.removeChild(typingEl);
+  typingEl = null;
+}
+// resposta da Sophia com efeito de digitação
+function sophia(parts){
+  showTyping();
+  setTimeout(function(){
+    hideTyping();
+    parts.forEach(function(p){
+      if(p.t==="msg") addSophiaNow(p.html);
+      else if(p.t==="card") addCardNow(p.html);
+      else if(p.t==="chips") addChipsNow(p.list);
+    });
+  }, 420);
+}
+
+// ════════════════ Renderização do card da ordem ════════════════
+function fieldHtml(k, v, cls){
+  var val = (v!==null&&v!==undefined&&String(v).trim()!=="") ? esc(v) : "—";
+  var vcls = (val==="—") ? "v dim" : "v"+(cls?(" "+cls):"");
+  return '<div class="f"><span class="k">'+k+'</span><span class="'+vcls+'" style="'+(cls||"")+'">'+val+'</span></div>';
+}
+function orderCardHtml(g){
+  var st = statusInfo(g);
+  var h = '<div class="ocard">';
+  h += '<div class="oh"><div><div class="k">OPP</div><div class="v">'+esc(g.opp)+'</div></div><span class="pill '+st.cls+'">'+st.label+'</span></div>';
+  h += '<div class="grid">';
+  h += fieldHtml("Cliente", g.customer);
+  h += fieldHtml("Data de Booking", fmtDate(g.creation));
+  var estN = norm(g.estoque);
+  var estTxt = estN==="disponivel" ? "Disponível" : (estN==="indisponivel" ? "Ainda não disponível" : null);
+  var estColor = estN==="disponivel" ? "color:#0E7490;font-weight:700;" : "";
+  h += '<div class="f"><span class="k">Estoque</span><span class="'+(estTxt?"v":"v dim")+'" style="'+estColor+'">'+(estTxt?estTxt:"—")+'</span></div>';
+  var pgtoColor = norm(g.pgto)==="aprovado" ? "color:#0F8A5F;font-weight:700;" : (norm(g.pgto)==="pendente" ? "color:#C77700;font-weight:700;" : "");
+  h += '<div class="f"><span class="k">Pagamento</span><span class="'+(g.pgto?"v":"v dim")+'" style="'+pgtoColor+'">'+(g.pgto?esc(g.pgto):"—")+'</span></div>';
+  h += fieldHtml("Prazo Contratual", fmtDate(g.prazo));
+  var licTxt = (g.publico!==null&&g.publico!==undefined&&String(g.publico).trim()!=="") ? g.publico : "À confirmar";
+  h += fieldHtml("Licitação", licTxt);
+  if(isPublico(g.publico)){
+    h += fieldHtml("Data do Empenho", fmtDate(g.empenho) || "À confirmar");
+  }
+  if(g.entregaReal) h += fieldHtml("Entrega Realizada", fmtDate(g.entregaReal));
+  if(g.transportadora) h += fieldHtml("Transportadora", g.transportadora);
+  if(g.transpStatus) h += fieldHtml("Status do Transporte", g.transpStatus);
+  if(g.pareto) h += fieldHtml("Planejamento", g.pareto);
+  h += '</div>';
+  // materiais
+  var rows = "";
+  g.materials.forEach(function(mt){
+    rows += '<tr><td>'+esc(mt.code||"—")+'</td><td>'+esc(mt.desc||"—")+'</td><td style="text-align:center">'+esc(mt.qty||"—")+'</td></tr>';
+  });
+  h += '<div class="sect"><div class="k">Equipamentos</div><table class="mt"><thead><tr><th>Código</th><th>Descrição</th><th style="text-align:center">Qtd</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+  // notas fiscais
+  if(g.nfs.length){
+    var now = new Date();
+    var nfh = "";
+    g.nfs.forEach(function(nfo){
+      var em = toDate(nfo.emissao);
+      var cur = em && em.getUTCFullYear()===now.getFullYear() && em.getUTCMonth()===now.getMonth();
+      nfh += '<div class="nf-row"><span class="n">NF '+esc(nfo.nf)+'</span>';
+      if(fmtDate(nfo.emissao)) nfh += '<span class="d">emitida em '+fmtDate(nfo.emissao)+'</span>';
+      if(cur){
+        nfh += '<a class="nf-btn" href="'+NF_PDF_BASE+encodeURIComponent(nfo.nf)+'.pdf" target="_blank" rel="noopener" title="Baixar NF em PDF">Baixar PDF</a>';
+      } else {
+        nfh += '<span class="nf-old">NF de mês anterior — solicite à Philips</span>';
+      }
+      nfh += '</div>';
+    });
+    h += '<div class="sect"><div class="k">Notas Fiscais</div>'+nfh+'</div>';
+  }
+  // linha do tempo: Booking → Estoque → Faturamento → Entrega
+  var temBooking = !!toDate(g.creation);
+  var temEstoque = estN==="disponivel" || !!toDate(g.billing) || g.nfs.length>0 || !!toDate(g.entregaReal);
+  var temFat = !!toDate(g.billing) || g.nfs.length>0;
+  var temEnt = !!toDate(g.entregaReal);
+  function stHtml(on, ok, label, dt){
+    return '<div class="st"><div class="dot '+(ok?"ok":(on?"on":""))+'"></div><div class="l">'+label+'</div><div class="dt">'+(dt||"—")+'</div></div>';
+  }
+  h += '<div class="tl">';
+  h += stHtml(temBooking,false,"Booking",fmtDate(g.creation));
+  h += stHtml(temEstoque,false,"Estoque","");
+  h += stHtml(temFat,false,"Faturamento",fmtDate(g.billing)||(g.nfs.length&&fmtDate(g.nfs[0].emissao))||"");
+  h += stHtml(false,temEnt,"Entrega",fmtDate(g.entregaReal)||"");
+  h += '</div>';
+  h += '<div class="note">A entrega acontece entre 10 e 15 dias após a entrada em estoque, com o pagamento aprovado.</div>';
+  if(g.nfs.length){
+    h += '<div class="dhl-row"><a class="dhl-btn" href="'+DHL_URL+'" target="_blank" rel="noopener" title="Rastrear Nota Fiscal na DHL">DHL &nbsp;▸ Rastrear</a></div>';
+  }
+  h += '</div>';
+  return h;
+}
+
+// linha de lista clicável
+function listRowsHtml(groups, rightFn){
+  var h = '<div>';
+  groups.forEach(function(g){
+    var right = rightFn ? rightFn(g) : "";
+    h += '<button class="lrow" data-opp="'+esc(g.opp)+'"><span class="a"><span class="t1">OPP '+esc(g.opp)+'</span><span class="t2">'+esc(g.customer||"")+' · '+esc((g.materials[0]&&g.materials[0].desc)||"")+'</span></span><span class="b">'+right+'</span></button>';
+  });
+  h += '</div>';
+  return h;
+}
+// clique nas linhas (delegação)
+document.addEventListener("click", function(e){
+  var el = e.target;
+  while(el && el !== document.body){
+    if(el.className==="lrow" || (el.classList && el.classList.contains("lrow"))){
+      var opp = el.getAttribute("data-opp");
+      removeChips();
+      addUser("OPP "+opp);
+      setTimeout(function(){ intentOPP(opp); }, 150);
+      return;
+    }
+    el = el.parentNode;
+  }
+});
+
+// ════════════════ Intenções ════════════════
+function mainChips(){
+  return [
+    {label:"Minha carteira", action:intentCarteira},
+    {label:"Status de uma OPP", action:function(){ awaiting="opp"; sophia([{t:"msg",html:"Claro! Me diga o número da OPP que você quer consultar."}]); }},
+    {label:"Pedidos de um cliente", action:function(){ awaiting="cliente"; sophia([{t:"msg",html:"Me diga o nome (ou parte do nome) do cliente."}]); }},
+    {label:"Entregas do mês", action:intentEntregas},
+    {label:"Pagamentos pendentes", action:intentPagamentos},
+    {label:"Empenhos", action:intentEmpenhos}
+  ];
+}
+function moreChips(){
+  return [
+    {label:"Exportar carteira (Excel)", action:intentExport},
+    {label:"O que há em estoque?", action:intentEstoque},
+    {label:"Ordens faturadas", action:intentFaturadas}
+  ].concat(mainChips().slice(0,3));
+}
+
+function greet(){
+  var open = groupByOPP(myOpenRows());
+  var now = new Date();
+  var entregasMes = open.filter(function(g){ return sameMonth(g.prevEntrega, now) || sameMonth(g.entregaReal, now); }).length;
+  var pendentes = open.filter(function(g){ return norm(g.pgto)==="pendente"; }).length;
+  var estoqueOk = open.filter(function(g){ return norm(g.estoque)==="disponivel"; }).length;
+  var hora = new Date().getHours();
+  var sauda = hora<12 ? "Bom dia" : (hora<18 ? "Boa tarde" : "Boa noite");
+  var html = sauda+"! Você está na carteira <strong>"+esc(loggedRep)+"</strong>.<br><br>";
+  html += "Hoje ela tem <strong>"+open.length+" "+(open.length===1?"ordem aberta":"ordens abertas")+"</strong>";
+  var extras = [];
+  if(entregasMes) extras.push("<strong>"+entregasMes+"</strong> com entrega prevista neste mês");
+  if(estoqueOk) extras.push("<strong>"+estoqueOk+"</strong> já disponíve"+(estoqueOk===1?"l":"is")+" em estoque");
+  if(pendentes) extras.push("<strong>"+pendentes+"</strong> com pagamento pendente");
+  if(extras.length) html += ", sendo "+extras.join(", ");
+  html += ".<br><br>Sobre o que você quer falar?";
+  sophia([{t:"msg",html:html},{t:"chips",list:mainChips()}]);
+}
+
+function intentOPP(q){
+  var dq = digitsOf(q);
+  var mine = myRows();
+  var matches = mine.filter(function(r){
+    var po = digitsOf(r[C.opp]);
+    return po && dq && (po.indexOf(dq)!==-1 || dq.indexOf(po)!==-1);
+  });
+  if(!matches.length){
+    sophia([
+      {t:"msg",html:"Não encontrei nenhuma ordem com a OPP <strong>"+esc(q)+"</strong> na sua carteira. Confere o número? Se a ordem for de outra carteira, ela não aparece aqui."},
+      {t:"chips",list:mainChips()}
+    ]);
     return;
   }
-  fetch(JSON_URL,{cache:"no-cache"})
+  var groups = groupByOPP(matches);
+  if(groups.length > 3){
+    sophia([
+      {t:"msg",html:"Encontrei <strong>"+groups.length+" ordens</strong> com esse número. Toque em uma para ver o resumo:"},
+      {t:"card",html:listRowsHtml(groups.slice(0,10), function(g){ var s=statusInfo(g); return '<span class="pill '+s.cls+'" style="font-size:0.62rem;">'+s.label+'</span>'; })},
+      {t:"chips",list:mainChips()}
+    ]);
+    return;
+  }
+  var parts = [];
+  var g0 = groups[0], st0 = statusInfo(g0);
+  var resumo = "";
+  if(st0.label.indexOf("Entregue")!==-1) resumo = "foi <strong>entregue em "+fmtDate(g0.entregaReal)+"</strong>";
+  else if(st0.label.indexOf("Faturado")!==-1) resumo = "já está <strong>faturada</strong>"+(g0.nfs.length?" (NF "+esc(g0.nfs[0].nf)+")":"");
+  else if(st0.label.indexOf("Atrasado")!==-1) resumo = "está <strong>em atraso</strong> frente ao prazo contratual — o time S&amp;SD está acompanhando";
+  else if(st0.label.indexOf("Estoque")!==-1) resumo = "o equipamento <strong>já está disponível em estoque</strong>";
+  else resumo = "está <strong>em andamento</strong>";
+  parts.push({t:"msg",html:"Encontrei! A <strong>OPP "+esc(g0.opp)+"</strong> do <strong>"+esc(g0.customer||"")+"</strong> tem "+g0.itemCount+" "+(g0.itemCount===1?"item":"itens")+" e "+resumo+". Olha o resumo:"});
+  groups.forEach(function(g){ parts.push({t:"card",html:orderCardHtml(g)}); });
+  parts.push({t:"chips",list:mainChips()});
+  sophia(parts);
+}
+
+var STOP = {"o":1,"a":1,"os":1,"as":1,"e":1,"de":1,"do":1,"da":1,"dos":1,"das":1,"que":1,"como":1,"esta":1,"estao":1,"ta":1,"tenho":1,"tem":1,"meu":1,"minha":1,"meus":1,"minhas":1,"um":1,"uma":1,"para":1,"pra":1,"por":1,"favor":1,"status":1,"pedido":1,"pedidos":1,"ordem":1,"ordens":1,"cliente":1,"sobre":1,"qual":1,"quais":1,"me":1,"mostra":1,"mostrar":1,"ver":1,"quero":1,"saber":1,"no":1,"na":1,"em":1,"opp":1,"ha":1};
+function intentCliente(qRaw){
+  var mine = myRows();
+  var qWords = norm(qRaw).replace(/[^a-z0-9 ]/g," ").split(/\s+/).filter(function(w){ return w.length>=3 && !STOP[w]; });
+  if(!qWords.length){
+    sophia([{t:"msg",html:"Me diga o nome do cliente que você quer consultar."},{t:"chips",list:mainChips()}]);
+    return;
+  }
+  var byClient = {};
+  mine.forEach(function(r){
+    var c = String(r[C.customer]||"").trim();
+    if(!c) return;
+    if(!byClient[c]) byClient[c] = [];
+    byClient[c].push(r);
+  });
+  var names = Object.keys(byClient);
+  var scored = names.map(function(nm){
+    var nn = norm(nm), score = 0;
+    qWords.forEach(function(w){ if(nn.indexOf(w)!==-1) score++; });
+    return {name:nm, score:score};
+  }).filter(function(x){ return x.score>0; });
+  scored.sort(function(a,b){ return b.score-a.score; });
+  if(!scored.length){
+    sophia([
+      {t:"msg",html:"Não encontrei nenhum cliente com esse nome na sua carteira. Tente outra parte do nome — ou toque em uma opção:"},
+      {t:"chips",list:mainChips()}
+    ]);
+    return;
+  }
+  var top = scored[0].score;
+  var best = scored.filter(function(x){ return x.score===top; });
+  if(best.length > 1 && best.length <= 4){
+    sophia([
+      {t:"msg",html:"Encontrei mais de um cliente parecido. Qual deles?"},
+      {t:"chips",list:best.map(function(x){ return {label:x.name, action:(function(nm){ return function(){ intentCliente(nm); }; })(x.name)}; })}
+    ]);
+    return;
+  }
+  var cname = best[0].name;
+  var groups = groupByOPP(byClient[cname]);
+  var abertas = groups.filter(function(g){ return !(g.itemCount && g.recogCount===g.itemCount); });
+  var fat = groups.length - abertas.length;
+  var html = "O <strong>"+esc(cname)+"</strong> tem <strong>"+abertas.length+" "+(abertas.length===1?"pedido em aberto":"pedidos em aberto")+"</strong>";
+  if(fat) html += " e "+fat+" já faturado"+(fat>1?"s":"");
+  html += " na sua carteira"+(groups.length?". Toque para ver os detalhes:":".");
+  sophia([
+    {t:"msg",html:html},
+    {t:"card",html:listRowsHtml(groups.slice(0,12), function(g){ var s=statusInfo(g); return '<span class="pill '+s.cls+'" style="font-size:0.62rem;">'+s.label+'</span>'; })},
+    {t:"chips",list:mainChips()}
+  ]);
+}
+
+function intentCarteira(){
+  var groups = groupByOPP(myOpenRows());
+  if(!groups.length){
+    sophia([{t:"msg",html:"Sua carteira não tem ordens em aberto no momento."},{t:"chips",list:mainChips()}]);
+    return;
+  }
+  var shown = groups.slice(0,15);
+  var parts = [
+    {t:"msg",html:"Sua carteira tem <strong>"+groups.length+" "+(groups.length===1?"ordem aberta":"ordens abertas")+"</strong>"+(groups.length>15?" — mostrando as 15 primeiras. Para a lista completa, exporte para Excel.":". Toque em uma para ver os detalhes:")},
+    {t:"card",html:listRowsHtml(shown, function(g){ var s=statusInfo(g); return '<span class="pill '+s.cls+'" style="font-size:0.62rem;">'+s.label+'</span>'; })},
+    {t:"chips",list:[{label:"Exportar carteira (Excel)",action:intentExport}].concat(mainChips().slice(1,4))}
+  ];
+  sophia(parts);
+}
+
+function intentEntregas(){
+  var now = new Date();
+  var groups = groupByOPP(myOpenRows());
+  var doMes = groups.filter(function(g){ return sameMonth(g.prevEntrega, now) || sameMonth(g.entregaReal, now); });
+  if(!doMes.length){
+    sophia([{t:"msg",html:"Não há entregas previstas para este mês na sua carteira. Assim que o faturamento acontecer, o prazo é de 10 a 15 dias após a entrada em estoque (com pagamento aprovado)."},{t:"chips",list:mainChips()}]);
+    return;
+  }
+  sophia([
+    {t:"msg",html:"Você tem <strong>"+doMes.length+" "+(doMes.length===1?"entrega":"entregas")+"</strong> neste mês:"},
+    {t:"card",html:listRowsHtml(doMes, function(g){
+      if(toDate(g.entregaReal)) return '<span style="color:#0F8A5F;">✓ '+fmtDate(g.entregaReal)+'</span>';
+      return '<span style="color:#0B5ED7;">'+(fmtDate(g.prevEntrega)||"")+'</span>';
+    })},
+    {t:"chips",list:mainChips()}
+  ]);
+}
+
+function intentPagamentos(){
+  var groups = groupByOPP(myOpenRows());
+  var pend = groups.filter(function(g){ return norm(g.pgto)==="pendente"; });
+  if(!pend.length){
+    sophia([{t:"msg",html:"Boa notícia: não há ordens com pagamento pendente na sua carteira."},{t:"chips",list:mainChips()}]);
+    return;
+  }
+  var comEstoque = pend.filter(function(g){ return norm(g.estoque)==="disponivel"; }).length;
+  var html = "Encontrei <strong>"+pend.length+" "+(pend.length===1?"ordem":"ordens")+" com pagamento pendente</strong> na sua carteira.";
+  if(comEstoque) html += " "+(comEstoque===1?"Uma delas já está":comEstoque+" delas já estão")+" disponíve"+(comEstoque===1?"l":"is")+" em estoque — vale agilizar com o cliente:";
+  sophia([
+    {t:"msg",html:html},
+    {t:"card",html:listRowsHtml(pend, function(g){
+      return norm(g.estoque)==="disponivel" ? '<span style="color:#0E7490;">Em estoque</span>' : '<span style="color:#C77700;">Pendente</span>';
+    })},
+    {t:"chips",list:mainChips()}
+  ]);
+}
+
+function intentEmpenhos(){
+  var groups = groupByOPP(myOpenRows()).filter(function(g){ return isPublico(g.publico); });
+  if(!groups.length){
+    sophia([{t:"msg",html:"Sua carteira não tem pedidos públicos em aberto no momento."},{t:"chips",list:mainChips()}]);
+    return;
+  }
+  var now = new Date();
+  var comData = groups.filter(function(g){ return toDate(g.empenho); });
+  var semData = groups.length - comData.length;
+  comData.sort(function(a,b){ return toDate(a.empenho) - toDate(b.empenho); });
+  var html = "Você tem <strong>"+groups.length+" "+(groups.length===1?"pedido público":"pedidos públicos")+"</strong> em aberto";
+  if(semData) html += " ("+semData+" com empenho à confirmar)";
+  html += (comData.length? ". Prazos de empenho:":".");
+  var parts = [{t:"msg",html:html}];
+  if(comData.length){
+    parts.push({t:"card",html:listRowsHtml(comData, function(g){
+      var d = toDate(g.empenho);
+      var dias = Math.round((d - now)/(864e5));
+      if(dias < 0) return '<span style="color:#C0392B;">Venceu '+fmtDate(g.empenho)+'</span>';
+      if(dias <= 30) return '<span style="color:#C77700;">'+fmtDate(g.empenho)+' · '+dias+'d</span>';
+      return '<span style="color:#5A6B7D;">'+fmtDate(g.empenho)+'</span>';
+    })});
+  }
+  parts.push({t:"chips",list:mainChips()});
+  sophia(parts);
+}
+
+function intentEstoque(){
+  var groups = groupByOPP(myOpenRows()).filter(function(g){ return norm(g.estoque)==="disponivel"; });
+  if(!groups.length){
+    sophia([{t:"msg",html:"Nenhuma ordem da sua carteira está com o equipamento disponível em estoque neste momento. Te aviso assim que a base registrar a entrada!"},{t:"chips",list:mainChips()}]);
+    return;
+  }
+  sophia([
+    {t:"msg",html:"<strong>"+groups.length+" "+(groups.length===1?"ordem já está":"ordens já estão")+" com equipamento disponível em estoque</strong>. Com o pagamento aprovado, a entrega acontece em 10 a 15 dias:"},
+    {t:"card",html:listRowsHtml(groups, function(g){
+      return norm(g.pgto)==="aprovado" ? '<span style="color:#0F8A5F;">Pgto. aprovado</span>' : '<span style="color:#C77700;">'+esc(g.pgto||"Pgto. à confirmar")+'</span>';
+    })},
+    {t:"chips",list:mainChips()}
+  ]);
+}
+
+function intentFaturadas(){
+  var rec = myRows().filter(function(r){ return isRecognized(r); });
+  var groups = groupByOPP(rec);
+  if(!groups.length){
+    sophia([{t:"msg",html:"Não encontrei ordens faturadas recentes na sua carteira."},{t:"chips",list:mainChips()}]);
+    return;
+  }
+  groups.sort(function(a,b){ 
+    var da=toDate(b.billing)||toDate(b.entregaReal)||0, db2=toDate(a.billing)||toDate(a.entregaReal)||0;
+    return da - db2;
+  });
+  sophia([
+    {t:"msg",html:"Estas são as ordens <strong>faturadas</strong> da sua carteira (mais recentes primeiro). Toque para ver NF e rastreamento:"},
+    {t:"card",html:listRowsHtml(groups.slice(0,12), function(g){
+      return g.nfs.length ? 'NF '+esc(g.nfs[0].nf) : '<span style="color:#5A6B7D;">—</span>';
+    })},
+    {t:"chips",list:mainChips()}
+  ]);
+}
+
+function intentExport(){
+  var rows = myOpenRows();
+  if(!rows.length){
+    sophia([{t:"msg",html:"Sua carteira não tem ordens em aberto para exportar."},{t:"chips",list:mainChips()}]);
+    return;
+  }
+  var cols = [
+    {k:C.opp,l:"OPP"},{k:C.customer,l:"Cliente"},{k:C.mat,l:"Material"},{k:C.desc,l:"Descrição"},
+    {k:C.qty,l:"Qtd"},{k:C.pgto,l:"Status Pagamento"},{k:C.estoque,l:"Estoque"},
+    {k:C.prazo,l:"Prazo Contratual",d:1},{k:C.publico,l:"Licitação"},{k:C.empenho,l:"Data do Empenho",d:1},
+    {k:C.pareto,l:"Planejamento"},{k:C.coment,l:"Informações Relevantes"},
+    {k:C.nf,l:"NF"},{k:C.transpStatus,l:"Status Transporte"},{k:C.entregaReal,l:"Entrega Real",d:1}
+  ];
+  var aoa = [cols.map(function(c){ return c.l; })];
+  rows.forEach(function(r){
+    aoa.push(cols.map(function(c){
+      var v = r[c.k];
+      if(c.d) v = fmtDate(v) || "";
+      return (v!==null&&v!==undefined) ? v : "";
+    }));
+  });
+  try{
+    var ws = XLSX.utils.aoa_to_sheet(aoa);
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Carteira");
+    var fname = "Carteira_"+loggedRep.replace(/[^A-Za-z0-9]/g,"_")+"_"+new Date().toISOString().split("T")[0]+".xlsx";
+    XLSX.writeFile(wb, fname);
+    sophia([{t:"msg",html:"Prontinho! Baixei a sua carteira completa em Excel ("+rows.length+" itens). Confere na pasta de downloads."},{t:"chips",list:mainChips()}]);
+  }catch(e){
+    sophia([{t:"msg",html:"Não consegui gerar o Excel agora. Tente novamente em instantes."},{t:"chips",list:mainChips()}]);
+  }
+}
+
+function intentHelp(){
+  sophia([
+    {t:"msg",html:"Eu respondo com a base oficial do S&amp;SD, atualizada diariamente. Você pode me perguntar, por exemplo:<br><br>• \"Como está a OPP 6918234?\"<br>• \"O que tenho do Hospital Santa Clara?\"<br>• \"Quais entregas tenho este mês?\"<br>• \"Tem pagamento pendente?\"<br>• \"A OPP 123456 foi faturada?\"<br>• \"Me manda minha carteira em Excel\"<br><br>O que eu não souber, encaminho ao time S&amp;SD Philips."},
+    {t:"chips",list:mainChips()}
+  ]);
+}
+
+// roteador principal
+function interpret(raw){
+  var t = norm(raw).trim();
+  if(!t) return;
+  if(awaiting === "opp"){ awaiting = null; var dq0 = digitsOf(raw); if(dq0.length>=4){ intentOPP(dq0); } else { intentOPP(raw); } return; }
+  if(awaiting === "cliente"){ awaiting = null; intentCliente(raw); return; }
+  var dq = (t.match(/\d{5,}/) || [null])[0];
+  if(dq){ intentOPP(dq); return; }
+  if(/^(oi|ola|bom dia|boa tarde|boa noite|eai|e ai|hey|opa)\b/.test(t) && t.length < 22){ greet(); return; }
+  if(t.indexOf("ajuda")!==-1 || t.indexOf("o que voce faz")!==-1 || t.indexOf("como funciona")!==-1){ intentHelp(); return; }
+  if(t.indexOf("excel")!==-1 || t.indexOf("exportar")!==-1 || t.indexOf("planilha")!==-1){ intentExport(); return; }
+  if(t.indexOf("carteira")!==-1 || t.indexOf("minhas ordens")!==-1 || t.indexOf("todas as ordens")!==-1 || t.indexOf("todos os pedidos")!==-1){ intentCarteira(); return; }
+  if(t.indexOf("empenho")!==-1){ intentEmpenhos(); return; }
+  if(t.indexOf("pagament")!==-1 || t.indexOf("pgto")!==-1){ intentPagamentos(); return; }
+  if(t.indexOf("entreg")!==-1){ intentEntregas(); return; }
+  if(t.indexOf("estoque")!==-1 || t.indexOf("disponive")!==-1){ intentEstoque(); return; }
+  if(t.indexOf("fatur")!==-1 || t.indexOf("nota fiscal")!==-1 || /\bnf\b/.test(t) || t.indexOf("danfe")!==-1){ intentFaturadas(); return; }
+  if(t.indexOf("dhl")!==-1 || t.indexOf("rastre")!==-1 || t.indexOf("transporte")!==-1 || t.indexOf("transportadora")!==-1){
+    sophia([{t:"msg",html:'Para rastrear uma entrega, abra o <a href="'+DHL_URL+'" target="_blank" rel="noopener">DHL Track &amp; Trace</a> com o número da NF. Se me disser a OPP, eu te mostro a NF e o status do transporte.'},{t:"chips",list:mainChips()}]);
+    return;
+  }
+  if(t.indexOf("obrigad")!==-1 || t.indexOf("valeu")!==-1 || t.indexOf("tchau")!==-1 || t.indexOf("ate mais")!==-1){
+    sophia([{t:"msg",html:"Por nada! Estou por aqui sempre que precisar. 👋"}]);
+    return;
+  }
+  // tenta como nome de cliente
+  intentCliente(raw);
+}
+
+// ════════════════ Login e carga ════════════════
+function setBadge(ok, text){
+  var b = $("baseBadge");
+  b.className = "hero-badge" + (ok ? "" : " err");
+  $("baseBadgeTxt").textContent = text;
+}
+function loadData(){
+  if(!JSON_URL){
+    setBadge(false, "Base não configurada (JSON_URL)");
+    return;
+  }
+  fetch(JSON_URL, {cache:"no-cache"})
     .then(function(r){ if(!r.ok) throw new Error("HTTP "+r.status); return r.json(); })
     .then(function(json){
-      DATA=(json.dados||[]).filter(function(r){ return r[COLS.po]; });
-      var g=json.gerado_em?new Date(json.gerado_em):null;
-      var ds=g?fmtDate(g.toISOString()):"—";
-      loadStatus.className="load-status ok";
-      loadStatus.innerHTML="✓ "+DATA.length+" itens carregados · Atualizado em "+ds;
-      dataBadge.textContent="Base atualizada em "+ds;
-      poInput.disabled=false; searchBtn.disabled=false; poInput.focus();
+      DATA = (json.dados||[]).filter(function(r){ return r[C.opp]; });
+      var g = json.gerado_em ? new Date(json.gerado_em) : null;
+      baseDateStr = g ? (pad2(g.getDate())+"/"+pad2(g.getMonth()+1)+"/"+g.getFullYear()+", "+pad2(g.getHours())+"h"+pad2(g.getMinutes())) : "—";
+      setBadge(true, "Base atualizada em "+baseDateStr);
       populateReps();
-      results.innerHTML=emptyCard("Base carregada","Digite o número da PO para consultar.");
     })
     .catch(function(e){
-      loadStatus.className="load-status err";
-      loadStatus.innerHTML="❌ Não foi possível carregar a base. Verifique o link ou as permissões.";
-      dataBadge.textContent="Erro ao carregar";
       console.error(e);
+      setBadge(false, "Não foi possível carregar a base");
     });
 }
-function emptyCard(title, sub) {
-  return '<div class="card"><div class="empty-state"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><div><strong>'+title+'</strong></div><div>'+(sub||"")+'</div></div></div>';
+function populateReps(){
+  var reps = {};
+  DATA.forEach(function(r){
+    var am = normalizeRep(r[C.am]);
+    if(am) reps[am] = true;
+  });
+  var sorted = Object.keys(reps).sort();
+  var h = '<option value="">Selecione sua carteira...</option>';
+  sorted.forEach(function(nm){ h += '<option value="'+esc(nm)+'">'+esc(nm)+'</option>'; });
+  var sel = $("repSelect");
+  sel.innerHTML = h;
+  sel.disabled = false;
+  $("pwdInput").disabled = false;
+  $("loginBtn").disabled = false;
 }
-
-// ── Agrupamento por PO ──
-// Regras: linhas com mesmas datas → agrupa materiais no mesmo quadro.
-//         datas diferentes → considera a maior data de cada campo.
-function groupByPO(items) {
-  var m = {};
-  for (var i=0;i<items.length;i++) {
-    var it=items[i], po=String(it[COLS.po]||"").trim();
-    if (!m[po]) {
-      m[po]={po:po,creation:it[COLS.creation],customer:it[COLS.customer],
-        prazo:it[COLS.prazo],am:normalizeRep(it[COLS.am]),status:it[COLS.status],
-        delivery:it[COLS.deliveryDate],install:it[COLS.installDate],z4:it[COLS.z4],
-        billing:it[COLS.billing],pgto:it[COLS.pgto],
-        comentario:it[COLS.comentario],pareto:it[COLS.pareto],
-        prevEstoque:it[COLS.prevEstoque],empenho:it[COLS.empenho],publico:it[COLS.publico],
-        materials:[]};
-    } else {
-      m[po].creation=maxDate(m[po].creation,it[COLS.creation]);
-      m[po].prazo=maxDate(m[po].prazo,it[COLS.prazo]);
-      m[po].delivery=maxDate(m[po].delivery,it[COLS.deliveryDate]);
-      m[po].install=maxDate(m[po].install,it[COLS.installDate]);
-      m[po].z4=maxDate(m[po].z4,it[COLS.z4]);
-      m[po].billing=maxDate(m[po].billing,it[COLS.billing]);
-      m[po].prevEstoque=maxDate(m[po].prevEstoque,it[COLS.prevEstoque]);
-      m[po].empenho=maxDate(m[po].empenho,it[COLS.empenho]);
-      if(!m[po].status&&it[COLS.status])m[po].status=it[COLS.status];
-      if(!m[po].pgto&&it[COLS.pgto])m[po].pgto=it[COLS.pgto];
-      if(!m[po].pareto&&it[COLS.pareto])m[po].pareto=it[COLS.pareto];
-      if(!m[po].publico&&it[COLS.publico])m[po].publico=it[COLS.publico];
-    }
-    m[po].materials.push({code:it[COLS.materialCode],desc:it[COLS.material],qty:it[COLS.qty]});
-  }
-  return m;
-}
-
-// ── Status do pedido ──
-function statusPill(g) {
-  var delivery=excelToDate(g.delivery), z4=excelToDate(g.z4), billing=excelToDate(g.billing),
-      prazo=excelToDate(g.prazo), now=new Date();
-  if (delivery) return '<span class="status-pill status-ok">✓ Entregue</span>';
-  if (z4 && !billing) return '<span class="status-pill status-prod">⚙ Em Produção</span>';
-  if (prazo && prazo<now) return '<span class="status-pill status-late">⚠ Atrasado</span>';
-  if (prazo) { var diff=(prazo-now)/(864e5); if(diff<=30) return '<span class="status-pill status-warn">Em andamento</span>'; }
-  return '<span class="status-pill status-default">Em andamento</span>';
-}
-
-function field(label,value) {
-  var cls=value?"":"empty", d=value?String(value):"—";
-  return '<div class="field"><span class="k">'+label+'</span><span class="v '+cls+'">'+d+'</span></div>';
-}
-
-// ── Card do pedido (Consulta) ──
-function renderOrderCard(g) {
-  var matRows="";
-  for (var i=0;i<g.materials.length;i++) {
-    var mt=g.materials[i];
-    matRows+='<tr><td>'+(mt.code||"—")+'</td><td>'+(mt.desc||"—")+'</td><td style="text-align:center">'+(mt.qty||"—")+'</td></tr>';
-  }
-  var h='<div class="card order-card">';
-  h+='<div class="order-head"><div><div class="po-label">Customer PO No.</div><div class="po-value">'+g.po+'</div></div>'+statusPill(g)+'</div>';
-  h+='<div class="field-grid">';
-  h+=field("Cliente",g.customer);
-  h+=field("Representante",g.am);
-  h+=field("Data de Booking",fmtDate(g.creation));
-  h+=field("Prazo Contratual",fmtDate(g.prazo));
-  h+=field("Previsão de Estoque",fmtDate(g.prevEstoque));
-  h+=field("Status Pagamento",g.pgto);
-  h+=field("Planejamento",g.pareto);
-  // 1.3 — Data do Empenho: somente para pedidos Públicos
-  if (isPublico(g.publico)) {
-    h+=field("Data do Empenho", fmtDate(g.empenho) || "À confirmar");
-  }
-  // Tabela de materiais
-  h+='<div class="materials-block field"><div class="k">Materiais</div><table class="mat-table"><thead><tr><th>Código</th><th>Descrição</th><th style="text-align:center">Qtd</th></tr></thead><tbody>'+matRows+'</tbody></table></div>';
-  // 1.7 — Comentário fixo destacado (sempre visível)
-  h+='<div class="fixed-note">📌 Data de entrega será entre 10 a 15 dias da data de entrada de estoque (se status Pagamento Aprovado).</div>';
-  h+='</div>';
-  h+=buildTimeline(g);
-  // 1.8 — Link DHL Track & Trace (próximo ao Faturamento na linha do tempo)
-  h+='<div class="dhl-row"><a class="dhl-btn" href="https://mysctrackandtrace.dhl.com/" target="_blank" rel="noopener" title="Rastrear Nota Fiscal na DHL">DHL &nbsp;▸ Rastrear Nota Fiscal</a></div>';
-  h+='</div>';
-  return h;
-}
-
-// ── Linha do tempo (sem RDD e sem Entrada no Estoque) ──
-function buildTimeline(g) {
-  var steps=[
-    {label:"Booking",date:g.creation},
-    {label:"Previsão de Estoque",date:g.prevEstoque},
-    {label:"Produção",date:g.z4},
-    {label:"Faturamento",date:g.billing},
-    {label:"Entrega",date:g.delivery},
-    {label:"Instalação",date:g.install}
-  ];
-  var h='<div class="timeline">';
-  for (var i=0;i<steps.length;i++) {
-    var s=steps[i], has=excelToDate(s.date)!==null;
-    var cls=has?(s.label==="Entrega"||s.label==="Instalação"?"filled-ok":"filled"):"";
-    h+='<div class="tl-step"><div class="tl-dot '+cls+'"></div><div class="tl-label">'+s.label+'</div><div class="tl-date">'+(fmtDate(s.date)||"—")+'</div></div>';
-  }
-  h+='</div>';
-  return h;
-}
-
-// ── Pesquisa por PO (Consulta) ──
-function doSearch() {
-  var q=poInput.value.trim().toLowerCase();
-  if (!q) return;
-  var mt=DATA.filter(function(r){ return String(r[COLS.po]||"").toLowerCase().indexOf(q)!==-1; });
-  if (!mt.length) { results.innerHTML=emptyCard("Nenhum pedido encontrado","Verifique o número da PO e tente novamente."); return; }
-  var g=groupByPO(mt), h="";
-  for (var po in g) h+=renderOrderCard(g[po]);
-  results.innerHTML=h;
-}
-// 2.4 — abre a Consulta com uma PO específica (clique na linha da Carteira)
-function openConsultaWithPO(po) {
-  switchPage("consulta");
-  poInput.value = po;
-  searchBtn.disabled = false;
-  doSearch();
-  window.scrollTo({top:0, behavior:"smooth"});
-}
-poInput.addEventListener("keydown",function(e){ if(e.key==="Enter") doSearch(); });
-poInput.addEventListener("input",function(){ searchBtn.disabled=!(DATA.length&&poInput.value.trim()); });
-searchBtn.addEventListener("click",doSearch);
-
-// ── Carteira Representante ──
-function populateReps() {
-  var reps={};
-  for (var i=0;i<DATA.length;i++) {
-    var am=normalizeRep(DATA[i][COLS.am]);
-    if (am) reps[am]=true;
-  }
-  var sorted=Object.keys(reps).sort();
-  var h='<option value="">Selecione o Representante...</option>';
-  for (var j=0;j<sorted.length;j++) {
-    h+='<option value="'+sorted[j].replace(/"/g,'&quot;')+'">'+sorted[j]+'</option>';
-  }
-  repSelect.innerHTML=h;
-  repSelect.disabled=false;
-}
-
-repSelect.addEventListener("change",function(){
-  var rep=repSelect.value;
-  logout(false);
-  if (!rep) { loginBox.style.display="none"; return; }
-  loginRepName.textContent=rep;
-  loginBox.style.display="block";
-  loginErr.style.display="none";
-  pwdInput.value="";
-  pwdInput.focus();
-});
-
-loginBtn.addEventListener("click",tryLogin);
-pwdInput.addEventListener("keydown",function(e){ if(e.key==="Enter") tryLogin(); });
-
-function tryLogin() {
-  var rep=repSelect.value, pwd=pwdInput.value;
-  if (!rep||!pwd) return;
+function tryLogin(){
+  var rep = $("repSelect").value, pwd = $("pwdInput").value;
+  $("loginErr").style.display = "none";
+  if(!rep){ $("loginErr").textContent = "Selecione a sua carteira."; $("loginErr").style.display = "block"; return; }
+  if(!pwd){ $("loginErr").textContent = "Digite a sua senha."; $("loginErr").style.display = "block"; return; }
   sha256(pwd).then(function(hash){
-    if (PWD_HASHES[rep] && hash===PWD_HASHES[rep]) {
-      loggedRep=rep;
-      loginBox.style.display="none";
-      repLogged.style.display="flex";
-      repLoggedName.textContent="✓ Carteira: "+rep;
-      repSearchRow.style.display="flex";
-      repPoSearch.value="";
-      renderRepTable();
+    if(PWD_HASHES[rep] && hash === PWD_HASHES[rep]){
+      loggedRep = rep;
+      $("screen-login").style.display = "none";
+      var sc = $("screen-chat");
+      sc.style.display = "flex";
+      $("headSub").textContent = "Carteira "+rep+" · base de "+baseDateStr;
+      msgs.innerHTML = "";
+      var today = new Date();
+      addSys("Hoje, "+pad2(today.getHours())+"h"+pad2(today.getMinutes()));
+      greet();
+      chatInput.focus();
     } else {
-      loginErr.style.display="block";
-      pwdInput.value="";
-      pwdInput.focus();
+      $("loginErr").textContent = "Senha incorreta. Tente novamente.";
+      $("loginErr").style.display = "block";
+      $("pwdInput").value = "";
+      $("pwdInput").focus();
     }
   });
 }
-
-logoutBtn.addEventListener("click",function(){ logout(true); });
-function logout(resetSelect) {
-  loggedRep=null;
-  repLogged.style.display="none";
-  repSearchRow.style.display="none";
-  repResults.innerHTML="";
-  if (resetSelect) { repSelect.value=""; loginBox.style.display="none"; }
+function logout(){
+  loggedRep = null; awaiting = null;
+  msgs.innerHTML = "";
+  $("screen-chat").style.display = "none";
+  $("screen-login").style.display = "flex";
+  $("pwdInput").value = "";
 }
 
-repPoSearch.addEventListener("input",renderRepTable);
-
-// Colunas da tabela da Carteira (2.1 Cliente e 2.3 Licitação adicionadas)
-function getRepCols() {
-  return [
-    {key:COLS.po,label:"Customer PO No."},
-    {key:COLS.customer,label:"Cliente"},
-    {key:COLS.materialCode,label:"Material"},
-    {key:COLS.material,label:"Descrição"},
-    {key:COLS.qty,label:"Qtd"},
-    {key:COLS.am,label:"Representante",isRep:true},
-    {key:COLS.pgto,label:"Status Pagamento"},
-    {key:COLS.prevEstoque,label:"Previsão de Estoque",isDate:true},
-    {key:COLS.publico,label:"Licitação",isLicitacao:true},
-    {key:COLS.comentario,label:"Informações Relevantes"},
-    {key:COLS.pareto,label:"Planejamento"}
-  ];
-}
-
-// Retorna as linhas atualmente filtradas da carteira
-// Exibe apenas ordens em aberto: Status em branco ou "Installing".
-// Ordens com Status "Recognized" (faturadas/instaladas) não aparecem.
-function getFilteredRepRows() {
-  if (!loggedRep) return [];
-  var q=repPoSearch.value.trim().toLowerCase();
-  return DATA.filter(function(r){
-    if (normalizeRep(r[COLS.am])!==loggedRep) return false;
-    // Filtro de ordens em aberto
-    var st=String(r[COLS.status]||"").trim().toLowerCase();
-    if (st!=="" && st!=="installing") return false;
-    if (q && String(r[COLS.po]||"").toLowerCase().indexOf(q)===-1) return false;
-    return true;
-  });
-}
-
-function cellValue(row, col) {
-  var v=row[col.key];
-  if (col.isRep) v=normalizeRep(v);
-  else if (col.isDate) v=fmtDate(v)||"—";
-  else if (col.isLicitacao) v=(v!==null&&v!==undefined&&v!=="")?v:"À confirmar";
-  return (v!==null&&v!==undefined&&v!=="")?v:"—";
-}
-
-function renderRepTable() {
-  if (!loggedRep) return;
-  var mt=getFilteredRepRows();
-  var q=repPoSearch.value.trim();
-  if (!mt.length) {
-    repResults.innerHTML='<div class="card"><div class="empty-state"><div>Nenhum pedido encontrado'+(q?" para esta pesquisa":" para este representante")+'.</div></div></div>';
-    return;
+// ════════════════ Boot ════════════════
+document.addEventListener("DOMContentLoaded", function(){
+  msgs = $("msgs");
+  chatInput = $("chatInput");
+  $("loginBtn").addEventListener("click", tryLogin);
+  $("pwdInput").addEventListener("keydown", function(e){ if(e.key==="Enter") tryLogin(); });
+  $("logoutBtn").addEventListener("click", logout);
+  function send(){
+    var v = chatInput.value.trim();
+    if(!v || !loggedRep) return;
+    removeChips();
+    addUser(v);
+    chatInput.value = "";
+    setTimeout(function(){ interpret(v); }, 120);
   }
-  var cols=getRepCols();
-  var thead="<tr>";
-  for (var c=0;c<cols.length;c++) thead+="<th>"+cols[c].label+"</th>";
-  thead+="</tr>";
-  var tbody="";
-  for (var i=0;i<mt.length;i++) {
-    var po=String(mt[i][COLS.po]||"").replace(/"/g,'&quot;');
-    tbody+='<tr data-po="'+po+'">';
-    for (var c2=0;c2<cols.length;c2++) {
-      tbody+="<td>"+cellValue(mt[i],cols[c2])+"</td>";
-    }
-    tbody+="</tr>";
-  }
-  repResults.innerHTML='<div class="card" style="padding:20px;"><div class="rep-summary"><strong>'+mt.length+'</strong> ordens em aberto na carteira de <strong>'+loggedRep+'</strong>'+(q?' (filtrado por "'+q+'")':'')+'</div><div class="rep-table-wrap"><table class="rep-table" id="repTable"><thead>'+thead+'</thead><tbody>'+tbody+'</tbody></table></div><div class="rep-hint">💡 Clique em uma linha para abrir a Consulta do Pedido</div></div>';
-
-  // 2.4 — clique na linha abre a Consulta de Pedido
-  var rows=document.querySelectorAll("#repTable tbody tr");
-  for (var r=0;r<rows.length;r++) {
-    rows[r].addEventListener("click", function(){
-      openConsultaWithPO(this.getAttribute("data-po"));
-    });
-  }
-}
-
-// 2.2 — Exportar para Excel os dados filtrados (com cabeçalhos)
-exportBtn.addEventListener("click", function(){
-  var mt=getFilteredRepRows();
-  if (!mt.length) return;
-  var cols=getRepCols();
-  var aoa=[cols.map(function(c){ return c.label; })];
-  for (var i=0;i<mt.length;i++) {
-    var row=[];
-    for (var c=0;c<cols.length;c++) {
-      var v=cellValue(mt[i],cols[c]);
-      row.push(v==="—"?"":v);
-    }
-    aoa.push(row);
-  }
-  var ws=XLSX.utils.aoa_to_sheet(aoa);
-  var wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,ws,"Carteira");
-  var fname="Carteira_"+loggedRep.replace(/[^A-Za-z0-9]/g,"_")+"_"+new Date().toISOString().split("T")[0]+".xlsx";
-  XLSX.writeFile(wb,fname);
+  $("sendBtn").addEventListener("click", send);
+  chatInput.addEventListener("keydown", function(e){ if(e.key==="Enter") send(); });
+  loadData();
 });
-
-// ── Init ──
-results.innerHTML=emptyCard("Carregando base de dados...","");
-loadData();
 </script>
 </body>
 </html>
