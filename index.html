@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sophia | Philips Pedidos</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -338,8 +340,37 @@ var NAME_MAP = {
 "TECNOMEDICA COM E ASS TEC HOS LT ME":"TECNOMEDICA",
 "SERVICOS PARA DIAGNOSTICOS LTDA UNICA IM":"ÚNICA/DANN",
 "UNICA IMAGEM PRO E SER P DIAG LT ME":"ÚNICA/DANN",
-"SERVICOS LTDA XTEC COMERCIO E":"XTEC"
+"SERVICOS LTDA XTEC COMERCIO E":"XTEC",
+"Pollimed US Pollimed":"POLLIMED",
+"TECNOLIFE VMI":"TECNOLIFE",
+"TECNOMEDICA US TECNOMEDICA TECNOMEDICA U":"TECNOMEDICA",
+"PROMEDICA CMS PROMEDICA":"PROMEDCARE"
 };
+
+// Usuários que NÃO aparecem como login (as ordens continuam na base,
+// acessíveis pelo administrador, pela visão geral e pela consulta do cliente)
+var USUARIOS_REMOVIDOS = [
+"CANAL DIRETO",
+"CARVALHO GARCIA LUCIANA DE",
+"COELHO PASCOAL DEBORA CANHIZARES",
+"ESCOBAR RAQUEL CASQUES",
+"GARCIA LUCIANA DE CARVALHO",
+"GASPAR WESLEI THIAGO",
+"JONAS SACILOTO CAVICHIOLLI JONAS SACILOT",
+"PASSARELO TIAGO FERREIRA",
+"QUESADA SIMONE NAUMANN",
+"S.O.S SUL RESGATE COMERCIL E SERVICOS DE",
+"SEBASTIAO JUSTINO DE ARAUJO ERIKA",
+"SEPULCHRE ANA LUIZA PEREZ",
+"THEODORO MARIA FERNANDA COLETES"
+];
+function isUsuarioRemovido(nome){
+  var n = norm(nome).trim();
+  for(var i=0;i<USUARIOS_REMOVIDOS.length;i++){
+    if(norm(USUARIOS_REMOVIDOS[i]).trim()===n) return true;
+  }
+  return false;
+}
 
 // ── Hashes SHA-256 das senhas (as mesmas do portal) ──
 var PWD_HASHES = {
@@ -348,7 +379,6 @@ var PWD_HASHES = {
 "ALLIANCE":"16b259aef3c7967519b11c647f17b71ae59527aabd30f4b4d616687039e323be",
 "BS IMAGEM":"2e7155a8b97ded14bfee42f4624ea707cecb83f2fba0ba3f6706aa2db9536bf1",
 "BSB":"b4687b2a69bb2556937595657bcebed8aa63b62adcf7a1e3517a0efbf6d83a35",
-"CANAL DIRETO":"de95bef9bad2568cfd19dd988ff7781189129643cc999077c9f06af28768d565",
 "CARDIOVENT":"60e186e974b34fd0390e651df4102006cca3b54b9610460cb5eb9d4ac468fd8b",
 "EQUIPAR":"311349fb5daaf4b94032aa165d40f7ad4f1534972bb70aa87cc0caefcad1e4f8",
 "MEDICAL EVOLUTION":"aa67dc8e9f4e505eed7280f430867fb8f399bd0fb3d747e8b68ca39e59196579",
@@ -1057,7 +1087,7 @@ function populateReps(){
   var reps = {};
   DATA.forEach(function(r){
     var am = normalizeRep(r[C.am]);
-    if(am) reps[am] = true;
+    if(am && !isUsuarioRemovido(am)) reps[am] = true;
   });
   var sorted = Object.keys(reps).sort();
   window._repList = sorted;
