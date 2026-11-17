@@ -475,8 +475,13 @@ function myRows(){
   if(persona==="cliente" || loggedRep==="*") return DATA.slice();
   return DATA.filter(function(r){ return normalizeRep(r[C.am])===loggedRep; });
 }
-function myOpenRows(){ 
-  return myRows().filter(function(r){ return !isRecognized(r); });
+function openGroups(){
+  return groupByOPP(myRows()).filter(function(g){ return !isFaturadoTotal(g); });
+}
+function myOpenRows(){
+  var abertas = {};
+  openGroups().forEach(function(g){ abertas[g.opp] = true; });
+  return myRows().filter(function(r){ return abertas[String(r[C.opp]||"").trim()]; });
 }
 
 // ════════════════ Agrupamento por OPP ════════════════
@@ -516,7 +521,7 @@ function groupByOPP(rows){
     var g2 = m[opp];
     g2.itemCount++;
     if(isRecognized(it)) g2.recogCount++;
-    g2.materials.push({code:it[C.mat], desc:it[C.desc], qty:it[C.qty]});
+    g2.materials.push({code:it[C.mat], desc:it[C.desc], qty:it[C.qty], billed:rowBilled(it), uls:isULSItem(it[C.desc])});
     var nfv = it[C.nf];
     if(nfv!==null && nfv!==undefined && String(nfv).trim()!==""){
       nfv = String(nfv).trim();
@@ -528,7 +533,28 @@ function groupByOPP(rows){
 }
 
 // ── Regras de negócio derivadas ──
-function isFaturadoGroup(g){ return g.itemCount>0 && g.recogCount===g.itemCount; }
+// ── Faturamento por item ──
+// Item faturado = Recognized, com data de faturamento ou com NF própria.
+function rowBilled(r){
+  return isRecognized(r) || !!toDate(r[C.billing]) || (r[C.nf]!==null && r[C.nf]!==undefined && String(r[C.nf]).trim()!=="");
+}
+// Linha ULS = item de instalação, faturado só após a instalação.
+function isULSItem(desc){
+  var d = norm(desc);
+  return /(^|[^a-z])uls([^a-z]|$)/.test(d) || d.indexOf("installation")!==-1 || d.indexOf("instalacao")!==-1;
+}
+// Itens que ainda faltam faturar (a linha ULS não conta como pendência)
+function pendingItems(g){
+  return g.materials.filter(function(m){ return !m.billed && !m.uls; });
+}
+// Ordem com algum item faturado → Estoque "Faturado" e Pagamento "Aprovado" (regra da ordem)
+function isFaturadoGroup(g){
+  return g.materials.some(function(m){ return m.billed; }) || g.nfs.length>0 || !!toDate(g.billing);
+}
+// Totalmente faturada: nada pendente além da linha ULS
+function isFaturadoTotal(g){ return isFaturadoGroup(g) && pendingItems(g).length===0; }
+// Parcial: já faturou algo, mas falta item que não é ULS
+function isFaturadoParcial(g){ return isFaturadoGroup(g) && pendingItems(g).length>0; }
 function isNacionalGroup(g){
   for(var i=0;i<g.materials.length;i++){
     var c = digitsOf(g.materials[i].code).replace(/^0+/,"");
@@ -551,12 +577,13 @@ function derivedPgto(g){
 }
 // Planejamento: faturada → Faturado
 function derivedPareto(g){
-  if(isFaturadoGroup(g)) return "Faturado";
+  if(isFaturadoTotal(g)) return "Faturado";
   return g.pareto || "";
 }
 function statusInfo(g){
+  if(isFaturadoParcial(g)) return {cls:"pill-warn", label:"Faturado Parcial"};
   if(toDate(g.entregaReal)) return {cls:"pill-ok", label:"✓ Entregue"};
-  if(isFaturadoGroup(g)) return {cls:"pill-ok", label:"✓ Faturado"};
+  if(isFaturadoTotal(g)) return {cls:"pill-ok", label:"✓ Faturado"};
   var est = derivedEstoque(g);
   if(est==="Disponível") return {cls:"pill-teal", label:"Em Estoque"};
   if(est==="Em produção") return {cls:"pill-prod", label:"Em Produção"};
@@ -661,9 +688,16 @@ function orderCardHtml(g){
   // materiais
   var rows = "";
   g.materials.forEach(function(mt){
-    rows += '<tr><td>'+esc(mt.code||"—")+'</td><td>'+esc(mt.desc||"—")+'</td><td style="text-align:center">'+esc(mt.qty||"—")+'</td></tr>';
+    var sit = "";
+    if(isFaturadoGroup(g)){
+      if(mt.billed) sit = '<span style="color:#0F8A5F;font-weight:700;">Faturado</span>';
+      else if(mt.uls) sit = '<span style="color:#5A6B7D;">Na instalação</span>';
+      else sit = '<span style="color:#C77700;font-weight:700;">A faturar</span>';
+      sit = '<td>'+sit+'</td>';
+    }
+    rows += '<tr><td>'+esc(mt.code||"—")+'</td><td>'+esc(mt.desc||"—")+'</td><td style="text-align:center">'+esc(mt.qty||"—")+'</td>'+sit+'</tr>';
   });
-  h += '<div class="sect"><div class="k">Equipamentos</div><table class="mt"><thead><tr><th>Código</th><th>Descrição</th><th style="text-align:center">Qtd</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+  h += '<div class="sect"><div class="k">Equipamentos</div><table class="mt"><thead><tr><th>Código</th><th>Descrição</th><th style="text-align:center">Qtd</th>'+(isFaturadoGroup(g)?'<th>Situação</th>':'')+'</tr></thead><tbody>'+rows+'</tbody></table></div>';
   // notas fiscais
   if(g.nfs.length){
     var now = new Date();
@@ -755,7 +789,7 @@ function greetCliente(){
 }
 function greet(){
   if(persona==="cliente"){ greetCliente(); return; }
-  var open = groupByOPP(myOpenRows());
+  var open = openGroups();
   var now = new Date();
   var entregasMes = open.filter(function(g){ return sameMonth(g.prevEntrega, now) || sameMonth(g.entregaReal, now); }).length;
   var pendentes = open.filter(function(g){ return norm(derivedPgto(g))==="pendente"; }).length;
@@ -799,7 +833,11 @@ function intentOPP(q){
   var parts = [];
   var g0 = groups[0], st0 = statusInfo(g0);
   var resumo = "";
-  if(st0.label.indexOf("Entregue")!==-1) resumo = "foi <strong>entregue em "+fmtDate(g0.entregaReal)+"</strong>";
+  if(isFaturadoParcial(g0)){
+    var pend0 = pendingItems(g0);
+    resumo = "está <strong>faturada parcialmente</strong>"+(g0.nfs.length?" (NF "+esc(g0.nfs[0].nf)+")":"")+" — ainda falta faturar: <strong>"+pend0.map(function(m){ return esc(m.desc||m.code); }).join(", ")+"</strong>";
+  }
+  else if(st0.label.indexOf("Entregue")!==-1) resumo = "foi <strong>entregue em "+fmtDate(g0.entregaReal)+"</strong>";
   else if(st0.label.indexOf("Faturado")!==-1) resumo = "já está <strong>faturada</strong>"+(g0.nfs.length?" (NF "+esc(g0.nfs[0].nf)+")":"");
   else if(st0.label.indexOf("Estoque")!==-1) resumo = "o equipamento <strong>já está disponível em estoque</strong>";
   else if(st0.label.indexOf("Produção")!==-1) resumo = "o equipamento está <strong>em produção</strong>";
@@ -854,7 +892,7 @@ function intentCliente(qRaw){
   }
   var cname = best[0].name;
   var groups = groupByOPP(byClient[cname]);
-  var abertas = groups.filter(function(g){ return !(g.itemCount && g.recogCount===g.itemCount); });
+  var abertas = groups.filter(function(g){ return !isFaturadoTotal(g); });
   var fat = groups.length - abertas.length;
   var html = "O <strong>"+esc(cname)+"</strong> tem <strong>"+abertas.length+" "+(abertas.length===1?"pedido em aberto":"pedidos em aberto")+"</strong>";
   if(fat) html += " e "+fat+" já faturado"+(fat>1?"s":"");
@@ -867,7 +905,7 @@ function intentCliente(qRaw){
 }
 
 function intentCarteira(){
-  var groups = groupByOPP(myOpenRows());
+  var groups = openGroups();
   if(!groups.length){
     sophia([{t:"msg",html:"Sua carteira não tem ordens em aberto no momento."},{t:"chips",list:mainChips()}]);
     return;
@@ -883,7 +921,7 @@ function intentCarteira(){
 
 function intentEntregas(){
   var now = new Date();
-  var groups = groupByOPP(myOpenRows());
+  var groups = openGroups();
   var doMes = groups.filter(function(g){ return sameMonth(g.prevEntrega, now) || sameMonth(g.entregaReal, now); });
   if(!doMes.length){
     sophia([{t:"msg",html:"Não há entregas previstas para este mês na sua carteira. Assim que o faturamento acontecer, o prazo é de 10 a 15 dias após o faturamento."},{t:"chips",list:mainChips()}]);
@@ -900,7 +938,7 @@ function intentEntregas(){
 }
 
 function intentPagamentos(){
-  var groups = groupByOPP(myOpenRows());
+  var groups = openGroups();
   var pend = groups.filter(function(g){ return norm(derivedPgto(g))==="pendente"; });
   if(!pend.length){
     sophia([{t:"msg",html:"Boa notícia: não há ordens com pagamento pendente na sua carteira."},{t:"chips",list:mainChips()}]);
@@ -919,7 +957,7 @@ function intentPagamentos(){
 }
 
 function intentEmpenhos(){
-  var groups = groupByOPP(myOpenRows()).filter(function(g){ return isPublico(g.publico); });
+  var groups = openGroups().filter(function(g){ return isPublico(g.publico); });
   if(!groups.length){
     sophia([{t:"msg",html:"Sua carteira não tem pedidos públicos em aberto no momento."},{t:"chips",list:mainChips()}]);
     return;
@@ -946,7 +984,7 @@ function intentEmpenhos(){
 }
 
 function intentEstoque(){
-  var groups = groupByOPP(myOpenRows()).filter(function(g){ return derivedEstoque(g)==="Disponível"; });
+  var groups = openGroups().filter(function(g){ return derivedEstoque(g)==="Disponível"; });
   if(!groups.length){
     sophia([{t:"msg",html:"Nenhuma ordem da sua carteira está com o equipamento disponível em estoque neste momento. Te aviso assim que a base registrar a entrada!"},{t:"chips",list:mainChips()}]);
     return;
@@ -962,8 +1000,7 @@ function intentEstoque(){
 }
 
 function intentFaturadas(){
-  var rec = myRows().filter(function(r){ return isRecognized(r); });
-  var groups = groupByOPP(rec);
+  var groups = groupByOPP(myRows()).filter(function(g){ return isFaturadoGroup(g); });
   if(!groups.length){
     sophia([{t:"msg",html:"Não encontrei ordens faturadas recentes na sua carteira."},{t:"chips",list:mainChips()}]);
     return;
@@ -975,7 +1012,9 @@ function intentFaturadas(){
   sophia([
     {t:"msg",html:"Estas são as ordens <strong>faturadas</strong> da sua carteira (mais recentes primeiro). Toque para ver NF e rastreamento:"},
     {t:"card",html:listRowsHtml(groups.slice(0,12), function(g){
-      return g.nfs.length ? 'NF '+esc(g.nfs[0].nf) : '<span style="color:#5A6B7D;">—</span>';
+      var nfTxt = g.nfs.length ? 'NF '+esc(g.nfs[0].nf) : '';
+      if(isFaturadoParcial(g)) return '<span style="color:#C77700;">Parcial'+(nfTxt?' · '+nfTxt:'')+'</span>';
+      return nfTxt || '<span style="color:#5A6B7D;">—</span>';
     })},
     {t:"chips",list:mainChips()}
   ]);
