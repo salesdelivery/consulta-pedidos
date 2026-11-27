@@ -119,7 +119,10 @@ button.primary:disabled{background:#9BB6D6;cursor:not-allowed;}
 @media(max-width:560px){.m-sophia{max-width:92%;}.ocard .grid{grid-template-columns:1fr 1fr;}}
 .pill-prod{background:#F0EAF9;color:#6A3BAD;}
 /* ícone de IA ao lado do nome SophIA */
-.ai-ic{display:inline-block;width:0.95em;height:0.95em;vertical-align:-0.08em;margin-right:0.28em;color:#7FD4FF;filter:drop-shadow(0 0 4px rgba(127,212,255,0.55));}
+.ai-ic{display:inline-block;width:0.95em;height:0.95em;vertical-align:-0.08em;margin-right:0.28em;color:#C9B6FF;filter:drop-shadow(0 0 5px rgba(180,155,255,0.6));}
+/* "IA" do nome SophIA em violeta: claro sobre o azul, escuro sobre o branco */
+.ia-hl{color:#C9B6FF;}
+.ia-v{color:#6D28D9;}
 .ai-name{display:inline-flex;align-items:center;}
 /* escolha cliente/representante */
 .choice-row{display:flex;gap:10px;}
@@ -157,34 +160,8 @@ button.ghost2:hover{border-color:var(--blue);color:var(--blue);}
 <div id="screen-login">
   <div class="login-hero">
     <div class="logo-chip"><img src="philips-logo.png" alt="Philips"></div>
-    <svg width="96" height="96" viewBox="0 0 96 96" role="img" aria-label="SophIA, sua assistente de pedidos" style="display:block;">
-      <defs><clipPath id="avclip1"><circle cx="48" cy="48" r="45"/></clipPath></defs>
-      <circle cx="48" cy="48" r="47" fill="#CFE3FA" stroke="rgba(255,255,255,0.6)" stroke-width="2.5"/>
-      <g clip-path="url(#avclip1)">
-        <path d="M16 96 C16 73 30 64 48 64 C66 64 80 73 80 96 Z" fill="#0B5ED7"/>
-        <path d="M41 63 L48 73 L55 63 Z" fill="#FFFFFF"/>
-        <rect x="42" y="52" width="12" height="14" rx="5" fill="#EDB98B"/>
-        <ellipse cx="48" cy="37" rx="21" ry="22" fill="#4A332A"/>
-        <rect x="26" y="33" width="9" height="27" rx="4.5" fill="#4A332A"/>
-        <rect x="61" y="33" width="9" height="27" rx="4.5" fill="#4A332A"/>
-        <circle cx="30.5" cy="42" r="3.5" fill="#EDB98B"/>
-        <circle cx="65.5" cy="42" r="3.5" fill="#EDB98B"/>
-        <ellipse cx="48" cy="40" rx="16.5" ry="17.5" fill="#F7CDA4"/>
-        <path d="M30 37 C31 23 65 23 66 37 C59 29 37 29 30 37 Z" fill="#4A332A"/>
-        <circle cx="41.5" cy="40.5" r="2.3" fill="#33261E"/>
-        <circle cx="54.5" cy="40.5" r="2.3" fill="#33261E"/>
-        <path d="M38 36 C40 34.6 43 34.6 44.5 35.6" stroke="#4A332A" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-        <path d="M51.5 35.6 C53 34.6 56 34.6 58 36" stroke="#4A332A" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-        <circle cx="36.5" cy="46" r="2.6" fill="#F0A17E" opacity="0.5"/>
-        <circle cx="59.5" cy="46" r="2.6" fill="#F0A17E" opacity="0.5"/>
-        <path d="M42.5 48 C45 51 51 51 53.5 48" stroke="#9C5B33" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <path d="M27 31 C30 17 66 17 69 31" stroke="#0B5ED7" stroke-width="3.4" fill="none" stroke-linecap="round"/>
-        <rect x="23.5" y="36" width="7" height="12" rx="3.5" fill="#0B5ED7"/>
-        <path d="M27 48 C27 55 36 58 42.5 56.8" stroke="#0B5ED7" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-        <circle cx="44" cy="56.6" r="2.8" fill="#0B5ED7"/>
-      </g>
-    </svg>
-    <h1>Olá! Eu sou a <span class="ai-name"><svg class="ai-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c.6 3.9 2.6 5.9 6.5 6.5-3.9.6-5.9 2.6-6.5 6.5-.6-3.9-2.6-5.9-6.5-6.5 3.9-.6 5.9-2.6 6.5-6.5Z" fill="currentColor"/><path d="M19 14.5c.3 1.8 1.2 2.7 3 3-1.8.3-2.7 1.2-3 3-.3-1.8-1.2-2.7-3-3 1.8-.3 2.7-1.2 3-3Z" fill="currentColor" opacity="0.85"/><path d="M5.5 15.5c.25 1.3.9 1.95 2.2 2.2-1.3.25-1.95.9-2.2 2.2-.25-1.3-.9-1.95-2.2-2.2 1.3-.25 1.95-.9 2.2-2.2Z" fill="currentColor" opacity="0.7"/></svg>SophIA</span></h1>
+    <svg width="96" height="96" viewBox="0 0 96 96" role="img" aria-label="SophIA, robô atendente, sua assistente de pedidos" style="display:block;"><defs><clipPath id="avclip1"><circle cx="48" cy="48" r="45"/></clipPath></defs><circle cx="48" cy="48" r="47" fill="#CFE3FA" stroke="#9FDCFF" stroke-width="1.5"/><g clip-path="url(#avclip1)"><path d="M14 98 C14 76 28 68 48 68 C68 68 82 76 82 98 Z" fill="#0B5ED7"/><circle cx="48" cy="80" r="4.5" fill="#7FD4FF"/><circle cx="48" cy="80" r="2" fill="#F4F8FE"/><rect x="43" y="60" width="10" height="10" rx="3" fill="#8FB4E8"/><line x1="48" y1="27" x2="48" y2="17" stroke="#0B5ED7" stroke-width="2.6" stroke-linecap="round"/><circle cx="48" cy="14.5" r="4" fill="#9B7BFF"/><circle cx="47" cy="13.5" r="1.3" fill="#F4F8FE"/><rect x="25" y="26" width="46" height="37" rx="14" fill="#F4F8FE" stroke="#0B5ED7" stroke-width="2.2"/><rect x="31" y="33" width="34" height="22" rx="9" fill="#0B1F4A"/><rect x="37" y="39" width="7" height="8" rx="3.5" fill="#7FD4FF"/><rect x="52" y="39" width="7" height="8" rx="3.5" fill="#7FD4FF"/><path d="M42 50 C45 52.6 51 52.6 54 50" stroke="#7FD4FF" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="34.5" cy="51" r="1.8" fill="#9B7BFF" opacity="0.8"/><circle cx="61.5" cy="51" r="1.8" fill="#9B7BFF" opacity="0.8"/><path d="M20 45 C19 18 77 18 76 45" stroke="#0B5ED7" stroke-width="3.6" fill="none" stroke-linecap="round"/><rect x="16" y="38" width="9" height="15" rx="4.5" fill="#0B5ED7"/><rect x="71" y="38" width="9" height="15" rx="4.5" fill="#0B5ED7"/><path d="M20.5 53 C21 61 30 65 38 64" stroke="#0B5ED7" stroke-width="2.6" fill="none" stroke-linecap="round"/><circle cx="39.5" cy="63.8" r="3" fill="#0B5ED7"/></g></svg>
+    <h1>Olá! Eu sou a <span class="ai-name"><svg class="ai-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c.6 3.9 2.6 5.9 6.5 6.5-3.9.6-5.9 2.6-6.5 6.5-.6-3.9-2.6-5.9-6.5-6.5 3.9-.6 5.9-2.6 6.5-6.5Z" fill="currentColor"/><path d="M19 14.5c.3 1.8 1.2 2.7 3 3-1.8.3-2.7 1.2-3 3-.3-1.8-1.2-2.7-3-3 1.8-.3 2.7-1.2 3-3Z" fill="currentColor" opacity="0.85"/><path d="M5.5 15.5c.25 1.3.9 1.95 2.2 2.2-1.3.25-1.95.9-2.2 2.2-.25-1.3-.9-1.95-2.2-2.2 1.3-.25 1.95-.9 2.2-2.2Z" fill="currentColor" opacity="0.7"/></svg>Soph<span class="ia-hl">IA</span></span></h1>
     <p>Sua assistente de pedidos Philips. Pergunte sobre seus pedidos e eu respondo na hora, com a base do dia.</p>
     <div class="hero-badge" id="baseBadge"><span class="dot"></span><span id="baseBadgeTxt">Carregando base de dados...</span></div>
   </div>
@@ -205,8 +182,8 @@ button.ghost2:hover{border-color:var(--blue);color:var(--blue);}
     <div id="stepLogin" style="display:none;">
       <div class="t">Entrar na conversa</div>
       <div style="margin-top:12px;">
-        <label for="repSelect">Usuário</label>
-        <select id="repSelect"><option value="">Selecione o usuário...</option></select>
+        <label for="userInput">Usuário</label>
+        <input type="text" id="userInput" placeholder="Digite o nome da sua representação" autocomplete="off" autocapitalize="off" spellcheck="false">
       </div>
       <div style="margin-top:10px;">
         <label for="pwdInput">Senha</label>
@@ -223,35 +200,9 @@ button.ghost2:hover{border-color:var(--blue);color:var(--blue);}
 <!-- ═══════ CHAT ═══════ -->
 <div id="screen-chat">
   <div class="chat-head">
-    <svg width="42" height="42" viewBox="0 0 96 96" role="img" aria-label="SophIA" style="display:block;flex-shrink:0;">
-      <defs><clipPath id="avclip2"><circle cx="48" cy="48" r="45"/></clipPath></defs>
-      <circle cx="48" cy="48" r="47" fill="#CFE3FA" stroke="rgba(255,255,255,0.6)" stroke-width="2.5"/>
-      <g clip-path="url(#avclip2)">
-        <path d="M16 96 C16 73 30 64 48 64 C66 64 80 73 80 96 Z" fill="#0B5ED7"/>
-        <path d="M41 63 L48 73 L55 63 Z" fill="#FFFFFF"/>
-        <rect x="42" y="52" width="12" height="14" rx="5" fill="#EDB98B"/>
-        <ellipse cx="48" cy="37" rx="21" ry="22" fill="#4A332A"/>
-        <rect x="26" y="33" width="9" height="27" rx="4.5" fill="#4A332A"/>
-        <rect x="61" y="33" width="9" height="27" rx="4.5" fill="#4A332A"/>
-        <circle cx="30.5" cy="42" r="3.5" fill="#EDB98B"/>
-        <circle cx="65.5" cy="42" r="3.5" fill="#EDB98B"/>
-        <ellipse cx="48" cy="40" rx="16.5" ry="17.5" fill="#F7CDA4"/>
-        <path d="M30 37 C31 23 65 23 66 37 C59 29 37 29 30 37 Z" fill="#4A332A"/>
-        <circle cx="41.5" cy="40.5" r="2.3" fill="#33261E"/>
-        <circle cx="54.5" cy="40.5" r="2.3" fill="#33261E"/>
-        <path d="M38 36 C40 34.6 43 34.6 44.5 35.6" stroke="#4A332A" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-        <path d="M51.5 35.6 C53 34.6 56 34.6 58 36" stroke="#4A332A" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-        <circle cx="36.5" cy="46" r="2.6" fill="#F0A17E" opacity="0.5"/>
-        <circle cx="59.5" cy="46" r="2.6" fill="#F0A17E" opacity="0.5"/>
-        <path d="M42.5 48 C45 51 51 51 53.5 48" stroke="#9C5B33" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <path d="M27 31 C30 17 66 17 69 31" stroke="#0B5ED7" stroke-width="3.4" fill="none" stroke-linecap="round"/>
-        <rect x="23.5" y="36" width="7" height="12" rx="3.5" fill="#0B5ED7"/>
-        <path d="M27 48 C27 55 36 58 42.5 56.8" stroke="#0B5ED7" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-        <circle cx="44" cy="56.6" r="2.8" fill="#0B5ED7"/>
-      </g>
-    </svg>
+    <svg width="42" height="42" viewBox="0 0 96 96" role="img" aria-label="SophIA, robô atendente" style="display:block;flex-shrink:0;"><defs><clipPath id="avclip2"><circle cx="48" cy="48" r="45"/></clipPath></defs><circle cx="48" cy="48" r="47" fill="#CFE3FA" stroke="#9FDCFF" stroke-width="1.5"/><g clip-path="url(#avclip2)"><path d="M14 98 C14 76 28 68 48 68 C68 68 82 76 82 98 Z" fill="#0B5ED7"/><circle cx="48" cy="80" r="4.5" fill="#7FD4FF"/><circle cx="48" cy="80" r="2" fill="#F4F8FE"/><rect x="43" y="60" width="10" height="10" rx="3" fill="#8FB4E8"/><line x1="48" y1="27" x2="48" y2="17" stroke="#0B5ED7" stroke-width="2.6" stroke-linecap="round"/><circle cx="48" cy="14.5" r="4" fill="#9B7BFF"/><circle cx="47" cy="13.5" r="1.3" fill="#F4F8FE"/><rect x="25" y="26" width="46" height="37" rx="14" fill="#F4F8FE" stroke="#0B5ED7" stroke-width="2.2"/><rect x="31" y="33" width="34" height="22" rx="9" fill="#0B1F4A"/><rect x="37" y="39" width="7" height="8" rx="3.5" fill="#7FD4FF"/><rect x="52" y="39" width="7" height="8" rx="3.5" fill="#7FD4FF"/><path d="M42 50 C45 52.6 51 52.6 54 50" stroke="#7FD4FF" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="34.5" cy="51" r="1.8" fill="#9B7BFF" opacity="0.8"/><circle cx="61.5" cy="51" r="1.8" fill="#9B7BFF" opacity="0.8"/><path d="M20 45 C19 18 77 18 76 45" stroke="#0B5ED7" stroke-width="3.6" fill="none" stroke-linecap="round"/><rect x="16" y="38" width="9" height="15" rx="4.5" fill="#0B5ED7"/><rect x="71" y="38" width="9" height="15" rx="4.5" fill="#0B5ED7"/><path d="M20.5 53 C21 61 30 65 38 64" stroke="#0B5ED7" stroke-width="2.6" fill="none" stroke-linecap="round"/><circle cx="39.5" cy="63.8" r="3" fill="#0B5ED7"/></g></svg>
     <div class="who">
-      <div class="n"><span class="ai-name"><svg class="ai-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c.6 3.9 2.6 5.9 6.5 6.5-3.9.6-5.9 2.6-6.5 6.5-.6-3.9-2.6-5.9-6.5-6.5 3.9-.6 5.9-2.6 6.5-6.5Z" fill="currentColor"/><path d="M19 14.5c.3 1.8 1.2 2.7 3 3-1.8.3-2.7 1.2-3 3-.3-1.8-1.2-2.7-3-3 1.8-.3 2.7-1.2 3-3Z" fill="currentColor" opacity="0.85"/><path d="M5.5 15.5c.25 1.3.9 1.95 2.2 2.2-1.3.25-1.95.9-2.2 2.2-.25-1.3-.9-1.95-2.2-2.2 1.3-.25 1.95-.9 2.2-2.2Z" fill="currentColor" opacity="0.7"/></svg>SophIA</span></div>
+      <div class="n"><span class="ai-name"><svg class="ai-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c.6 3.9 2.6 5.9 6.5 6.5-3.9.6-5.9 2.6-6.5 6.5-.6-3.9-2.6-5.9-6.5-6.5 3.9-.6 5.9-2.6 6.5-6.5Z" fill="currentColor"/><path d="M19 14.5c.3 1.8 1.2 2.7 3 3-1.8.3-2.7 1.2-3 3-.3-1.8-1.2-2.7-3-3 1.8-.3 2.7-1.2 3-3Z" fill="currentColor" opacity="0.85"/><path d="M5.5 15.5c.25 1.3.9 1.95 2.2 2.2-1.3.25-1.95.9-2.2 2.2-.25-1.3-.9-1.95-2.2-2.2 1.3-.25 1.95-.9 2.2-2.2Z" fill="currentColor" opacity="0.7"/></svg>Soph<span class="ia-hl">IA</span></span></div>
       <div class="s"><span class="dot"></span><span id="headSub">—</span></div>
     </div>
     <button id="logoutBtn">Sair</button>
@@ -788,7 +739,7 @@ function moreChips(){
 function greetCliente(){
   var hora = new Date().getHours();
   var sauda = hora<12 ? "Bom dia" : (hora<18 ? "Boa tarde" : "Boa noite");
-  sophia([{t:"msg",html:sauda+"! Eu sou a <strong>SophIA</strong>, assistente de pedidos da Philips.<br><br>Para consultar o seu pedido, me informe o <strong>número do pedido (OPP)</strong> — ele foi enviado por e-mail de <strong>salesdeliveryfastflow@philips.com</strong>."}]);
+  sophia([{t:"msg",html:sauda+"! Eu sou a <strong>Soph<span class=\"ia-v\">IA</span></strong>, assistente de pedidos da Philips.<br><br>Para consultar o seu pedido, me informe o <strong>número do pedido (OPP)</strong> — ele foi enviado por e-mail de <strong>salesdeliveryfastflow@philips.com</strong>."}]);
 }
 function greet(){
   if(persona==="cliente"){ greetCliente(); return; }
@@ -1134,11 +1085,7 @@ function populateReps(){
     if(am && !isUsuarioRemovido(am)) reps[am] = true;
   });
   var sorted = Object.keys(reps).sort();
-  window._repList = sorted;
-  var h = '<option value="">Selecione o usuário...</option>';
-  sorted.forEach(function(nm){ h += '<option value="'+esc(nm)+'">'+esc(nm)+'</option>'; });
-  h += '<option value="__ADMIN__">ADMINISTRADOR</option>';
-  $("repSelect").innerHTML = h;
+  window._repList = sorted; // usado só no painel do administrador (nada é listado na tela de entrada)
   $("btnCliente").disabled = false;
   $("btnRep").disabled = false;
 }
@@ -1160,10 +1107,22 @@ function enterChat(rep, asPersona){
   greet();
   chatInput.focus();
 }
+// ── Usuário digitado: aceita maiúsculas/minúsculas, acentos, espaços e símbolos ──
+// "pollimed", "POLLIMED" e "Pollimed" entram no mesmo usuário; "unica dann" = "ÚNICA/DANN".
+function normUser(v){ return norm(v).replace(/[^a-z0-9]/g, ""); }
+function resolveUser(typed){
+  var n = normUser(typed);
+  if(!n) return null;
+  if(n==="administrador" || n==="admin") return "__ADMIN__";
+  var keys = Object.keys(PWD_HASHES);
+  for(var i=0;i<keys.length;i++){ if(normUser(keys[i])===n) return keys[i]; }
+  return null;
+}
 function tryLogin(){
-  var rep = $("repSelect").value, pwd = $("pwdInput").value;
+  var typed = $("userInput").value, pwd = $("pwdInput").value;
   $("loginErr").style.display = "none";
-  if(!rep){ $("loginErr").textContent = "Selecione o usuário."; $("loginErr").style.display = "block"; return; }
+  if(!typed.trim()){ $("loginErr").textContent = "Digite o seu usuário."; $("loginErr").style.display = "block"; return; }
+  var rep = resolveUser(typed);
   if(!pwd){ $("loginErr").textContent = "Digite a sua senha."; $("loginErr").style.display = "block"; return; }
   sha256(pwd).then(function(hash){
     if(rep==="__ADMIN__"){
@@ -1178,7 +1137,8 @@ function tryLogin(){
   });
 }
 function loginFail(){
-  $("loginErr").textContent = "Senha incorreta. Tente novamente.";
+  // mensagem genérica: não revela se o usuário existe
+  $("loginErr").textContent = "Usuário ou senha inválidos.";
   $("loginErr").style.display = "block";
   $("pwdInput").value = "";
   $("pwdInput").focus();
@@ -1193,6 +1153,7 @@ function logout(){
   $("stepLogin").style.display = "none";
   $("loginErr").style.display = "none";
   $("pwdInput").value = "";
+  $("userInput").value = "";
 }
 
 // ════════════════ Painel do administrador ════════════════
@@ -1259,9 +1220,10 @@ document.addEventListener("DOMContentLoaded", function(){
   chatInput = $("chatInput");
   $("loginBtn").addEventListener("click", tryLogin);
   $("pwdInput").addEventListener("keydown", function(e){ if(e.key==="Enter") tryLogin(); });
+  $("userInput").addEventListener("keydown", function(e){ if(e.key==="Enter") $("pwdInput").focus(); });
   $("logoutBtn").addEventListener("click", logout);
   $("btnCliente").addEventListener("click", function(){ enterChat(null, "cliente"); });
-  $("btnRep").addEventListener("click", function(){ $("stepChoice").style.display="none"; $("stepLogin").style.display="block"; });
+  $("btnRep").addEventListener("click", function(){ $("stepChoice").style.display="none"; $("stepLogin").style.display="block"; $("userInput").focus(); });
   $("backChoice").addEventListener("click", function(){ $("stepLogin").style.display="none"; $("stepChoice").style.display="block"; $("loginErr").style.display="none"; });
   $("admExit").addEventListener("click", logout);
   $("admOpenRep").addEventListener("click", function(){ enterChat($("admRepSelect").value || "*", "rep"); });
